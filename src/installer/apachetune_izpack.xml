@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
+<installation version="1.0">
+    <info>
+        <appname>ApacheTune</appname>
+        <appversion>1.0 lite</appversion>
+        <authors>
+            <author email="progmonster@gmail.com" name="Aleksey V. Katorgin"/>
+        </authors>
+        <url>http://apachetune.com/</url>
+        <uninstaller name="Uninstaller.jar" write="yes"/>
+        <requiresjdk>no</requiresjdk>
+        <writeinstallationinformation>no</writeinstallationinformation>
+        <pack200/>
+        <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
+    </info>
+    <guiprefs height="480" resizable="no" width="640">
+        <laf name="kunststoff">
+            <os family="windows"/>
+        </laf>
+        <modifier key="useFlags" value="no"/>
+        <modifier key="langDisplayType" value="default"/>
+        <modifier key="useHeadingPanel" value="yes"/>
+        <modifier key="headingImageOnLeft" value="no"/>
+        <modifier key="headingFontSize" value="2"/>
+        <modifier key="headingBackgroundColor" value="-65794"/>
+        <modifier key="headingForegroundColor" value="-16711423"/>
+        <modifier key="headingPanelCounter" value="text"/>
+        <modifier key="headingPanelCounterPos" value="inNavigationPanel"/>
+    </guiprefs>
+    <locale>
+        <langpack iso3="eng"/>
+    </locale>
+    <resources>
+        <res id="LicencePanel.licence" parse="yes" src="..\..\distr.unpacked\LICENSE.txt"/>
+        <res id="shortcutSpec.xml" src="apachetune_izpack_shortcutSpec.xml"/>
+        <res id="Heading.image" src="logo.png"/>
+    </resources>
+    <panels>
+        <panel classname="HelloPanel"/>
+        <panel classname="LicencePanel"/>
+        <panel classname="TargetPanel"/>
+        <panel classname="InstallPanel"/>
+        <panel classname="ShortcutPanel"/>
+        <panel classname="SimpleFinishPanel"/>
+    </panels>
+    <variables>
+        <variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+    </variables>
+    <packs>
+        <pack name="core" preselected="yes" required="yes">
+            <description/>
+            <file override="true"
+                src="..\..\distr.unpacked\apachetune.exe" targetdir="$INSTALL_PATH/"/>
+            <file override="true"
+                src="..\..\distr.unpacked\uninstaller.exe" targetdir="$INSTALL_PATH/"/>
+            <file override="true"
+                src="..\..\distr.unpacked\LICENSE.rtf" targetdir="$INSTALL_PATH/"/>
+            <file override="true"
+                src="..\..\distr.unpacked\LICENSE.txt" targetdir="$INSTALL_PATH/"/>
+            <file override="true"
+                src="..\..\distr.unpacked\lib" targetdir="$INSTALL_PATH/"/>
+            <file override="true"
+                src="..\..\distr.unpacked\light_version_splash_screen_image.png" targetdir="$INSTALL_PATH/"/>
+        </pack>
+    </packs>
+    <native name="ShellLink.dll" type="izpack"/>
+    <native name="ShellLink_x64.dll" type="izpack"/>
+</installation>

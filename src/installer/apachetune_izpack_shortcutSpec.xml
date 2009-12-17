@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<shortcuts>
+    <skipIfNotSupported/>
+    <programGroup defaultName="ApacheTune" location="applications"/>
+    <shortcut applications="no" desktop="yes" initialState="noShow"
+        name="ApacheTune" programGroup="yes" startMenu="no" startup="no"
+        target="$INSTALL_PATH/apachetune.exe" workingDirectory="$INSTALL_PATH"/>
+    <shortcut applications="no" desktop="no" initialState="noShow"
+        name="Uninstall" programGroup="yes" startMenu="no" startup="no"
+        target="$INSTALL_PATH/uninstaller.exe" workingDirectory="$INSTALL_PATH"/>
+</shortcuts>

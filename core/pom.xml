@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.apachetune</groupId>
+    <artifactId>core</artifactId>
+    <version>1.0-lite-alpha-SNAPSHOT</version>
+	<packaging>jar</packaging>
+    <name>ApacheTune Core</name>
+
+	<parent>
+		<groupId>com.apachetune</groupId>
+		<artifactId>apache-tune</artifactId>
+        <version>1.0-lite-alpha-SNAPSHOT</version>
+	</parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--<finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>-->
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <executions>
+                  <execution>
+                    <phase>validate</phase>
+                    <goals>
+                      <goal>create</goal>
+                    </goals>
+                  </execution>
+                </executions>
+                <configuration>
+                  <buildNumberPropertyName>buildDate</buildNumberPropertyName>
+                  <doCheck>true</doCheck>
+                  <doUpdate>true</doUpdate>
+                  <format>{0,date,dd-MM-yyyy}</format>
+                  <items>
+                    <item>timestamp</item>
+                  </items>
+                </configuration>
+              </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+                <filtering>true</filtering>
+            </testResource>
+        </testResources>
+    </build>
+</project>

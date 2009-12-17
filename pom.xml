@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.apachetune</groupId>
+    <artifactId>apache-tune</artifactId>
+    <version>1.0-lite-alpha-SNAPSHOT</version>
+	<packaging>pom</packaging>
+    <name>ApacheTune</name>
+    
+    <developers>
+        <developer>
+            <id>aleksey.katorgin</id>
+            <name>Aleksey V. Katorgin</name>
+            <email>progmonster@gmail.com</email>
+            <timezone>5</timezone>
+            <url>http://progmonster.com/</url>                
+        </developer>
+    </developers>
+
+    <!-- TODO Add a license tag. -->
+
+    <!-- TODO Tests not run during packaging phase. -->
+
+   <scm>
+        <developerConnection>scm:git:git@git.assembla.com:apachetune.git</developerConnection>
+   </scm>
+
+    <modules>
+        <module>core</module>
+        <module>core-ui</module>
+        <module>http-server</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>5.8</version>
+                <scope>test</scope>
+                <classifier>jdk15</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jmock</groupId>
+                <artifactId>jmock-legacy</artifactId>
+                <version>2.5.1</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.code.guice</groupId>
+                <artifactId>guice</artifactId>
+                <version>1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
+
+            <!-- TODO Move dependency to core-ui module -->
+            <dependency>
+                <groupId>net.sourceforge.mydoggy</groupId>
+                <artifactId>mydoggy-api</artifactId>
+                <version>1.4.2</version>
+            </dependency>
+
+            <!-- TODO Move dependency to core-ui module -->
+            <dependency>
+                <groupId>net.sourceforge.mydoggy</groupId>
+                <artifactId>mydoggy-plaf</artifactId>
+                <version>1.4.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.noos.xing</groupId>
+                        <artifactId>mydoggy-api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- TODO Move dependency to core-ui module -->
+            <dependency>
+                <groupId>net.sourceforge.mydoggy</groupId>
+                <artifactId>mydoggy-res</artifactId>
+                <version>1.4.2</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.noos.xing</groupId>
+                        <artifactId>mydoggy-res</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- TODO Move dependency to core-ui module -->
+            <dependency>
+                <groupId>com.intellij</groupId>
+                <artifactId>forms_rt</artifactId>
+                <version>7.0.3</version>
+            </dependency>            
+
+            <!-- TODO Move dependency to core-ui module -->
+            <dependency>
+                <groupId>jsyntaxpane</groupId>
+                <artifactId>jsyntaxpane</artifactId>
+                <version>0.9.4</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.swinglabs</groupId>
+                <artifactId>swingx</artifactId>
+                <version>1.0</version>
+            </dependency>
+
+            <!-- Installed manually from http://l2fprod.com/common/index.php -->
+            <dependency>
+                <groupId>com.l2fprod</groupId>
+                <artifactId>common</artifactId>
+                <version>7.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.collections</groupId>
+                <artifactId>google-collections</artifactId>
+                <version>1.0-rc1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!--<finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>-->
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.0-beta-9</version>
+                    <configuration>
+                      <releaseProfiles>release</releaseProfiles>
+                      <goals>clean package assembly:assembly</goals>
+                    </configuration>
+                  </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-plugin</artifactId>
+                    <version>1.2</version>
+                    <configuration>
+                        <goals>install</goals>
+                    </configuration>
+
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.apache.maven.scm</groupId>
+                            <artifactId>maven-scm-provider-gitexe</artifactId>
+                            <version>1.2</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.0.2</version>
+                    <configuration>
+                        <compilerArgument>-Xlint:unchecked</compilerArgument>
+                        <source>1.6</source>
+                        <target>1.6</target>
+                    </configuration>
+                </plugin>
+
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                  <encoding>UTF-8</encoding>
+                </configuration>
+              </plugin>
+
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-surefire-plugin</artifactId>
+                  <version>2.4.2</version>
+                  <configuration>
+                    <parallel>methods</parallel>
+                    <threadCount>10</threadCount>
+                  </configuration>
+                </plugin>
+
+                <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>buildnumber-maven-plugin</artifactId>
+                  <version>1.0-beta-3</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+              <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                  <descriptors>
+                    <descriptor>src/assemble/bin.xml</descriptor>
+                  </descriptors>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>ibiblio.org</id>
+            <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
+            <releases><enabled>true</enabled></releases>
+        </repository>
+    </repositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <testng.junit>false</testng.junit>
+
+        <app.vendor>Aleksey V. Katorgin</app.vendor>
+        <app.website>http://apachetune.com/</app.website>
+        <app.developmentStartDate>18-07-2009</app.developmentStartDate>
+        <app.name>ApacheTune</app.name>
+        <app.version>${project.version}</app.version>
+    </properties>
+</project>

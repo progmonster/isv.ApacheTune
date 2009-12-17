@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.apachetune</groupId>
+    <artifactId>core-ui</artifactId>
+    <version>1.0-lite-alpha-SNAPSHOT</version>
+	<packaging>jar</packaging>
+    <name>ApacheTune Core-UI</name>
+	
+	<parent>
+		<groupId>com.apachetune</groupId>
+		<artifactId>apache-tune</artifactId>
+        <version>1.0-lite-alpha-SNAPSHOT</version>
+	</parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.apachetune</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-lite-alpha-SNAPSHOT</version>
+        </dependency>
+
+        <!-- TODO This dependency repeated in core project and apachetune. Remove duplicates -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-plaf</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.noos.xing</groupId>
+                    <artifactId>mydoggy-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-res</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.noos.xing</groupId>
+                    <artifactId>mydoggy-res</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>jsyntaxpane</groupId>
+            <artifactId>jsyntaxpane</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--<finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>-->
+        <plugins>
+            <plugin>
+              <groupId>de.jflex.maven.plugin</groupId>
+              <artifactId>maven-jflex-plugin</artifactId>
+              <version>1.0</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                    <configuration>
+
+                    </configuration>
+                </execution>
+              </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+
+            <resource>
+                <directory>src/main/META-INF</directory>
+                <targetPath>META-INF</targetPath>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <pluginRepositories>
+      <pluginRepository>
+        <id>jflex</id>
+        <name>JFlex repository</name>
+        <url>http://jflex.sourceforge.net/repo/</url>
+      </pluginRepository>
+    </pluginRepositories>   
+</project>

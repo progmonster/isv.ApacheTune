@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.apachetune</groupId>
+    <artifactId>http-server</artifactId>
+    <version>1.0-lite-alpha-SNAPSHOT</version>
+	<packaging>jar</packaging>
+    <name>ApacheTune Apache HTTP-Server configurer</name>
+
+	<parent>
+		<groupId>com.apachetune</groupId>
+		<artifactId>apache-tune</artifactId>
+        <version>1.0-lite-alpha-SNAPSHOT</version>
+	</parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.apachetune</groupId>
+            <artifactId>core-ui</artifactId>
+            <version>1.0-lite-alpha-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.apachetune</groupId>
+            <artifactId>core</artifactId>
+            <version>1.0-lite-alpha-SNAPSHOT</version>
+        </dependency>
+
+        <!-- TODO This dependency repeated in sub-project. Remove duplicates -->
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.l2fprod</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!--<finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>-->
+
+        <plugins>
+            <plugin>
+              <groupId>de.jflex.maven.plugin</groupId>
+              <artifactId>maven-jflex-plugin</artifactId>
+              <version>1.0</version>
+              <executions>
+                <execution>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                    <configuration>
+
+                    </configuration>
+                </execution>
+              </executions>
+            </plugin>
+
+              <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                  <archive>
+                    <manifestEntries>
+                      <SplashScreen-Image>light_version_splash_screen_image.png</SplashScreen-Image>
+                    </manifestEntries>
+                  </archive>
+                </configuration>
+              </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <pluginRepositories>
+      <pluginRepository>
+        <id>jflex</id>
+        <name>JFlex repository</name>
+        <url>http://jflex.sourceforge.net/repo/</url>
+      </pluginRepository>
+    </pluginRepositories>
+</project>

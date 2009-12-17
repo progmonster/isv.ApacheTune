@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<assembly>
+    <id>bin</id>
+    <formats>
+        <format>dir</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <moduleSets>
+        <moduleSet>
+            <includes>
+                <include>com.apachetune:core</include>
+                <include>com.apachetune:core-ui</include>
+                <include>com.apachetune:http-server</include>
+            </includes>
+            <binaries>
+                <outputDirectory>lib</outputDirectory>
+                <unpack>false</unpack>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+
+    <files>
+        <file>
+            <source>src/distr_files/light_version_splash_screen_image.png</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+
+        <file>
+            <source>src/distr_files/LICENSE.rtf</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+
+        <file>
+            <source>src/distr_files/LICENSE.txt</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+    </files>
+</assembly>
