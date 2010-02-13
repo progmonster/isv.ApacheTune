@@ -78,4 +78,6 @@ public class Constants {
     public static final String HTTP_SERVER_ACTION_GROUP = "HTTP_SERVER_ACTION_GROUP";
     
     public static final String OBJECT_TREE_WORK_ITEM = "OBJECT_TREE_WORK_ITEM";
+
+    public static final String ON_HIGHLIGHT_SYNTAX_ERROR_EVENT = "ON_HIGHLIGHT_SYNTAX_ERROR_EVENT";
 }

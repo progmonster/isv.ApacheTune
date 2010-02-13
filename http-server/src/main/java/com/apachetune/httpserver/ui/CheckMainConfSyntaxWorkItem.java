@@ -115,7 +115,8 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
         return (HttpServerWorkItem) getParent();
     }
 
-    private void highlightError(String errorMessage) {
+    @Subscriber(eventId = ON_HIGHLIGHT_SYNTAX_ERROR_EVENT)
+    public void highlightError(String errorMessage) {
         Pattern errorPattern = compile(ERROR_PATTERN, MULTILINE | CASE_INSENSITIVE |
                 UNICODE_CASE);
 

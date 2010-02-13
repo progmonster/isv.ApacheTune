@@ -66,7 +66,10 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
 
     @ActionHandler(SERVER_START_HTTP_SERVER_ACTION)
     public void onServerStart() {
-        executeTasks(createStartServerTask());
+        if (getParentWorkItem().askAndSaveAllConfFiles("Save files", "It should to save all changed configuration" +
+                    " files before the starting server. \n\nSave this files?")) { // TODO Localize
+            executeTasks(createStartServerTask());
+        }
     }
 
     @ActionPermission(SERVER_START_HTTP_SERVER_ACTION)
@@ -86,7 +89,10 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
 
     @ActionHandler(SERVER_RESTART_HTTP_SERVER_ACTION)
     public void onServerRestart() {
-        executeTasks(createStopServerTask(), createStartServerTask());
+        if (getParentWorkItem().askAndSaveAllConfFiles("Save files", "It should to save all changed configuration" +
+                    " files before the restarting server. \n\nSave this files?")) { // TODO Localize
+            executeTasks(createStopServerTask(), createStartServerTask());
+        }
     }
 
     @ActionPermission(SERVER_RESTART_HTTP_SERVER_ACTION)
@@ -137,6 +143,10 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
         };
 
         coreUIUtils.safeEDTCall(setStdoutTextTask);
+    }
+
+    private HttpServerWorkItem getParentWorkItem() {
+        return (HttpServerWorkItem) getParent();
     }
 
     private class TaskRunner implements Callable<Void> {
@@ -201,6 +211,10 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
                 hasError = doServerControl(command, messageValue);
 
                 setStdoutText(messageValue.value, hasError ? RED : BLACK);
+                
+                if (hasError) {
+                    raiseEvent(ON_HIGHLIGHT_SYNTAX_ERROR_EVENT, messageValue.value, RunServerWorkflowWorkItem.this);
+                }
             } finally {
                 hideStatus();
             }
