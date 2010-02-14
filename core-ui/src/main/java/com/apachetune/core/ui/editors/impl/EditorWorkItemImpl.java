@@ -16,7 +16,7 @@ import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.undo.*;
 import java.awt.*;
-import static java.awt.Color.*;
+import static java.awt.Color.RED;
 import java.awt.event.*;
 import java.awt.print.*;
 import static java.lang.Math.*;
@@ -33,6 +33,8 @@ import java.util.prefs.*;
 public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkItem, EditorActionSite,
         SaveFileActionSite, UndoWorkflowActionSite, PrintDocumentActionSite  {
     private static final char EDITOR_DIRTY_FLAG = '*';
+
+    private static final Color HIGHLIGHT_ERROR_LINE_COLOR = RED;
 
     private final ToolWindowManager toolWindowManager;
 
@@ -355,25 +357,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         editorPane.select(lineElement.getStartOffset(), lineElement.getEndOffset() - 1);
 
-        final Color prevSelectionColor = editorPane.getSelectionColor();
-
-        editorPane.setSelectionColor(RED);
-
-        editorPane.addCaretListener(new CaretListener() {
-            public void caretUpdate(CaretEvent e) {
-                editorPane.removeCaretListener(this);
-
-                editorPane.setSelectionColor(prevSelectionColor);
-            }
-        });
-
-        editorPane.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                editorPane.removeMouseListener(this);
-
-                editorPane.setSelectionColor(prevSelectionColor);
-            }
-        });
+        new SelfReleasingErrorLineHighlighter(editorPane, lineElement.getStartOffset(), lineElement.getEndOffset() - 1);
     }
 
     private void updateUndoRedoActions() {
@@ -475,6 +459,60 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     private class EditorPaneFocusListener extends FocusAdapter {
         public void focusGained(FocusEvent e) {
             activate();
+        }
+    }
+
+    private class SelfReleasingErrorLineHighlighter extends DefaultHighlighter.DefaultHighlightPainter implements
+            CaretListener, MouseListener
+    {
+        private final JEditorPane editorPane;
+
+        private final Object highlight;
+
+        public SelfReleasingErrorLineHighlighter(JEditorPane editorPane, int startOffset, int endOffset) {
+            super(HIGHLIGHT_ERROR_LINE_COLOR);
+
+            this.editorPane = editorPane;
+
+            try {
+                highlight = editorPane.getHighlighter().addHighlight(startOffset, endOffset, this);
+            } catch (BadLocationException e) {
+                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            }
+
+            editorPane.addCaretListener(this);
+            editorPane.addMouseListener(this);
+        }
+
+        public void caretUpdate(CaretEvent e) {
+            releaseHighlighting();
+        }
+
+        public void mouseClicked(MouseEvent e) {
+            // No-op.
+        }
+
+        public void mousePressed(MouseEvent e) {
+            releaseHighlighting();
+        }
+
+        public void mouseEntered(MouseEvent e) {
+            // No-op.
+        }
+
+        public void mouseExited(MouseEvent e) {
+            // No-op.
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            // No-op.
+        }
+
+        private void releaseHighlighting() {
+            editorPane.getHighlighter().removeHighlight(highlight);
+
+            editorPane.removeCaretListener(this);
+            editorPane.removeMouseListener(this);
         }
     }
 }
