@@ -26,14 +26,14 @@ public class CoreUIUtils {
 
     private final ActionManager actionManager;
 
-    private final ToolWindowManager nestedToolWindowManager;
+    private final ToolWindowManager toolWindowManager;
 
     @Inject
     public CoreUIUtils(StatusBarManager statusBarManager, ActionManager actionManager,
-            @Named(NESTED_TOOL_WINDOW_MANAGER) ToolWindowManager nestedToolWindowManager) {
+            @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager) {
         this.statusBarManager = statusBarManager;
         this.actionManager = actionManager;
-        this.nestedToolWindowManager = nestedToolWindowManager;
+        this.toolWindowManager = toolWindowManager;
     }
 
     public Action createAndConfigureAction(String actionId, Class<? extends ActionSite> actionSiteClass,
@@ -126,7 +126,7 @@ public class CoreUIUtils {
 
     public Content addContentToNestedToolWindowManager(String id, String title, Icon icon, JComponent component,
             String tip) {
-        ContentManager nestedContentManager = nestedToolWindowManager.getContentManager();
+        ContentManager nestedContentManager = toolWindowManager.getContentManager();
 
         List<Content> contents = asList(nestedContentManager.getContents());
 

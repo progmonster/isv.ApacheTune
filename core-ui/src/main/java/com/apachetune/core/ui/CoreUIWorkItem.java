@@ -13,6 +13,7 @@ import jsyntaxpane.jsyntaxkits.*;
 import static org.apache.commons.lang.StringUtils.*;
 import org.noos.xing.mydoggy.*;
 import org.noos.xing.mydoggy.plaf.ui.content.*;
+import org.noos.xing.mydoggy.plaf.*;
 
 import javax.swing.*;
 import static javax.swing.KeyStroke.*;
@@ -52,14 +53,11 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private final TitleBarManager titleBarManager;
 
-    private final ToolWindowManager nestedToolWindowManager;
-
     @Inject
     public CoreUIWorkItem(JFrame mainFrame, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
-            @Named(NESTED_TOOL_WINDOW_MANAGER) ToolWindowManager nestedToolWindowManager, MenuBarManager menuBarManager,
-            ActionManager actionManager, CoreUIUtils coreUIUtils, CoreUIResourceLocator coreUIResourceLocator,
-            StatusBarManager statusBarManager, ToolBarManager toolBarManager, AppManager appManager,
-            TitleBarManager titleBarManager) {
+            MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
+            CoreUIResourceLocator coreUIResourceLocator, StatusBarManager statusBarManager,
+            ToolBarManager toolBarManager, AppManager appManager, TitleBarManager titleBarManager) {
         super(CORE_UI_WORK_ITEM);
 
         this.mainFrame = mainFrame;
@@ -72,7 +70,6 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         this.statusBarManager = statusBarManager;
         this.appManager = appManager;
         this.titleBarManager = titleBarManager;
-        this.nestedToolWindowManager = nestedToolWindowManager;
     }
 
     public void onActivate(WorkItem workItem) {
@@ -142,30 +139,23 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     private void initDockingFramework() {
-        toolWindowManager.getContentManager().setEnabled(true);
+        ContentManager contentManager = toolWindowManager.getContentManager();
 
-        nestedToolWindowManager.getContentManager().setEnabled(true);
+        MyDoggyTabbedContentManagerUI contentManagerUI = new MyDoggyTabbedContentManagerUI() {
+            protected void setupActions() {
+                // Workaround. Switch tab actions are configuring when ManagerUI being created and its toolWindowManager
+                // property not set yet.
+                toolWindowManager = (MyDoggyToolWindowManager) CoreUIWorkItem.this.toolWindowManager;
 
-        MyDoggyMultiSplitContentManagerUI contentManagerUI = new MyDoggyMultiSplitContentManagerUI();
+                super.setupActions();
+            }
+        };
 
-        toolWindowManager.getContentManager().setContentManagerUI(contentManagerUI);
+        contentManager.setContentManagerUI(contentManagerUI);
 
-        contentManagerUI.setShowAlwaysTab(false);
-        
-        MyDoggyMultiSplitContentManagerUI nestedContentManagerUI = new MyDoggyMultiSplitContentManagerUI();
+        contentManager.setEnabled(true);
 
-        nestedToolWindowManager.getContentManager().setContentManagerUI(nestedContentManagerUI);
-
-        nestedContentManagerUI.setShowAlwaysTab(true);
-        nestedContentManagerUI.setDetachable(false);
-        nestedContentManagerUI.setCloseable(false);
-        nestedContentManagerUI.setMinimizable(false);
-        nestedContentManagerUI.setPopupMenu(null);
-
-        toolWindowManager.getContentManager().addContent(NESTED_TOOL_WINDOW_MANAGER, NESTED_TOOL_WINDOW_MANAGER, null,
-                (JComponent) nestedToolWindowManager);
-
-        mainFrame.getContentPane().add((Component) toolWindowManager);       
+        mainFrame.getContentPane().add((Component) toolWindowManager);
     }
 
     private void disposeActions() {

@@ -31,9 +31,6 @@ public class CoreUIModule extends AbstractModule {
         bind(ToolWindowManager.class).annotatedWith(named(TOOL_WINDOW_MANAGER)).to(MyDoggyToolWindowManager.class)
                 .in(SINGLETON);
 
-        bind(ToolWindowManager.class).annotatedWith(named(NESTED_TOOL_WINDOW_MANAGER)).to(MyDoggyToolWindowManager
-                .class).in(SINGLETON);
-
         bind(MenuBarManager.class).to(MenuBarManagerImpl.class).in(SINGLETON);
 
         bind(ToolBarManager.class).to(ToolBarManagerImpl.class).in(SINGLETON);

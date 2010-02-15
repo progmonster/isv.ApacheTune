@@ -63,7 +63,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     public boolean canRedo;
 
     @Inject
-    public EditorWorkItemImpl(@Named(NESTED_TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
+    public EditorWorkItemImpl(@Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
             ActionManager actionManager, StatusBarManager statusBarManager, MenuBarManager menuBarManager,
             PreferencesManager preferencesManager, CoreUIUtils coreUIUtils) {
         this.toolWindowManager = toolWindowManager;
