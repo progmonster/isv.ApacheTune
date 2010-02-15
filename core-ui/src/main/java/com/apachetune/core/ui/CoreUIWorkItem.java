@@ -151,7 +151,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         toolWindowManager.getContentManager().setContentManagerUI(contentManagerUI);
 
         contentManagerUI.setShowAlwaysTab(false);
-
+        
         MyDoggyMultiSplitContentManagerUI nestedContentManagerUI = new MyDoggyMultiSplitContentManagerUI();
 
         nestedToolWindowManager.getContentManager().setContentManagerUI(nestedContentManagerUI);

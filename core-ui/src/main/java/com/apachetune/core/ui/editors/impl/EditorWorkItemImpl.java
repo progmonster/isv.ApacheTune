@@ -265,6 +265,9 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
                 .getContentPaneTitle(), editorInput.getContentPaneIcon(), editorScrollPane, editorInput
                         .getSaveTitle());
 
+        contentPane.getDockableManager().setPopupMenu(null);
+
+        
         contentPane.getContentUI().setCloseable(false);
         contentPane.getContentUI().setDetachable(false);
         contentPane.getContentUI().setMinimizable(false);
@@ -281,7 +284,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
             caretPosition = getStoredCaretPosition();
         }
 
-        // TODO It uses a document length instead of editorPane.getText().length() to avoid the "\r\n" problem.
+        // It uses a document length instead of editorPane.getText().length() to avoid the "\r\n" problem.
         int contentLength = editorPane.getDocument().getLength();
 
         editorPane.setCaretPosition(min(caretPosition, contentLength));
