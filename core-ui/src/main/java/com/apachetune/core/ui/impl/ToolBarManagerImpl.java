@@ -5,6 +5,7 @@ import com.apachetune.core.ui.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 
 /**
@@ -157,8 +158,21 @@ public class ToolBarManagerImpl implements ToolBarManager {
 
             JButton toolBarButton = new JButton(action);
 
+            toolBarButton.setRequestFocusEnabled(false);
+
             toolBarButton.setHideActionText(true);
             toolBarButton.setToolTipText(action.getShortDescription());
+
+            toolBarButton.addFocusListener(new FocusListener() {
+                public void focusGained(FocusEvent e) {
+                    System.out.println(e.isTemporary());
+
+                }
+
+                public void focusLost(FocusEvent e) {
+                    // No-op.
+                }
+            });
 
             coreUIUtils.addUIActionHint(toolBarButton);
 

@@ -358,8 +358,6 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         Element lineElement = getDocument().getDefaultRootElement().getElement(lineNum - 1);
 
-        editorPane.select(lineElement.getStartOffset(), lineElement.getEndOffset() - 1);
-
         new SelfReleasingErrorLineHighlighter(editorPane, lineElement.getStartOffset(), lineElement.getEndOffset() - 1);
     }
 
