@@ -10,4 +10,12 @@ public interface EditorManager {
     EditorWorkItem createEditorWorkItem(EditorInput editorInput);
 
     void saveAllEditorsContent();
+
+/*
+    void addEditorListener(EditorListener listener);
+
+    void removeEditorListener(EditorListener listener);
+
+    void removeAllEditorListeners();
+*/
 }

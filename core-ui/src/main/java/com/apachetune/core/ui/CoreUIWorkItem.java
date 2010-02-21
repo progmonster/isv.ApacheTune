@@ -233,6 +233,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     private void initMenuBar() {
         initFileMenu();
         initEditMenu();
+        initWindowMenu();
         initHelpMenu();
 
         mainFrame.setJMenuBar(menuBarManager.getMenuBar());
@@ -326,6 +327,20 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 getKeyStroke(VK_A, CTRL_MASK), true);
 
         actionManager.registerActionGroup(selectAllActionGroup);
+
+        ActionGroup windowActionGroup = actionManager.createActionGroup(WINDOW_ACTION_GROUP);
+
+        // TODO Localize.
+        coreUIUtils.createAndConfigureAction(WINDOW_SELECT_NEXT_TAB_ACTION, WindowActionSite.class, windowActionGroup,
+                coreUIResourceLocator, "Select next tab", "Select next tab", "Activate next tab", "next_window_16.png",
+                null, 'n', getKeyStroke(VK_RIGHT, ALT_MASK), true);
+
+        // TODO Localize.
+        coreUIUtils.createAndConfigureAction(WINDOW_SELECT_PREVIOUS_TAB_ACTION, WindowActionSite.class,
+                windowActionGroup, coreUIResourceLocator, "Select previous tab", "Select previous tab",
+                "Activate previous tab", "previous_window_16.png", null, 'p', getKeyStroke(VK_LEFT, ALT_MASK), true);
+
+        actionManager.registerActionGroup(windowActionGroup);
     }
 
     private void initStatusBar() {
@@ -357,7 +372,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     private void initFileMenu() {
         JMenu fileMenu = new JMenu("File"); // TODO Localize. Add an accelerator.
 
-        fileMenu.setMnemonic('F'); // TODO Localize. 
+        fileMenu.setMnemonic('F'); // TODO Localize.
 
         coreUIUtils.addUIActionHint(fileMenu.add(actionManager.getAction(FILE_SAVE_ACTION)));
 
@@ -368,7 +383,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         coreUIUtils.addUIActionHint(fileMenu.add(actionManager.getAction(FILE_PRINT_ACTION)));
 
         fileMenu.addSeparator();
-                      
+
         coreUIUtils.addUIActionHint(fileMenu.add(actionManager.getAction(EXIT_ACTION)));
 
         menuBarManager.addMenu(FILE_MENU, fileMenu);
@@ -396,6 +411,18 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         coreUIUtils.addUIActionHint(editMenu.add(actionManager.getAction(EDIT_SELECT_ALL_ACTION)));
 
         menuBarManager.addMenu(EDIT_MENU, editMenu);
+    }
+
+    private void initWindowMenu() {
+        JMenu windowMenu = new JMenu("Window"); // TODO Localize. Add an accelerator.
+
+        windowMenu.setMnemonic('W'); // TODO Localize.
+
+        coreUIUtils.addUIActionHint(windowMenu.add(actionManager.getAction(WINDOW_SELECT_NEXT_TAB_ACTION)));
+
+        coreUIUtils.addUIActionHint(windowMenu.add(actionManager.getAction(WINDOW_SELECT_PREVIOUS_TAB_ACTION)));
+
+        menuBarManager.addMenu(WINDOW_MENU, windowMenu);
     }
 
     private void initHelpMenu() {

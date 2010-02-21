@@ -1,15 +1,25 @@
 package com.apachetune.core.ui.editors.impl;
 
-import com.apachetune.core.ui.editors.*;
+import com.apachetune.core.WorkItem;
+import com.apachetune.core.WorkItemLifecycleListener;
 import com.apachetune.core.ui.actions.*;
-import static com.apachetune.core.ui.Constants.FILE_SAVE_ALL_ACTION;
-import com.apachetune.core.*;
-import com.google.inject.*;
+import com.apachetune.core.ui.editors.EditorInput;
+import com.apachetune.core.ui.editors.EditorManager;
+import com.apachetune.core.ui.editors.EditorWorkItem;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.name.Named;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
+import org.noos.xing.mydoggy.Content;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
-import java.beans.*;
-import java.util.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.commons.collections.*;
+import static com.apachetune.core.ui.Constants.*;
 
 /**
  * FIXDOC
@@ -18,8 +28,10 @@ import org.apache.commons.collections.*;
  * @version 1.0
  */
 public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListener, PropertyChangeListener,
-        SaveAllFilesActionSite {
+        SaveAllFilesActionSite, WindowActionSite {
     private final ActionManager actionManager;
+
+    private final ToolWindowManager toolWindowManager;
 
     private final Provider<EditorWorkItem> editorWorkItemProvider;
 
@@ -28,7 +40,9 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
     private boolean saveAllFilesEnabled;
 
     @Inject
-    public EditorManagerImpl(Provider<EditorWorkItem> editorWorkItemProvider, ActionManager actionManager) {
+    public EditorManagerImpl(@Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
+            Provider<EditorWorkItem> editorWorkItemProvider, ActionManager actionManager) {
+        this.toolWindowManager = toolWindowManager;
         this.editorWorkItemProvider = editorWorkItemProvider;
         this.actionManager = actionManager;
 
@@ -47,6 +61,8 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
         editorWorkItems.add(editorWorkItem);
 
         editorWorkItem.addLifecycleListener(this);
+
+        actionManager.updateActionSites(this);
         
         return editorWorkItem;
     }
@@ -73,6 +89,8 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
 
         //noinspection SuspiciousMethodCalls
         editorWorkItems.remove(workItem);
+
+        actionManager.updateActionSites(this);
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
@@ -113,9 +131,37 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
         return saveAllFilesEnabled;
     }
 
+    @ActionHandler(WINDOW_SELECT_NEXT_TAB_ACTION)
+    public void onNextWindowTab() {
+        Content content = toolWindowManager.getContentManager().getNextContent();
+        if (content != null)
+            content.setSelected(true);
+    }
+
+    @ActionPermission(WINDOW_SELECT_NEXT_TAB_ACTION)
+    public boolean isNextWindowTabEnabled() {
+        return isTabNavigationEnabled();
+    }
+
+    @ActionHandler(WINDOW_SELECT_PREVIOUS_TAB_ACTION)
+    public void onPreviousWindowTab() {
+        Content content = toolWindowManager.getContentManager().getPreviousContent();
+        if (content != null)
+            content.setSelected(true);
+    }
+
+    @ActionPermission(WINDOW_SELECT_PREVIOUS_TAB_ACTION)
+    public boolean isPreviousWindowTabEnabled() {
+        return isTabNavigationEnabled();
+    }
+
+    private boolean isTabNavigationEnabled() {
+        return editorWorkItems.size() > 1;
+    }
+
     private void setSaveAllFilesEnabled(boolean saveAllFilesEnabled) {
         this.saveAllFilesEnabled = saveAllFilesEnabled;
-        
+
         actionManager.updateActionSites(this);
     }
 }

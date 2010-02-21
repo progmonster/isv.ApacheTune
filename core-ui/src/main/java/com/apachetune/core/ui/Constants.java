@@ -13,6 +13,8 @@ public final class Constants {
 
     public static final String EDIT_MENU = "EDIT_MENU";
 
+    public static final String WINDOW_MENU = "WINDOW_MENU";
+
     public static final String HELP_MENU = "HELP_MENU";
 
     public static final String SHOW_ABOUT_DIALOG_EVENT = "SHOW_ABOUT_DIALOG_EVENT";
@@ -130,4 +132,10 @@ public final class Constants {
     public static final String SAVE_ALL_FILES_AT_ONCE_HELPER = "SAVE_ALL_FILES_AT_ONCE_HELPER";
     
     public static final String SAVE_ALL_FILES_SEPARATELY_HELPER = "SAVE_ALL_FILES_SEPARATELY_HELPER";
+
+    public static final String WINDOW_SELECT_NEXT_TAB_ACTION = "WINDOW_SELECT_NEXT_TAB_ACTION";
+
+    public static final String WINDOW_SELECT_PREVIOUS_TAB_ACTION = "WINDOW_SELECT_PREVIOUS_TAB_ACTION";
+
+    public static final String WINDOW_ACTION_GROUP = "WINDOW_ACTION_GROUP";
 }
