@@ -589,61 +589,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         ) + ']'
         );
 
-        restoreActiveEditor();
-        activateChildWorkItem();
-    }
-
-    // TODO refactor and move to core UI
-    private void saveActiveEditorInfo() {
-        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
-
-        Content selectedContent = toolWindowManager.getContentManager().getSelectedContent();
-
-        if (selectedContent != null) {
-            preferences.put(ACTIVE_EDITOR_INFO, selectedContent.getId());
-        } else {
-            preferences.remove(ACTIVE_EDITOR_INFO);
-        }
-
-        try {
-            preferences.flush();
-        } catch (BackingStoreException e) {
-            e.printStackTrace();  // TODO make it as a service
-        }
-    }
-
-    // TODO refactor and move to core UI
-    private void restoreActiveEditor() {
-        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
-
-        String selectedEditorInfo = preferences.get(ACTIVE_EDITOR_INFO, null);
-
-        if (selectedEditorInfo == null) {
-            return;
-        }
-
-        WorkItem selectedContentWorkItem = getRootWorkItem().getChildWorkItem(selectedEditorInfo);
-
-        if (selectedContentWorkItem == null) {
-            return;
-        }
-
-        selectedContentWorkItem.activate();
-    }
-
-    // TODO refactor and move to core UI
-    private void activateChildWorkItem() {
-        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
-
-        String activeChildWorkItemInfo = preferences.get(ACTIVE_CHILD_WORK_ITEM_PREF, null);
-
-        if (activeChildWorkItemInfo == null) {
-            return;
-        }
-
-        WorkItem lastActiveChildWorkItem = getDirectChildWorkItem(activeChildWorkItemInfo);
-
-        lastActiveChildWorkItem.activate();
+        activateLastActiveEditor();
+        activateLastActiveChildWorkItem();
     }
 
     private void openConsoleWorkItem() {
@@ -703,25 +650,6 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         actionManager.updateActionSites(this);
 
         titleBarManager.removeTitle(LEVEL_2);
-    }
-
-    // TODO refactor and move to core UI
-    private void saveActiveChildWorkItemInfo() {
-        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
-
-        WorkItem activeChildWorkItem = getDirectActiveChild();
-
-        if (activeChildWorkItem != null) {
-            preferences.put(ACTIVE_CHILD_WORK_ITEM_PREF, activeChildWorkItem.getId());
-        } else {
-            preferences.remove(ACTIVE_CHILD_WORK_ITEM_PREF);
-        }
-
-        try {
-            preferences.flush();
-        } catch (BackingStoreException e) {
-            e.printStackTrace();  // TODO Make it as a service.
-        }
     }
 
     private boolean hasCurrentServer() {
@@ -811,6 +739,85 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
             recentOpenedServersManager.storeServerUriToRecentList(currentHttpServer.getUri());
         }
+    }
+    // TODO refactor and move to core UI
+    private void saveActiveEditorInfo() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        String serverUri = getCurrentServer().getUri().toASCIIString();
+
+        Content selectedContent = toolWindowManager.getContentManager().getSelectedContent();
+
+        if (selectedContent != null) {
+            preferences.node(ACTIVE_EDITOR_INFO).put(serverUri, selectedContent.getId());
+        } else {
+            preferences.node(ACTIVE_EDITOR_INFO).remove(serverUri);
+        }
+
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();  // TODO make it as a service
+        }
+    }
+
+    // TODO refactor and move to core UI
+    private void activateLastActiveEditor() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        String serverUri = getCurrentServer().getUri().toASCIIString();
+
+        String selectedEditorInfo = preferences.node(ACTIVE_EDITOR_INFO).get(serverUri, null);
+
+        if (selectedEditorInfo == null) {
+            return;
+        }
+
+        WorkItem selectedContentWorkItem = getRootWorkItem().getChildWorkItem(selectedEditorInfo);
+
+        if (selectedContentWorkItem == null) {
+            return;
+        }
+
+        selectedContentWorkItem.activate();
+    }
+
+    // TODO refactor and move to core UI
+    private void saveActiveChildWorkItemInfo() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        String serverUri = getCurrentServer().getUri().toASCIIString();
+
+        WorkItem activeChildWorkItem = getDirectActiveChild();
+
+        if (activeChildWorkItem != null) {
+            preferences.node(ACTIVE_CHILD_WORK_ITEM_PREF).put(serverUri, activeChildWorkItem.getId());
+        } else {
+            preferences.node(ACTIVE_CHILD_WORK_ITEM_PREF).remove(serverUri);
+        }
+
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();  // TODO Make it as a service.
+        }
+    }
+
+    // TODO refactor and move to core UI
+    private void activateLastActiveChildWorkItem() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        String serverUri = getCurrentServer().getUri().toASCIIString();
+
+        String activeChildWorkItemInfo = preferences.node(ACTIVE_CHILD_WORK_ITEM_PREF).get(serverUri, null);
+
+        if (activeChildWorkItemInfo == null) {
+            return;
+        }
+
+        WorkItem lastActiveChildWorkItem = getDirectChildWorkItem(activeChildWorkItemInfo);
+
+        lastActiveChildWorkItem.activate();
     }
 
     private class SaveConfFilesHelperCallBack extends SaveFilesHelperCallBackAdapter {
