@@ -127,7 +127,7 @@ public final class Constants {
 
     public static final String TOOL_WINDOW_MANAGER = "TOOL_WINDOW_MANAGER";
 
-    public static final String CARET_POSITION_PREFS_NODE_NAME = "caret_positions";
+    public static final String CARET_POSITION_PREFS_NODE_NAME = "CARET_POSITIONS";
 
     public static final String SAVE_ALL_FILES_AT_ONCE_HELPER = "SAVE_ALL_FILES_AT_ONCE_HELPER";
     
@@ -138,4 +138,6 @@ public final class Constants {
     public static final String WINDOW_SELECT_PREVIOUS_TAB_ACTION = "WINDOW_SELECT_PREVIOUS_TAB_ACTION";
 
     public static final String WINDOW_ACTION_GROUP = "WINDOW_ACTION_GROUP";
+
+    public static final String VIEW_POSITION_PREFS_NODE_NAME = "VIEW_POSITIONS";
 }

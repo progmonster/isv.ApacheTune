@@ -1,28 +1,41 @@
 package com.apachetune.core.ui.editors.impl;
 
 import com.apachetune.core.preferences.Preferences;
-import com.apachetune.core.preferences.*;
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.*;
+import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.core.ui.CoreUIUtils;
+import com.apachetune.core.ui.GenericUIWorkItem;
+import com.apachetune.core.ui.MenuBarManager;
+import com.apachetune.core.ui.StatusBarManager;
 import com.apachetune.core.ui.actions.*;
-import com.apachetune.core.ui.editors.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import jsyntaxpane.*;
-import org.noos.xing.mydoggy.*;
+import com.apachetune.core.ui.editors.EditorActionSite;
+import com.apachetune.core.ui.editors.EditorInput;
+import com.apachetune.core.ui.editors.EditorWorkItem;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import jsyntaxpane.ExtendedSyntaxDocument;
+import org.noos.xing.mydoggy.Content;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.text.*;
-import javax.swing.undo.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Element;
+import javax.swing.undo.UndoManager;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.print.PrinterException;
+import java.net.URI;
+import java.text.MessageFormat;
+import java.util.prefs.BackingStoreException;
+
+import static com.apachetune.core.ui.Constants.*;
 import static java.awt.Color.RED;
-import java.awt.event.*;
-import java.awt.print.*;
-import static java.lang.Math.*;
-import java.net.*;
-import java.text.*;
-import java.util.prefs.*;
+import static java.lang.Math.min;
 
 /**
  * FIXDOC
@@ -227,6 +240,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     protected void doUIDispose() {
         try {
             storeCaretPosition();
+            storeViewPosition();
         } catch (BackingStoreException e) {
             throw new RuntimeException("Internal error", e); // TODO Make it with a service.
         }
@@ -258,6 +272,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         initEditorPaneCaretListener(); // TODO #55, #24 (set last caret position for the document)
         restoreCaretPosition();
+        restoreViewPosition();
         initEditorPaneUndoRedoListener();
         initEditorPaneDocumentListener();
 
@@ -266,7 +281,6 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
                         .getSaveTitle());
 
         contentPane.getDockableManager().setPopupMenu(null);
-
         
         contentPane.getContentUI().setCloseable(false);
         contentPane.getContentUI().setDetachable(false);
@@ -288,6 +302,31 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         int contentLength = editorPane.getDocument().getLength();
 
         editorPane.setCaretPosition(min(caretPosition, contentLength));
+    }
+
+    private void restoreViewPosition() {
+        int viewPosition = 0;
+
+        if (hasStoredViewPosition()) {
+            viewPosition = getStoredViewPosition();
+        }
+
+        try {
+            editorPane.modelToView(viewPosition);
+        } catch (BadLocationException e) {
+            e.printStackTrace();  // TODO Make it as a service.
+        }
+    }
+
+    private int getStoredViewPosition() {
+        return preferencesManager.userNodeForPackage(EditorWorkItemImpl.class).node(VIEW_POSITION_PREFS_NODE_NAME)
+                .getInt(getDocumentUri().toASCIIString(), -1);
+    }
+
+    private boolean hasStoredViewPosition() {
+        int storedPos = getStoredViewPosition();
+
+        return (storedPos != -1);
     }
 
     private void initEditorPaneDocumentListener() {
@@ -444,6 +483,19 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         caretPrefsNode.putInt(getDocumentUri().toASCIIString(), getCaretPosition());
         caretPrefsNode.flush();
+    }
+
+    private void storeViewPosition() throws BackingStoreException {
+        Preferences caretPrefsNode = preferencesManager.userNodeForPackage(EditorWorkItemImpl.class).node(
+                VIEW_POSITION_PREFS_NODE_NAME);
+
+        caretPrefsNode.putInt(getDocumentUri().toASCIIString(), getViewPosition());
+        caretPrefsNode.flush();
+    }
+
+    // FIX
+    private int getViewPosition() {
+        return editorPane.viewToModel(editorPane.getVisibleRect().getLocation());
     }
 
     private boolean hasStoredCaretPosition() {

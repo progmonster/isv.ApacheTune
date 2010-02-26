@@ -84,4 +84,5 @@ public class Constants {
     public static final String ACTIVE_CHILD_WORK_ITEM_PREF = "ACTIVE_CHILD_WORK_ITEM";
     
     public static final String ACTIVE_EDITOR_INFO = "ACTIVE_EDITOR_INFO";
+    public static final String VIEW_POSITION_PREFS_NODE_NAME = "VIEW_POSITION_PREFS_NODE_NAME";
 }
