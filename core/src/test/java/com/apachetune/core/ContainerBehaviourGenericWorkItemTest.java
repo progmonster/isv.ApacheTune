@@ -1,11 +1,13 @@
 package com.apachetune.core;
 
-import static com.apachetune.TestUtils.*;
-import com.apachetune.core.impl.*;
-import static org.testng.Assert.*;
-import org.testng.annotations.*;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import org.testng.annotations.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+
+import static com.apachetune.TestUtils.failBecauseExceptionWasExpected;
+import static com.apachetune.TestUtils.reportExpectedException;
+import static org.testng.Assert.*;
 
 /**
  * FIXDOC
@@ -25,9 +27,75 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         workItem.addChildWorkItem(childWorkItem);
 
-        WorkItem addedWorkItem = workItem.getChildWorkItem("CHILD_TEST_WORK_ITEM");
+        WorkItem addedWorkItem = workItem.getDirectChildWorkItem("CHILD_TEST_WORK_ITEM");
 
-        org.testng.Assert.assertEquals(addedWorkItem, childWorkItem);
+        assertEquals(addedWorkItem, childWorkItem);
+    }
+
+    @Test
+    public void testGetChildWorkItem() {
+        WorkItem a = new SimpleWorkItem("A");
+
+        a.setRootWorkItem(new RootWorkItemImpl());
+
+        WorkItem aa = new SimpleWorkItem("AA");
+
+        a.addChildWorkItem(aa);
+
+        WorkItem aaa = new SimpleWorkItem("AAA");
+
+        aa.addChildWorkItem(aaa);
+
+        assertEquals(a.getChildWorkItem("AAA"), aaa);
+    }
+
+    @Test
+    public void testHasDirectChildWorkItem() {
+        WorkItem a = new SimpleWorkItem("A");
+
+        a.setRootWorkItem(new RootWorkItemImpl());
+
+        WorkItem aa = new SimpleWorkItem("AA");
+
+        a.addChildWorkItem(aa);
+
+        WorkItem aaa = new SimpleWorkItem("AAA");
+
+        aa.addChildWorkItem(aaa);
+
+        assertTrue(a.hasDirectChildWorkItem("AA"));
+        assertFalse(a.hasDirectChildWorkItem("AAA"));
+    }
+
+    @Test
+    public void testHasChildWorkItem() {
+        WorkItem a = new SimpleWorkItem("A");
+
+        a.setRootWorkItem(new RootWorkItemImpl());
+
+        WorkItem aa = new SimpleWorkItem("AA");
+
+        a.addChildWorkItem(aa);
+
+        WorkItem ab = new SimpleWorkItem("AB");
+
+        a.addChildWorkItem(ab);
+
+        WorkItem aaa = new SimpleWorkItem("AAA");
+
+        aa.addChildWorkItem(aaa);
+
+        assertTrue(a.hasChildWorkItem("AAA"));
+        assertFalse(aa.hasChildWorkItem("AB"));
+    }
+
+    @Test
+    public void testNullOnNonExistingChildWorkItem() {
+        WorkItem a = new SimpleWorkItem("A");
+
+        a.setRootWorkItem(new RootWorkItemImpl());
+
+        assertNull(a.getChildWorkItem("NON_EXISTING_WORK_ITEM"));
     }
 
     @Test
@@ -52,7 +120,7 @@ public class ContainerBehaviourGenericWorkItemTest {
     }
 
     @Test
-    public void testRemoveChildWorkItemById() {
+    public void testRemoveDirectChildWorkItemById() {
         WorkItem rootWorkItem = new RootWorkItemImpl();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
@@ -63,11 +131,11 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         workItem.addChildWorkItem(childWorkItem);
 
-        workItem.removeChildWorkItem(childWorkItem);
+        workItem.removeDirectChildWorkItem(childWorkItem);
     }
 
     @Test
-    public void testRemoveChildWorkItemByRef() {
+    public void testRemoveDirectChildWorkItemByRef() {
         WorkItem rootWorkItem = new RootWorkItemImpl();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
@@ -78,11 +146,11 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         workItem.addChildWorkItem(childWorkItem);
 
-        workItem.removeChildWorkItem(childWorkItem.getId());
+        workItem.removeDirectChildWorkItem(childWorkItem.getId());
     }
 
     @Test
-    public void testFailOnRemoveNonAddedChildWorkItem() {
+    public void testFailOnRemoveNonAddedDirectChildWorkItem() {
         WorkItem rootWorkItem = new RootWorkItemImpl();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
@@ -92,7 +160,7 @@ public class ContainerBehaviourGenericWorkItemTest {
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORK_ITEM");
 
         try {
-            workItem.removeChildWorkItem(childWorkItem.getId());
+            workItem.removeDirectChildWorkItem(childWorkItem.getId());
 
             failBecauseExceptionWasExpected();
         } catch (IllegalArgumentException e) {
@@ -112,8 +180,8 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         workItem.addChildWorkItem(childWorkItem);
 
-        org.testng.Assert.assertEquals(childWorkItem.getParent(), workItem);
-        org.testng.Assert.assertEquals(childWorkItem.getRootWorkItem(), rootWorkItem);
+        assertEquals(childWorkItem.getParent(), workItem);
+        assertEquals(childWorkItem.getRootWorkItem(), rootWorkItem);
     }
 
     @Test
@@ -232,7 +300,7 @@ public class ContainerBehaviourGenericWorkItemTest {
             addEvent(childWorkItemBB.getId(), "any message", "2");
         }};
 
-        org.testng.Assert.assertEquals(eventHistory, expectedEventHistory);
+        assertEquals(eventHistory, expectedEventHistory);
     }
 
     @Test

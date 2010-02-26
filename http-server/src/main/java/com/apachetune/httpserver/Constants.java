@@ -80,4 +80,8 @@ public class Constants {
     public static final String OBJECT_TREE_WORK_ITEM = "OBJECT_TREE_WORK_ITEM";
 
     public static final String ON_HIGHLIGHT_SYNTAX_ERROR_EVENT = "ON_HIGHLIGHT_SYNTAX_ERROR_EVENT";
+    
+    public static final String ACTIVE_CHILD_WORK_ITEM_PREF = "ACTIVE_CHILD_WORK_ITEM";
+    
+    public static final String ACTIVE_EDITOR_INFO = "ACTIVE_EDITOR_INFO";
 }

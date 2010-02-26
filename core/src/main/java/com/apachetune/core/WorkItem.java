@@ -1,6 +1,6 @@
 package com.apachetune.core;
 
-import java.beans.*;
+import java.beans.PropertyChangeListener;
 
 /**
  * FIXDOC
@@ -42,11 +42,17 @@ public interface WorkItem {
      */
     void addChildWorkItem(WorkItem workItem);
 
+    boolean hasDirectChildWorkItem(String workItemId);
+
+    boolean hasChildWorkItem(String workItemId);
+
+    WorkItem getDirectChildWorkItem(String workItemId);
+
     WorkItem getChildWorkItem(String workItemId);
 
-    void removeChildWorkItem(WorkItem workItem);
+    void removeDirectChildWorkItem(WorkItem workItem);
 
-    void removeChildWorkItem(String workItemId);
+    void removeDirectChildWorkItem(String workItemId);
 
     void raiseEvent(String eventId, Object data, WorkItem caller);
 
@@ -83,14 +89,23 @@ public interface WorkItem {
     boolean isActive();
 
     /**
-     * Returns a top active child (may be itself) of this work item.
+     * Returns a most deep active child in work item hierarchy (may be itself) of this work item.
      *
-     * If this work item is not activated, method will be return <code>null</code>. 
+     * If this work item is not activated, method will be return <code>null</code>.
      *
      * @return A top active child (or itself if this work item has no children) or <code>null</code> if this work item
-     * is not activated. 
+     * is not activated.
      */
     WorkItem getActiveChild();
+
+    /**
+     * Returns a direct active child of this work item if one presents.
+     *
+     * If this work item is not activated, method will be return <code>null</code>.
+     *
+     * @return A direct active child or <code>null</code> if this work item has no active children.
+     */
+    WorkItem getDirectActiveChild();
 
     void addActivationListener(ActivationListener listener);
 

@@ -1,19 +1,26 @@
 package com.apachetune.httpserver.ui;
 
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.*;
-import com.apachetune.core.ui.actions.*;
-import com.apachetune.core.ui.editors.*;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.ui.resources.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import org.noos.xing.mydoggy.*;
-import static org.noos.xing.mydoggy.ToolWindowAnchor.*;
+import com.apachetune.core.ui.GenericUIWorkItem;
+import com.apachetune.core.ui.MenuBarManager;
+import com.apachetune.core.ui.OutputPaneDocument;
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionPermission;
+import com.apachetune.core.ui.editors.EditorActionSite;
+import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.noos.xing.mydoggy.ToolWindow;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.io.IOException;
+
+import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.httpserver.Constants.CONSOLE_WORK_ITEM;
+import static com.apachetune.httpserver.Constants.OUTPUT_TOOL_WINDOW;
+import static org.noos.xing.mydoggy.ToolWindowAnchor.BOTTOM;
 
 /**
  * FIXDOC
@@ -95,6 +102,12 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
         // No-op.
     }
 
+    // FIX restore focus for Console if server was closed when this console was active.
+    protected void doActivation() {
+        getOutputToolWindow().setSelected(true);
+        getOutputToolWindow().setActive(true);
+    }
+
     protected void doUIInitialize() {
         stdoutPane = new JTextPane();
 
@@ -110,7 +123,7 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
             throw new RuntimeException("Internal error", e); // TODO Make it with a service.
         }
 
-        ToolWindow window = toolWindowManager.getToolWindow(OUTPUT_TOOL_WINDOW);
+        ToolWindow window = getOutputToolWindow();
 
         window.setVisible(true);
 
@@ -125,5 +138,9 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
         stdoutPane = null;
 
         toolWindowManager.unregisterToolWindow(OUTPUT_TOOL_WINDOW);
+    }
+
+    private ToolWindow getOutputToolWindow() {
+        return toolWindowManager.getToolWindow(OUTPUT_TOOL_WINDOW);
     }
 }

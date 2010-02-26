@@ -1,15 +1,19 @@
 package com.apachetune.httpserver.ui.editors;
 
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.*;
-import static com.apachetune.core.ui.TitleBarManager.*;
-import com.apachetune.core.ui.editors.*;
-import com.apachetune.core.utils.*;
-import com.apachetune.httpserver.entities.*;
-import com.google.inject.*;
-import static org.apache.commons.lang.StringUtils.*;
+import com.apachetune.core.ui.GenericUIWorkItem;
+import com.apachetune.core.ui.TitleBarManager;
+import com.apachetune.core.ui.editors.EditorManager;
+import com.apachetune.core.ui.editors.EditorWorkItem;
+import com.apachetune.core.utils.Utils;
+import com.apachetune.httpserver.entities.ServerObjectInfo;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 import java.awt.*;
+
+import static com.apachetune.core.ui.Constants.CONF_EDITOR_WORK_ITEM;
+import static com.apachetune.core.ui.TitleBarManager.LEVEL_3;
+import static org.apache.commons.lang.StringUtils.removeStart;
 
 /**
  * FIXDOC
@@ -32,7 +36,7 @@ public class ConfEditorWorkItem extends GenericUIWorkItem {
 
     @Inject
     public ConfEditorWorkItem(EditorManager editorManager, Provider<ConfEditorInput> confEditorInputProvider,
-            TitleBarManager titleBarManager) {
+                              TitleBarManager titleBarManager) {
         this.editorManager = editorManager;
         this.confEditorInputProvider = confEditorInputProvider;
         this.titleBarManager = titleBarManager;

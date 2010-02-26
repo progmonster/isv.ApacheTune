@@ -1,28 +1,37 @@
 package com.apachetune.core.ui;
 
-import com.apachetune.core.*;
-import static com.apachetune.core.ui.Constants.*;
-import static com.apachetune.core.ui.TitleBarManager.*;
+import com.apachetune.core.ActivationListener;
+import com.apachetune.core.AppManager;
+import com.apachetune.core.AppVersion;
+import com.apachetune.core.WorkItem;
 import com.apachetune.core.ui.actions.*;
-import com.apachetune.core.ui.editors.*;
-import com.apachetune.core.ui.resources.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import jsyntaxpane.*;
-import jsyntaxpane.jsyntaxkits.*;
-import static org.apache.commons.lang.StringUtils.*;
-import org.noos.xing.mydoggy.*;
-import org.noos.xing.mydoggy.plaf.ui.content.*;
-import org.noos.xing.mydoggy.plaf.*;
+import com.apachetune.core.ui.editors.EditorActionSite;
+import com.apachetune.core.ui.resources.CoreUIResourceLocator;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import jsyntaxpane.DefaultSyntaxKit;
+import jsyntaxpane.jsyntaxkits.ExtendedSyntaxKit;
+import org.noos.xing.mydoggy.ContentManager;
+import org.noos.xing.mydoggy.ToolWindowManager;
+import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;
+import org.noos.xing.mydoggy.plaf.ui.content.MyDoggyTabbedContentManagerUI;
 
 import javax.swing.*;
-import static javax.swing.KeyStroke.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
+
+import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.core.ui.TitleBarManager.LEVEL_1;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.*;
-import java.util.prefs.*;
+import static javax.swing.KeyStroke.getKeyStroke;
+import static org.apache.commons.lang.StringUtils.defaultString;
 
 /**
  * FIXDOC
@@ -55,9 +64,9 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     @Inject
     public CoreUIWorkItem(JFrame mainFrame, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
-            MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
-            CoreUIResourceLocator coreUIResourceLocator, StatusBarManager statusBarManager,
-            ToolBarManager toolBarManager, AppManager appManager, TitleBarManager titleBarManager) {
+                          MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
+                          CoreUIResourceLocator coreUIResourceLocator, StatusBarManager statusBarManager,
+                          ToolBarManager toolBarManager, AppManager appManager, TitleBarManager titleBarManager) {
         super(CORE_UI_WORK_ITEM);
 
         this.mainFrame = mainFrame;

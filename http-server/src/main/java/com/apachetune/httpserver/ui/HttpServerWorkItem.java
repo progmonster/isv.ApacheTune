@@ -1,34 +1,49 @@
 package com.apachetune.httpserver.ui;
 
 import com.apachetune.core.*;
-import static com.apachetune.core.ui.Constants.*;
+import com.apachetune.core.preferences.Preferences;
+import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.*;
-import static com.apachetune.core.ui.TitleBarManager.*;
 import com.apachetune.core.ui.actions.*;
-import com.apachetune.core.ui.editors.*;
+import com.apachetune.core.ui.editors.SaveFilesHelper;
+import com.apachetune.core.ui.editors.SaveFilesHelperCallBackAdapter;
 import com.apachetune.core.utils.StringValue;
-import com.apachetune.core.utils.*;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.*;
-import com.apachetune.httpserver.entities.*;
-import com.apachetune.httpserver.ui.actions.*;
-import com.apachetune.httpserver.ui.editors.*;
-import com.apachetune.httpserver.ui.resources.*;
-import com.apachetune.httpserver.ui.smartparts.about.*;
-import com.apachetune.httpserver.ui.smartparts.searchserver.*;
-import com.apachetune.httpserver.ui.smartparts.selectserver.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
+import com.apachetune.core.utils.Utils;
+import com.apachetune.httpserver.HttpServerManager;
+import com.apachetune.httpserver.RecentOpenedServerListChangedListener;
+import com.apachetune.httpserver.RecentOpenedServersManager;
+import com.apachetune.httpserver.entities.HttpServer;
+import com.apachetune.httpserver.entities.ServerObjectInfo;
+import com.apachetune.httpserver.ui.actions.CheckServerActionSite;
+import com.apachetune.httpserver.ui.actions.RunServerWorkflowActionSite;
+import com.apachetune.httpserver.ui.actions.SelectServerWorkflowActionSite;
+import com.apachetune.httpserver.ui.editors.ConfEditorWorkItem;
+import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
+import com.apachetune.httpserver.ui.smartparts.about.AboutSmartPart;
+import com.apachetune.httpserver.ui.smartparts.searchserver.SearchServerSmartPart;
+import com.apachetune.httpserver.ui.smartparts.selectserver.SelectServerSmartPart;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
+import com.google.inject.name.Named;
+import org.noos.xing.mydoggy.Content;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
-import static java.text.MessageFormat.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.List;
-import java.util.prefs.*;
+import java.util.prefs.BackingStoreException;
+
+import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.core.ui.TitleBarManager.LEVEL_2;
+import static com.apachetune.httpserver.Constants.*;
+import static java.text.MessageFormat.format;
 
 /**
  * FIXDOC
@@ -86,13 +101,17 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
     private final TitleBarManager titleBarManager;
 
+    private final PreferencesManager preferencesManager;
+
     private Provider<SearchServerSmartPart> searchServerSmartPartProvider;
 
     private JMenu recentOpenedServersMenu;
 
+    private final ToolWindowManager toolWindowManager;
 
     @Inject
-    public HttpServerWorkItem(JFrame mainFrame,
+    public HttpServerWorkItem(
+            JFrame mainFrame,
             MenuBarManager menuBarManager, ActionManager actionManager,
             Provider<SelectServerSmartPart> selectServerSmartPartProvider,
             Provider<AboutSmartPart> aboutSmartPartProvider, CoreUIUtils coreUIUtils,
@@ -105,7 +124,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
             Provider<SearchServerSmartPart> searchServerSmartPartProvider,
             Provider<ConfEditorWorkItem> confEditorWorkItemProvider,
             @Named(SAVE_ALL_FILES_AT_ONCE_HELPER) Provider<SaveFilesHelper> saveAllFilesAtOnceHelperProvider,
-            @Named(SAVE_ALL_FILES_SEPARATELY_HELPER) Provider<SaveFilesHelper> saveFilesSeparatelyHelperProvider) {
+            @Named(SAVE_ALL_FILES_SEPARATELY_HELPER) Provider<SaveFilesHelper> saveFilesSeparatelyHelperProvider,
+            PreferencesManager preferencesManager, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager) {
         super(HTTP_SERVER_WORK_ITEM);
 
         this.mainFrame = mainFrame;
@@ -128,15 +148,18 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         this.confEditorWorkItemProvider = confEditorWorkItemProvider;
         this.saveAllFilesAtOnceHelperProvider = saveAllFilesAtOnceHelperProvider;
         this.saveFilesSeparatelyHelperProvider = saveFilesSeparatelyHelperProvider;
+        this.preferencesManager = preferencesManager;
+        this.toolWindowManager = toolWindowManager;
     }
 
     @Subscriber(eventId = EXIT_EVENT)
     @ActionHandler(EXIT_ACTION)
     public void onAppExit() {
         if (askAndSaveConfFilesSeparately("Save files", "You are about to close the application.\n\nSave" +
-                " configuration file?\n{0}")) {
+                " configuration file?\n{0}"
+        )) {
             getRootWorkItem().dispose();
-        }        
+        }
     }
 
     @ActionPermission(EXIT_ACTION)
@@ -187,7 +210,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         recentOpenedServersManager.clearServerUriList();
 
         actionManager.updateActionSites(this);
-    }                            
+    }
 
     @ActionPermission(SERVER_REOPEN_SERVER_CLEAR_LIST_ACTION)
     public boolean isClearEarlyOpenedServerListEnabled() {
@@ -199,7 +222,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     @ActionHandler(SERVER_CLOSE_SERVER_ACTION)
     public void onServerClose() {
         if (askAndSaveConfFilesSeparately("Save files", "You are about to close the server.\n\nSave configuration" +
-                " file?\n{0}")) {        
+                " file?\n{0}"
+        )) {
             setServerOpenedFlag(false);
 
             closeCurrentHttpServer();
@@ -240,7 +264,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     }
 
     public boolean askAndSaveAllConfFiles(final String title, final String message) {
-        SaveFilesHelper saveFilesHelper = saveAllFilesAtOnceHelperProvider.get();         
+        SaveFilesHelper saveFilesHelper = saveAllFilesAtOnceHelperProvider.get();
 
         saveFilesHelper.initialize(confEditorWorkItems, new SaveConfFilesHelperCallBack() {
             @Override
@@ -248,7 +272,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
                 titleValue.value = title;
                 messageValue.value = message;
             }
-        });
+        }
+        );
 
         return saveFilesHelper.execute();
     }
@@ -266,7 +291,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
                 titleValue.value = format(titleTmpl, confFileName);
                 messageValue.value = format(messageTmpl, confFileName);
             }
-        });
+        }
+        );
 
         return saveFilesHelper.execute();
     }
@@ -311,14 +337,19 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
     private void initToolBar() {
         toolBarManager.addToActionGroup(FILE_ACTION_GROUP, actionManager.getAction(SERVER_SELECT_HTTP_SERVER_ACTION),
-                actionManager.getAction(SERVER_SEARCH_FOR_HTTP_SERVER_ACTION));
+                                        actionManager.getAction(SERVER_SEARCH_FOR_HTTP_SERVER_ACTION)
+        );
 
         toolBarManager.addActionGroupAfter(CHECK_SYNTAX_ACTION_GROUP, EDIT_ACTION_GROUP, actionManager.getAction(
-                SERVER_CHECK_CONFIG_SYNTAX_ACTION));
+                SERVER_CHECK_CONFIG_SYNTAX_ACTION
+        )
+        );
 
         toolBarManager.addActionGroupAfter(SERVER_CONTROL_ACTION_GROUP, CHECK_SYNTAX_ACTION_GROUP, actionManager
                 .getAction(SERVER_START_HTTP_SERVER_ACTION), actionManager.getAction(
-                SERVER_RESTART_HTTP_SERVER_ACTION), actionManager.getAction(SERVER_STOP_HTTP_SERVER_ACTION));
+                SERVER_RESTART_HTTP_SERVER_ACTION
+        ), actionManager.getAction(SERVER_STOP_HTTP_SERVER_ACTION)
+        );
     }
 
     private void initActions() throws IOException {
@@ -326,49 +357,70 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_SELECT_HTTP_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Select HTTP-server...", "Select HTTP-server",
-                "Select HTTP-server to configure", "open_server_16.png", null, 'l', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator, "Select HTTP-server...",
+                                             "Select HTTP-server",
+                                             "Select HTTP-server to configure", "open_server_16.png", null, 'l', null,
+                                             false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_SEARCH_FOR_HTTP_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Search for HTTP-server...", "Search for HTTP-server",
-                "Search for HTTP-server instance", "search_server_16.png", null, 'S', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator,
+                                             "Search for HTTP-server...", "Search for HTTP-server",
+                                             "Search for HTTP-server instance", "search_server_16.png", null, 'S', null,
+                                             false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_REOPEN_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Reopen HTTP-server", "Reopen an early" +
-                " opened HTTP-server", "Reopen an early opened HTTP-server", null, null, 'n', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator, "Reopen HTTP-server",
+                                             "Reopen an early" +
+                                                     " opened HTTP-server", "Reopen an early opened HTTP-server", null,
+                                             null, 'n', null, false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_REOPEN_SERVER_CLEAR_LIST_ACTION, SelectServerWorkflowActionSite
                 .class, httpServerActionGroup, httpServerResourceLocator, "Clear list", "Clear recent opened" +
-                " HTTP-server list", "Clear recent opened HTTP-server list", null, null, 'C', null, false);
+                " HTTP-server list", "Clear recent opened HTTP-server list", null, null, 'C', null, false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_CLOSE_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Close HTTP-server", "Close HTTP-server",
-                "Close current HTTP-server editors", null, null, 'o', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator, "Close HTTP-server",
+                                             "Close HTTP-server",
+                                             "Close current HTTP-server editors", null, null, 'o', null, false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_CHECK_CONFIG_SYNTAX_ACTION, CheckServerActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Check configuration's syntax",
-                "Check configuration's syntax", "Check configuration's syntax", "check_configuration_16.png", null, 'C',
-                KeyStroke.getKeyStroke("F5"), false);
+                                             httpServerActionGroup, httpServerResourceLocator,
+                                             "Check configuration's syntax",
+                                             "Check configuration's syntax", "Check configuration's syntax",
+                                             "check_configuration_16.png", null, 'C',
+                                             KeyStroke.getKeyStroke("F5"), false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_START_HTTP_SERVER_ACTION, RunServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Start HTTP-server", "Start HTTP-server",
-                "Start HTTP-server", "start_server_16.png", null, 'r', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator, "Start HTTP-server",
+                                             "Start HTTP-server",
+                                             "Start HTTP-server", "start_server_16.png", null, 'r', null, false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_RESTART_HTTP_SERVER_ACTION, RunServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Restart HTTP-server", "Restart HTTP-server",
-                "Restart HTTP-server", "restart_server_16.png", null, 'e', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator, "Restart HTTP-server",
+                                             "Restart HTTP-server",
+                                             "Restart HTTP-server", "restart_server_16.png", null, 'e', null, false
+        );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_STOP_HTTP_SERVER_ACTION, RunServerWorkflowActionSite.class,
-                httpServerActionGroup, httpServerResourceLocator, "Stop HTTP-server", "Stop HTTP-server",
-                "Stop HTTP-server", "stop_server_16.png", null, 'p', null, false);
+                                             httpServerActionGroup, httpServerResourceLocator, "Stop HTTP-server",
+                                             "Stop HTTP-server",
+                                             "Stop HTTP-server", "stop_server_16.png", null, 'p', null, false
+        );
 
         actionManager.registerActionGroup(httpServerActionGroup);
     }
@@ -383,16 +435,28 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         fileMenu.add(new JSeparator(), 0);
 
         coreUIUtils.addUIActionHint((JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(
-                SERVER_CLOSE_SERVER_ACTION)), 0));
+                SERVER_CLOSE_SERVER_ACTION
+        )
+        ), 0
+        )
+        );
 
         initRecentOpenedServersMenu();
         fileMenu.add(recentOpenedServersMenu, 0);
 
         coreUIUtils.addUIActionHint((JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(
-                SERVER_SEARCH_FOR_HTTP_SERVER_ACTION)), 0));
+                SERVER_SEARCH_FOR_HTTP_SERVER_ACTION
+        )
+        ), 0
+        )
+        );
 
         coreUIUtils.addUIActionHint((JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(
-                SERVER_SELECT_HTTP_SERVER_ACTION)), 0));
+                SERVER_SELECT_HTTP_SERVER_ACTION
+        )
+        ), 0
+        )
+        );
 
         JMenu serverMenu = new JMenu("Server"); // TODO Localize. Add accelerators.
 
@@ -420,7 +484,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
             public void onListChanged() {
                 updateRecentOpenedServersMenu();
             }
-        });
+        }
+        );
     }
 
     private void updateRecentOpenedServersMenu() {
@@ -438,7 +503,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
             // TODO. It supports local servers only.
             // TODO add a index as accel.
             JMenuItem serverMenuItem = recentOpenedServersMenu.add("" + idxChar + ' ' + new File(serverUri)
-                    .getAbsolutePath());
+                    .getAbsolutePath()
+            );
 
             serverMenuItem.setMnemonic(idxChar);
             serverMenuItem.setActionCommand(serverUri.toString());
@@ -447,7 +513,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
                 public void actionPerformed(ActionEvent e) {
                     raiseEvent(SERVER_REOPEN_SERVER_EVENT, e.getActionCommand());
                 }
-            });
+            }
+            );
 
             idxChar++;
         }
@@ -455,7 +522,9 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         recentOpenedServersMenu.addSeparator();
 
         JMenuItem clearListMenuItem = recentOpenedServersMenu.add(actionManager.getAction(
-                SERVER_REOPEN_SERVER_CLEAR_LIST_ACTION));
+                SERVER_REOPEN_SERVER_CLEAR_LIST_ACTION
+        )
+        );
 
         coreUIUtils.addUIActionHint(clearListMenuItem);
     }
@@ -486,7 +555,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
             }
 
             if (!askAndSaveConfFilesSeparately("Save files", "Before you open server you need to close previous one" +
-                    "and save its configuration files.\n\nSave configuration file?\n{0}")) { // TODO Localize
+                    "and save its configuration files.\n\nSave configuration file?\n{0}"
+            )) { // TODO Localize
                 return;
             }
         }
@@ -513,7 +583,65 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         String serverLocation = currentHttpServer.getServerRoot().getAbsolutePath();
 
         titleBarManager.setTitle(LEVEL_2, '[' + Utils.abbreviateFilePath(serverLocation,
-                TITLE_BAR_SERVER_LOCATION_MAX_LENGTH) + ']');
+                                                                         TITLE_BAR_SERVER_LOCATION_MAX_LENGTH
+        ) + ']'
+        );
+
+        restoreActiveEditor();
+        activateChildWorkItem();
+    }
+
+    // TODO refactor and move to core UI
+    private void saveActiveEditorInfo() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        Content selectedContent = toolWindowManager.getContentManager().getSelectedContent();
+
+        if (selectedContent != null) {
+            preferences.put(ACTIVE_EDITOR_INFO, selectedContent.getId());
+        } else {
+            preferences.remove(ACTIVE_EDITOR_INFO);
+        }
+
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();  // TODO make it as a service
+        }
+    }
+
+    // TODO refactor and move to core UI
+    private void restoreActiveEditor() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        String selectedEditorInfo = preferences.get(ACTIVE_EDITOR_INFO, null);
+
+        if (selectedEditorInfo == null) {
+            return;
+        }
+
+        WorkItem selectedContentWorkItem = getRootWorkItem().getChildWorkItem(selectedEditorInfo);
+
+        if (selectedContentWorkItem == null) {
+            return;
+        }
+
+        selectedContentWorkItem.activate();
+    }
+
+    // TODO refactor and move to core UI
+    private void activateChildWorkItem() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        String activeChildWorkItemInfo = preferences.get(ACTIVE_CHILD_WORK_ITEM_PREF, null);
+
+        if (activeChildWorkItemInfo == null) {
+            return;
+        }
+
+        WorkItem lastActiveChildWorkItem = getDirectChildWorkItem(activeChildWorkItemInfo);
+
+        lastActiveChildWorkItem.activate();
     }
 
     private void openConsoleWorkItem() {
@@ -556,18 +684,42 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     }
 
     private void closeCurrentHttpServer() {
+        if (!hasCurrentServer()) {
+            return;
+        }
+
+        saveActiveEditorInfo();
+        saveActiveChildWorkItemInfo();
+
         closeConfEditorWorkItems();
         closeConsoleWorkItem();
         closeServerControlWorkItem();
         closeCheckSyntaxWorkItem();
 
-        if (hasCurrentServer()) {
-            removeState(CURRENT_HTTP_SERVER_STATE);
-        }
+        removeState(CURRENT_HTTP_SERVER_STATE);
 
         actionManager.updateActionSites(this);
-        
+
         titleBarManager.removeTitle(LEVEL_2);
+    }
+
+    // TODO refactor and move to core UI
+    private void saveActiveChildWorkItemInfo() {
+        Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItem.class);
+
+        WorkItem activeChildWorkItem = getDirectActiveChild();
+
+        if (activeChildWorkItem != null) {
+            preferences.put(ACTIVE_CHILD_WORK_ITEM_PREF, activeChildWorkItem.getId());
+        } else {
+            preferences.remove(ACTIVE_CHILD_WORK_ITEM_PREF);
+        }
+
+        try {
+            preferences.flush();
+        } catch (BackingStoreException e) {
+            e.printStackTrace();  // TODO Make it as a service.
+        }
     }
 
     private boolean hasCurrentServer() {
@@ -616,7 +768,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     }
 
     private void setServerOpenedFlag(boolean isOpened) {
-        Preferences node = Preferences.userNodeForPackage(getClass());
+        Preferences node = preferencesManager.userNodeForPackage(getClass());
 
         node.putBoolean(SERVER_WAS_OPENED_FLAG, isOpened);
 
@@ -628,7 +780,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     }
 
     private boolean getServerWasOpenedFlag() {
-        return Preferences.userNodeForPackage(getClass()).getBoolean(SERVER_WAS_OPENED_FLAG, false);
+        return preferencesManager.userNodeForPackage(getClass()).getBoolean(SERVER_WAS_OPENED_FLAG, false);
     }
 
     @SuppressWarnings({"UnusedDeclaration"})

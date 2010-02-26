@@ -1,9 +1,10 @@
 package com.apachetune.core;
 
-import com.apachetune.core.impl.*;
-import com.apachetune.core.utils.*;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import com.apachetune.core.utils.BooleanValue;
+import org.testng.annotations.Test;
+
 import static org.testng.Assert.*;
-import org.testng.annotations.*;
 
 /**
  * FIXDOC
@@ -282,6 +283,28 @@ public class ActivationBehaviourGenericWorkItemTest {
     }
 
     @Test
+    public void testGetDirectActiveChild() {
+        RootWorkItem root = new RootWorkItemImpl();
+
+        WorkItem a = new SimpleWorkItem("A");
+
+        root.addChildWorkItem(a);
+
+        WorkItem aa = new SimpleWorkItem("AA");
+
+        a.addChildWorkItem(aa);
+
+        WorkItem b = new SimpleWorkItem("B");
+
+        root.addChildWorkItem(b);
+
+        aa.activate();
+
+        assertEquals(root.getDirectActiveChild(), a);
+        assertNull(aa.getDirectActiveChild());
+    }
+
+    @Test
     public void testNoActiveChildIfNotActivated() {
         RootWorkItem root = new RootWorkItemImpl();
 
@@ -303,6 +326,29 @@ public class ActivationBehaviourGenericWorkItemTest {
         assertNull(aa.getActiveChild());
     }
 
+
+    @Test
+    public void testNoDirectActiveChildIfNotActivated() {
+        RootWorkItem root = new RootWorkItemImpl();
+
+        WorkItem a = new SimpleWorkItem("A");
+
+        root.addChildWorkItem(a);
+
+        WorkItem aa = new SimpleWorkItem("AA");
+
+        a.addChildWorkItem(aa);
+
+        WorkItem b = new SimpleWorkItem("B");
+
+        root.addChildWorkItem(b);
+
+        b.activate();
+
+        assertNull(a.getDirectActiveChild());
+        assertNull(aa.getDirectActiveChild());
+    }
+
     @Test
     public void testDeactivateOnRemovingFromParentWorkItem() {
         RootWorkItem root = new RootWorkItemImpl();
@@ -313,7 +359,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         a.activate();
 
-        root.removeChildWorkItem(a);
+        root.removeDirectChildWorkItem(a);
 
         assertFalse(a.isActive());
     }

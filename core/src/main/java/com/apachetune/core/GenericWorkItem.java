@@ -1,13 +1,17 @@
 package com.apachetune.core;
 
-import static com.apachetune.core.Constants.*;
-import com.apachetune.core.impl.*;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import org.apache.commons.collections.Predicate;
 
-import java.beans.*;
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import static java.util.Arrays.*;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.*;
+
+import static com.apachetune.core.Constants.EMPTY_EVENT;
+import static java.util.Arrays.asList;
+import static org.apache.commons.collections.CollectionUtils.find;
 
 /**
  * FIXDOC
@@ -120,7 +124,7 @@ public abstract class GenericWorkItem implements WorkItem {
         doDispose();
 
         if (getParent() != null) {
-            getParent().removeChildWorkItem(this);
+            getParent().removeDirectChildWorkItem(this);
         }
 
         isInitialized = false;
@@ -148,7 +152,7 @@ public abstract class GenericWorkItem implements WorkItem {
         return (GenericWorkItem) parent;
     }
 
-    public final WorkItem getChildWorkItem(String workItemId) {
+    public final WorkItem getDirectChildWorkItem(String workItemId) {
         if (workItemId == null) {
             throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
         }
@@ -163,6 +167,28 @@ public abstract class GenericWorkItem implements WorkItem {
         }
 
         return childWorkItems.get(workItemId);
+    }
+
+    public WorkItem getChildWorkItem(final String workItemId) {
+        if (workItemId == null) {
+            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
+        }
+
+        if (workItemId.isEmpty()) {
+            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
+        }
+
+        if (hasDirectChildWorkItem(workItemId)) {
+            return getDirectChildWorkItem(workItemId);
+        }
+
+        for (WorkItem childWorkItem : childWorkItems.values()) {
+            if (childWorkItem.hasChildWorkItem(workItemId)) {
+                return childWorkItem.getChildWorkItem(workItemId);
+            }
+        }
+
+        return null;
     }
 
     public final void addChildWorkItem(WorkItem workItem) {
@@ -200,7 +226,37 @@ public abstract class GenericWorkItem implements WorkItem {
         workItem.setRootWorkItem(rootWorkItem);
     }
 
-    public final void removeChildWorkItem(String workItemId) {
+    public boolean hasDirectChildWorkItem(final String workItemId) {
+        if (workItemId == null) {
+            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
+        }
+
+        if (workItemId.isEmpty()) {
+            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
+        }
+
+        return childWorkItems.containsKey(workItemId);
+    }
+
+    public boolean hasChildWorkItem(final String workItemId) {
+        if (workItemId == null) {
+            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
+        }
+
+        if (workItemId.isEmpty()) {
+            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
+        }
+
+        return hasDirectChildWorkItem(workItemId) || (find(childWorkItems.values(), new Predicate() {
+            public boolean evaluate(final Object object) {
+                WorkItem childWorkItem = (WorkItem) object;
+                
+                return childWorkItem.hasChildWorkItem(workItemId);
+            }
+        }) != null);
+    }
+
+    public final void removeDirectChildWorkItem(String workItemId) {
         if (workItemId == null) {
             throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
         }
@@ -224,12 +280,12 @@ public abstract class GenericWorkItem implements WorkItem {
         workItemToRemove.setRootWorkItem(null);
     }
 
-    public final void removeChildWorkItem(WorkItem workItem) {
+    public final void removeDirectChildWorkItem(WorkItem workItem) {
         if (workItem == null) {
             throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
         }
 
-        removeChildWorkItem(workItem.getId());
+        removeDirectChildWorkItem(workItem.getId());
     }
 
     public final void raiseEvent(String eventId, Object data, WorkItem caller) {
@@ -442,6 +498,20 @@ public abstract class GenericWorkItem implements WorkItem {
         }
 
         return this;
+    }
+
+    public WorkItem getDirectActiveChild() {
+        if (!isActive()) {
+            return null;
+        }
+
+        for (WorkItem childWorkItem : childWorkItems.values()) {
+            if (childWorkItem.isActive()) {
+                return childWorkItem;
+            }
+        }
+
+        return null;
     }
 
     public void addActivationListener(ActivationListener listener) {
