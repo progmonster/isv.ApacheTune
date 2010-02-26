@@ -158,6 +158,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         if (askAndSaveConfFilesSeparately("Save files", "You are about to close the application.\n\nSave" +
                 " configuration file?\n{0}"
         )) {
+            closeCurrentHttpServer();
+            
             getRootWorkItem().dispose();
         }
     }
