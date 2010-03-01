@@ -1,0 +1,9 @@
+distr/
+distr.unpacked/
+target/
+core/target/
+core-ui/target/
+http-server/target/
+*.iml
+*.ipr
+*.iws
