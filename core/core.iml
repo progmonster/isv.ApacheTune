@@ -24,17 +24,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: cglib:cglib-nodep:2.1_3" level="project" />
     <orderEntry type="module" module-name="core-ui" />
     <orderEntry type="module" module-name="http-server" />
-    <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-api:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-plaf:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-res:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: org.noos.xing:mydoggy-res:1.4.2" level="project" />
-    <orderEntry type="library" name="Maven: tablelayout:TableLayout:20050920" level="project" />
-    <orderEntry type="library" name="Maven: com.google.collections:google-collections:1.0-rc1" level="project" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
-    <orderEntry type="library" name="Maven: jsyntaxpane:jsyntaxpane:0.9.4" level="project" />
-    <orderEntry type="library" name="Maven: com.intellij:forms_rt:7.0.3" level="project" />
-    <orderEntry type="library" name="Maven: com.l2fprod:common:7.3" level="project" />
-    <orderEntry type="library" name="Maven: org.swinglabs:swingx:1.0" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">

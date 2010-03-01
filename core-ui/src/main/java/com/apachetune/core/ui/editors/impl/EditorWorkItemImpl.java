@@ -71,9 +71,11 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
     private boolean dirty;
 
-    public boolean canUndo;
+    private boolean canUndo;
 
-    public boolean canRedo;
+    private boolean canRedo;
+
+    private JScrollPane editorScrollPane;
 
     @Inject
     public EditorWorkItemImpl(@Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
@@ -263,7 +265,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     private void createEditorPaneContent() {
         editorPane = new JEditorPane();
 
-        JScrollPane editorScrollPane = new JScrollPane(editorPane);
+        editorScrollPane = new JScrollPane(editorPane);
 
         editorPane.setContentType(editorInput.getContentType());
         editorPane.setText(editorInput.loadContent());
@@ -271,14 +273,15 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         clearEditorPaneUndoManagerState();
 
         initEditorPaneCaretListener(); // TODO #55, #24 (set last caret position for the document)
-        restoreCaretPosition();
-        restoreViewPosition();
+        // restoreCaretPosition();  TODO uncomment!
         initEditorPaneUndoRedoListener();
         initEditorPaneDocumentListener();
 
         contentPane = coreUIUtils.addContentToNestedToolWindowManager(editorInput.getContentPaneId(), editorInput
                 .getContentPaneTitle(), editorInput.getContentPaneIcon(), editorScrollPane, editorInput
                         .getSaveTitle());
+
+        restoreViewPosition();
 
         contentPane.getDockableManager().setPopupMenu(null);
         
@@ -312,7 +315,36 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         }
 
         try {
-            editorPane.modelToView(viewPosition);
+/*
+            System.out.println(editorScrollPane.getSize());
+            System.out.println(editorPane.getSize());
+            System.out.println(editorScrollPane.isVisible());
+            System.out.println(editorPane.isVisible());
+            System.out.println(editorPane.getDocument());
+*/
+
+//            System.out.println(getStoredViewPosition());
+//            System.out.println(editorPane.modelToView(viewPosition));
+
+
+            Rectangle restoredFirstVisibleElementBounds = editorPane.modelToView(viewPosition);
+
+            Rectangle restoredVisibleBounds = new Rectangle(restoredFirstVisibleElementBounds.getLocation(),
+                    editorScrollPane.getSize());
+
+            if (getId().contains("\\httpd.conf")) {
+                System.out.println("R editorpane: " + editorPane.getBounds());
+                System.out.println("R scrollpane: " + editorScrollPane.getBounds());
+                System.out.println("R: " + editorPane.modelToView(viewPosition));
+                
+                System.out.println("R restored bounds: " + restoredVisibleBounds);
+
+                System.out.println("=========================================");
+            }
+
+//            editorPane.scrollRectToVisible(restoredVisibleBounds);
+            editorScrollPane.getHorizontalScrollBar().setValue(restoredVisibleBounds.x);
+            editorScrollPane.getVerticalScrollBar().setValue(restoredVisibleBounds.y);
         } catch (BadLocationException e) {
             e.printStackTrace();  // TODO Make it as a service.
         }
@@ -491,11 +523,19 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         caretPrefsNode.putInt(getDocumentUri().toASCIIString(), getViewPosition());
         caretPrefsNode.flush();
+
+
+        if (getId().contains("\\httpd.conf")) {
+            System.out.println("S editorpane: " + editorPane.getBounds());
+            System.out.println("S scrollpane: " + editorScrollPane.getBounds());
+            System.out.println("S: " + editorScrollPane.getViewport().getViewRect());
+        }
     }
 
-    // FIX
     private int getViewPosition() {
-        return editorPane.viewToModel(editorPane.getVisibleRect().getLocation());
+        Point firstVisibleLinePoint = editorScrollPane.getViewport().getViewRect().getLocation();
+
+        return editorPane.viewToModel(firstVisibleLinePoint);
     }
 
     private boolean hasStoredCaretPosition() {

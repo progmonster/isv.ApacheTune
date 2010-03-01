@@ -1,6 +1,8 @@
 package com.apachetune.core.preferences.impl;
 
-import com.apachetune.core.preferences.*;
+import com.apachetune.core.preferences.Preferences;
+import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.core.preferences.PreferencesWrapper;
 
 /**
  * FIXDOC
@@ -23,5 +25,5 @@ public class PreferencesManagerImpl implements PreferencesManager {
 
     public Preferences userRoot() {
         return new PreferencesWrapper(java.util.prefs.Preferences.userRoot());
-    }    
+    }
 }
