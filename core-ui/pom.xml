@@ -15,13 +15,10 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>guice</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
+
+            <!-- TODO version is actual? -->
             <version>1.0-lite-alpha-SNAPSHOT</version>
         </dependency>
 
@@ -36,48 +33,6 @@
             <groupId>org.jmock</groupId>
             <artifactId>jmock-legacy</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-plaf</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.noos.xing</groupId>
-                    <artifactId>mydoggy-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-res</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.noos.xing</groupId>
-                    <artifactId>mydoggy-res</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>jsyntaxpane</groupId>
-            <artifactId>jsyntaxpane</artifactId>
         </dependency>
     </dependencies>
 

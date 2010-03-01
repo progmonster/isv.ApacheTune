@@ -16,18 +16,17 @@
     <dependencies>
         <dependency>
             <groupId>com.apachetune</groupId>
-            <artifactId>core-ui</artifactId>
+            <artifactId>core</artifactId>
+
+            <!-- TODO version is actual? -->
             <version>1.0-lite-alpha-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>com.google.code.guice</groupId>
-            <artifactId>guice</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>com.apachetune</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>core-ui</artifactId>
+
+            <!-- TODO version is actual? -->
             <version>1.0-lite-alpha-SNAPSHOT</version>
         </dependency>
 
@@ -36,31 +35,6 @@
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.swinglabs</groupId>
-            <artifactId>swingx</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>forms_rt</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.l2fprod</groupId>
-            <artifactId>common</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.collections</groupId>
-            <artifactId>google-collections</artifactId>
         </dependency>
     </dependencies>
 

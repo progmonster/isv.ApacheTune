@@ -36,16 +36,14 @@
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>5.8</version>
-                <scope>test</scope>
                 <classifier>jdk15</classifier>
+                <version>5.8</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jmock</groupId>
                 <artifactId>jmock-legacy</artifactId>
                 <version>2.5.1</version>
-                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -84,12 +82,6 @@
                 <groupId>net.sourceforge.mydoggy</groupId>
                 <artifactId>mydoggy-plaf</artifactId>
                 <version>1.4.2</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.noos.xing</groupId>
-                        <artifactId>mydoggy-api</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- TODO Move dependency to core-ui module -->
@@ -97,12 +89,6 @@
                 <groupId>net.sourceforge.mydoggy</groupId>
                 <artifactId>mydoggy-res</artifactId>
                 <version>1.4.2</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.noos.xing</groupId>
-                        <artifactId>mydoggy-res</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <!-- TODO Move dependency to core-ui module -->
@@ -140,8 +126,104 @@
         </dependencies>
     </dependencyManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <classifier>jdk15</classifier>
+            <version>5.8</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.code.guice</groupId>
+            <artifactId>guice</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
+
+        <!-- TODO Move dependency to core-ui module -->
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-api</artifactId>
+        </dependency>
+
+        <!-- TODO Move dependency to core-ui module -->
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-plaf</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.noos.xing</groupId>
+                    <artifactId>mydoggy-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- TODO Move dependency to core-ui module -->
+        <dependency>
+            <groupId>net.sourceforge.mydoggy</groupId>
+            <artifactId>mydoggy-res</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.noos.xing</groupId>
+                    <artifactId>mydoggy-res</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- TODO Move dependency to core-ui module -->
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+        </dependency>
+
+        <!-- TODO Move dependency to core-ui module -->
+        <dependency>
+            <groupId>jsyntaxpane</groupId>
+            <artifactId>jsyntaxpane</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
+        </dependency>
+
+        <!-- Installed manually from http://l2fprod.com/common/index.php -->
+        <dependency>
+            <groupId>com.l2fprod</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.collections</groupId>
+            <artifactId>google-collections</artifactId>
+        </dependency>
+    </dependencies>
+    
+
     <build>
         <!--<finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>-->
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -210,6 +292,12 @@
 
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>2.1</version>
+            </plugin>
+
+            <plugin>
                 <artifactId>maven-release-plugin</artifactId>
             </plugin>
 
@@ -228,9 +316,34 @@
         <repository>
             <id>ibiblio.org</id>
             <url>http://mirrors.ibiblio.org/pub/mirrors/maven2</url>
-            <releases><enabled>true</enabled></releases>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>Maven Repository Switchboard</name>
+          <url>http://repo1.maven.org/maven2</url>
         </repository>
     </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+          <releases>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>Maven Plugin Repository</name>
+          <url>http://repo1.maven.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
