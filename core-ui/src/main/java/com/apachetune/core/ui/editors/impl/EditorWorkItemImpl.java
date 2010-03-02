@@ -36,6 +36,7 @@ import java.util.prefs.BackingStoreException;
 import static com.apachetune.core.ui.Constants.*;
 import static java.awt.Color.RED;
 import static java.lang.Math.min;
+import static javax.swing.SwingUtilities.invokeLater;
 
 /**
  * FIXDOC
@@ -273,7 +274,6 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         clearEditorPaneUndoManagerState();
 
         initEditorPaneCaretListener(); // TODO #55, #24 (set last caret position for the document)
-        // restoreCaretPosition();  TODO uncomment!
         initEditorPaneUndoRedoListener();
         initEditorPaneDocumentListener();
 
@@ -281,8 +281,9 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
                 .getContentPaneTitle(), editorInput.getContentPaneIcon(), editorScrollPane, editorInput
                         .getSaveTitle());
 
+        editorPane.setAutoscrolls(false);
+        restoreCaretPosition();
         restoreViewPosition();
-
         contentPane.getDockableManager().setPopupMenu(null);
         
         contentPane.getContentUI().setCloseable(false);
@@ -301,10 +302,14 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
             caretPosition = getStoredCaretPosition();
         }
 
-        // It uses a document length instead of editorPane.getText().length() to avoid the "\r\n" problem.
-        int contentLength = editorPane.getDocument().getLength();
+        final int finalCaretPosition = caretPosition;
 
-        editorPane.setCaretPosition(min(caretPosition, contentLength));
+                editorPane.setCaretPosition(min(finalCaretPosition, getContentLength()));
+    }
+
+    private int getContentLength() {
+        // It uses a document length instead of editorPane.getText().length() to avoid the "\r\n" problem.
+        return editorPane.getDocument().getLength();
     }
 
     private void restoreViewPosition() {
@@ -314,37 +319,18 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
             viewPosition = getStoredViewPosition();
         }
 
+        viewPosition = min(viewPosition, getContentLength());
+
         try {
-/*
-            System.out.println(editorScrollPane.getSize());
-            System.out.println(editorPane.getSize());
-            System.out.println(editorScrollPane.isVisible());
-            System.out.println(editorPane.isVisible());
-            System.out.println(editorPane.getDocument());
-*/
+            final Point restoredFirstVisiblePoint = editorPane.modelToView(viewPosition).getLocation();
 
-//            System.out.println(getStoredViewPosition());
-//            System.out.println(editorPane.modelToView(viewPosition));
+            invokeLater(new Runnable() {
+                public void run() {
+                    editorPane.scrollRectToVisible(new Rectangle(restoredFirstVisiblePoint, editorScrollPane.
+                            getViewport().getSize()));
+                }
+            });
 
-
-            Rectangle restoredFirstVisibleElementBounds = editorPane.modelToView(viewPosition);
-
-            Rectangle restoredVisibleBounds = new Rectangle(restoredFirstVisibleElementBounds.getLocation(),
-                    editorScrollPane.getSize());
-
-            if (getId().contains("\\httpd.conf")) {
-                System.out.println("R editorpane: " + editorPane.getBounds());
-                System.out.println("R scrollpane: " + editorScrollPane.getBounds());
-                System.out.println("R: " + editorPane.modelToView(viewPosition));
-                
-                System.out.println("R restored bounds: " + restoredVisibleBounds);
-
-                System.out.println("=========================================");
-            }
-
-//            editorPane.scrollRectToVisible(restoredVisibleBounds);
-            editorScrollPane.getHorizontalScrollBar().setValue(restoredVisibleBounds.x);
-            editorScrollPane.getVerticalScrollBar().setValue(restoredVisibleBounds.y);
         } catch (BadLocationException e) {
             e.printStackTrace();  // TODO Make it as a service.
         }
@@ -523,13 +509,6 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         caretPrefsNode.putInt(getDocumentUri().toASCIIString(), getViewPosition());
         caretPrefsNode.flush();
-
-
-        if (getId().contains("\\httpd.conf")) {
-            System.out.println("S editorpane: " + editorPane.getBounds());
-            System.out.println("S scrollpane: " + editorScrollPane.getBounds());
-            System.out.println("S: " + editorScrollPane.getViewport().getViewRect());
-        }
     }
 
     private int getViewPosition() {
