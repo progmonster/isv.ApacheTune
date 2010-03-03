@@ -1,14 +1,16 @@
 package com.apachetune.core.ui.editors.impl;
 
-import com.apachetune.core.ui.editors.*;
+import com.apachetune.core.ui.editors.SaveFilesHelper;
+import com.apachetune.core.ui.editors.SaveFilesHelperCallBack;
 import com.apachetune.core.utils.StringValue;
-import com.google.inject.*;
-import static org.apache.commons.collections.CollectionUtils.*;
-import org.apache.commons.collections.*;
+import com.google.inject.Inject;
+import org.apache.commons.collections.Predicate;
 
 import javax.swing.*;
+import java.util.Collection;
+
 import static javax.swing.JOptionPane.*;
-import java.util.*;
+import static org.apache.commons.collections.CollectionUtils.exists;
 
 /**
  * FIXDOC
@@ -55,7 +57,8 @@ public class SaveAllFilesAtOnceHelperImpl implements SaveFilesHelper {
 
             helperCallBack.prepareSaveAllFiles(title, message);
 
-            int result = showConfirmDialog(mainFrame, message.value, title.value, OK_CANCEL_OPTION, QUESTION_MESSAGE);
+            int result = showConfirmDialog(
+                    mainFrame, message.value, title.value, OK_CANCEL_OPTION, QUESTION_MESSAGE);
 
             if (result == OK_OPTION) {
                 for (Object fileId : fileIds) {
