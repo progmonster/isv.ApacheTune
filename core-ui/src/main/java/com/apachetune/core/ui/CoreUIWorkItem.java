@@ -27,9 +27,11 @@ import java.util.prefs.Preferences;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_1;
+import static java.awt.Frame.NORMAL;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.*;
+import static javax.swing.JFrame.*;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang.StringUtils.defaultString;
 
@@ -41,6 +43,8 @@ import static org.apache.commons.lang.StringUtils.defaultString;
  */
 public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListener {
     private final JFrame mainFrame;
+
+    private SwingMaxWindowPatch swingMaxWindowPatch;
 
     private final ToolWindowManager toolWindowManager;
 
@@ -54,7 +58,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private final CoreUIResourceLocator coreUIResourceLocator;
 
-    private final Rectangle mainFrameBounds = new Rectangle();
+    private final Rectangle normalFrameBounds = new Rectangle();
 
     private final StatusBarManager statusBarManager;
 
@@ -174,7 +178,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     private void initMainFrame() {
         restoreMainFrameBounds();
 
-        mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        mainFrame.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         mainFrame.getContentPane().setLayout(new BorderLayout());
 
@@ -188,18 +192,13 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         mainFrame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentMoved(ComponentEvent e) {
-                if ((mainFrame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && (mainFrame.getExtendedState() != JFrame
-                        .ICONIFIED)) {
-                    mainFrameBounds.setLocation(mainFrame.getLocation());
-                }
+                normalFrameBounds.setBounds(swingMaxWindowPatch.GetNormalBoundsAfterChangeLocationEvent(
+                        normalFrameBounds));
             }
 
             @Override
             public void componentResized(ComponentEvent e) {
-                if ((mainFrame.getExtendedState() != JFrame.MAXIMIZED_BOTH) && (mainFrame.getExtendedState() != JFrame
-                        .ICONIFIED)) {
-                    mainFrameBounds.setSize(mainFrame.getSize());
-                }
+                normalFrameBounds.setBounds(swingMaxWindowPatch.GetNormalBoundsAfterChangeSizeEvent(normalFrameBounds));
             }
         });
     }
@@ -221,22 +220,41 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     private void restoreMainFrameBounds() {
         Preferences userNode = Preferences.userNodeForPackage(getClass());
 
-        int mainFrameState = userNode.getInt(MAIN_FRAME_STATE_PERSISTED, JFrame.NORMAL);
+        final boolean isFrameMaximizied = userNode.getBoolean(MAIN_FRAME_MAXIMIZED_PERSISTED, true);
 
-        mainFrame.setExtendedState(mainFrameState != JFrame.ICONIFIED ? mainFrameState : JFrame.NORMAL);
+        Rectangle initialBounds = getInitialBounds();
 
+        final Rectangle bounds = new Rectangle();
+
+        bounds.x = userNode.getInt(MAIN_FRAME_LEFT_PERSISTED, initialBounds.x);
+
+        bounds.y = userNode.getInt(MAIN_FRAME_TOP_PERSISTED, initialBounds.y);
+
+        bounds.width = userNode.getInt(MAIN_FRAME_WIDTH_PERSISTED, initialBounds.width);
+
+        bounds.height = userNode.getInt(MAIN_FRAME_HEIGHT_PERSISTED, initialBounds.height);
+
+        normalFrameBounds.setBounds(bounds);
+        
+        swingMaxWindowPatch = new SwingMaxWindowPatch(bounds);
+        
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                  mainFrame.setBounds(bounds);
+            }
+        });
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                mainFrame.setExtendedState(isFrameMaximizied ? MAXIMIZED_BOTH : NORMAL);
+            }
+        });
+    }
+
+    private Rectangle getInitialBounds() {
         // TODO Set "beautiful" initial bounds.
-        int left = userNode.getInt(MAIN_FRAME_LEFT_PERSISTED, 100);
-
-        int top = userNode.getInt(MAIN_FRAME_TOP_PERSISTED, 100);
-
-        int width = userNode.getInt(MAIN_FRAME_WIDTH_PERSISTED, 640);
-
-        int height = userNode.getInt(MAIN_FRAME_HEIGHT_PERSISTED, 480);
-
-        mainFrame.setBounds(left, top, width, height);
-
-        mainFrameBounds.setBounds(left, top, width, height);
+         // 100, 100, 640, 480
+        return new Rectangle(100, 100, 640, 480);
     }
 
     private void initMenuBar() {
@@ -459,16 +477,67 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     private void storeMainFrameBounds() throws BackingStoreException {
         Preferences userNode = Preferences.userNodeForPackage(getClass());
 
-        userNode.putInt(MAIN_FRAME_STATE_PERSISTED, mainFrame.getExtendedState());
+        userNode.putBoolean(MAIN_FRAME_MAXIMIZED_PERSISTED, isFrameMaximized());
 
-        Rectangle bounds = ((mainFrame.getExtendedState() == JFrame.MAXIMIZED_BOTH) || (mainFrame.getExtendedState() ==
-                JFrame.ICONIFIED)) ? mainFrameBounds : mainFrame.getBounds();
-
-        userNode.putInt(MAIN_FRAME_LEFT_PERSISTED, (int) bounds.getX());
-        userNode.putInt(MAIN_FRAME_TOP_PERSISTED, (int) bounds.getY());
-        userNode.putInt(MAIN_FRAME_WIDTH_PERSISTED, (int) bounds.getWidth());
-        userNode.putInt(MAIN_FRAME_HEIGHT_PERSISTED, (int) bounds.getHeight());
+        userNode.putInt(MAIN_FRAME_LEFT_PERSISTED, (int) normalFrameBounds.getX());
+        userNode.putInt(MAIN_FRAME_TOP_PERSISTED, (int) normalFrameBounds.getY());
+        userNode.putInt(MAIN_FRAME_WIDTH_PERSISTED, (int) normalFrameBounds.getWidth());
+        userNode.putInt(MAIN_FRAME_HEIGHT_PERSISTED, (int) normalFrameBounds.getHeight());
         
         userNode.flush();
+    }
+
+    private boolean isFrameIconified() {
+        return (mainFrame.getExtendedState() & ICONIFIED) != 0;
+    }
+
+    private boolean isFrameMaximized() {
+        return (mainFrame.getExtendedState() & MAXIMIZED_BOTH) != 0;
+    }
+
+    private boolean isNormalFrameState() {
+        return !isFrameMaximized() && !isFrameIconified(); 
+    }
+
+    /* PATCH: Этот патч позволяет избежать ошибку, связанную с выдачей некорректного сотояния окна приложения при его
+        максимизации. Суть в том, что ComponentListner при максимизации фрейма получают последовательно два события,
+        первое на перемещение окна, второе на изменение размера. В первом событии передается НЕПРАВИЛЬНЫЙ статус окна -
+        "нормальный", хотя, судя по координатам окна, оно уже максимизировано. Следующее событие на изменение размера
+        содержит уже корректный флаг.
+
+        Вследствие данной ошибки, невозможно нормальным образом отследить и координаты немаксимизированного окна, для их
+        сохранения и восстановления при перезапуске программы, так как, закрыв окно максимизированным, мы сохраняем
+        неверные координаты нормального состояния окна.
+
+        Данный патч призван обойти эту проблему. На входе он получает, текущие отслеживаемые координаты окна в
+        нормальном состоянии, новые координаты окна и новое состояние окна, на выходе - новые коррекнтые координаты для
+        окна в нормальном состоянии.
+    */
+    private class SwingMaxWindowPatch {
+        private Rectangle bounds;
+
+        public SwingMaxWindowPatch(Rectangle initialBounds) {
+            bounds = initialBounds;
+        }
+
+        public Rectangle GetNormalBoundsAfterChangeLocationEvent(Rectangle currentNormalStateBounds) {
+            Rectangle newBounds = new Rectangle(currentNormalStateBounds);
+
+            if (isNormalFrameState()) {
+                newBounds.setLocation(mainFrame.getLocation());
+            }
+
+            return newBounds;
+        }
+
+        public Rectangle GetNormalBoundsAfterChangeSizeEvent(Rectangle currentNormalStateBounds) {
+            Rectangle newBounds = new Rectangle(currentNormalStateBounds);
+
+            if (isNormalFrameState()) {
+                newBounds.setSize(mainFrame.getSize());
+            }
+
+            return newBounds;
+        }
     }
 }

@@ -53,7 +53,7 @@ public final class Constants {
 
     public static final String HELP_ABOUT_ACTION = "HELP_ABOUT_ACTION";
 
-    public static final String MAIN_FRAME_STATE_PERSISTED = "MAIN_FRAME_STATE_PERSISTED";
+    public static final String MAIN_FRAME_MAXIMIZED_PERSISTED = "MAIN_FRAME_MAXIMIZED_PERSISTED";
 
     public static final String MAIN_FRAME_LEFT_PERSISTED = "MAIN_FRAME_LEFT_PERSISTED";
 
