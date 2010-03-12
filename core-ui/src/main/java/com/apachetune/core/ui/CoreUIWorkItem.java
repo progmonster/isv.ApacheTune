@@ -44,7 +44,7 @@ import static org.apache.commons.lang.StringUtils.defaultString;
 public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListener {
     private final JFrame mainFrame;
 
-    private SwingMaxWindowPatch swingMaxWindowPatch;
+    private final SwingMaxWindowPatch swingMaxWindowPatch = new SwingMaxWindowPatch();
 
     private final ToolWindowManager toolWindowManager;
 
@@ -235,8 +235,6 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         bounds.height = userNode.getInt(MAIN_FRAME_HEIGHT_PERSISTED, initialBounds.height);
 
         normalFrameBounds.setBounds(bounds);
-        
-        swingMaxWindowPatch = new SwingMaxWindowPatch(bounds);
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -510,19 +508,25 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         неверные координаты нормального состояния окна.
 
         Данный патч призван обойти эту проблему. На входе он получает, текущие отслеживаемые координаты окна в
-        нормальном состоянии, новые координаты окна и новое состояние окна, на выходе - новые коррекнтые координаты для
-        окна в нормальном состоянии.
+        нормальном состоянии, новые координаты окна и новое состояние окна, на выходе - новые корректные (кроме
+        промежуточного состояния при максимизации, когда уже было событие на перемещение, но не было на изменение
+        размера) координаты для окна в нормальном состоянии.
     */
     private class SwingMaxWindowPatch {
-        private Rectangle bounds;
+        private final Rectangle storedNormalStateBounds = new Rectangle();
 
-        public SwingMaxWindowPatch(Rectangle initialBounds) {
-            bounds = initialBounds;
-        }
+        private boolean awaitMaximizing;
 
         public Rectangle GetNormalBoundsAfterChangeLocationEvent(Rectangle currentNormalStateBounds) {
             Rectangle newBounds = new Rectangle(currentNormalStateBounds);
 
+            awaitMaximizing = isNormalFrameState() && (mainFrame.getLocation().x == -4)
+                    && (mainFrame.getLocation().y == -4);
+
+            if (awaitMaximizing) {
+                storedNormalStateBounds.setBounds(currentNormalStateBounds);
+            }
+            
             if (isNormalFrameState()) {
                 newBounds.setLocation(mainFrame.getLocation());
             }
@@ -535,6 +539,12 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
             if (isNormalFrameState()) {
                 newBounds.setSize(mainFrame.getSize());
+            }
+
+            if (isFrameMaximized() && awaitMaximizing) {
+                newBounds.setLocation(storedNormalStateBounds.getLocation());
+
+                awaitMaximizing = false;
             }
 
             return newBounds;
