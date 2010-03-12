@@ -31,6 +31,7 @@ import static java.awt.Frame.NORMAL;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
 import static java.awt.event.KeyEvent.*;
+import static java.lang.Math.sqrt;
 import static javax.swing.JFrame.*;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang.StringUtils.defaultString;
@@ -235,7 +236,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         bounds.height = userNode.getInt(MAIN_FRAME_HEIGHT_PERSISTED, initialBounds.height);
 
         normalFrameBounds.setBounds(bounds);
-        
+
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                   mainFrame.setBounds(bounds);
@@ -250,9 +251,32 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     private Rectangle getInitialBounds() {
-        // TODO Set "beautiful" initial bounds.
-         // 100, 100, 640, 480
-        return new Rectangle(100, 100, 640, 480);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        double GOLDEN_RATION = (1.0 + sqrt(5.0)) / 2.0;
+
+        double INITIAL_PERCENT_OF_SCREEN_SQUARE_FRAME_SIZE = 100.0 / GOLDEN_RATION;
+
+        double initialFrameSquare = screenSize.width * screenSize.height * INITIAL_PERCENT_OF_SCREEN_SQUARE_FRAME_SIZE
+                / 100.0;
+
+        Dimension initialFrameSize = new Dimension((int) (sqrt(initialFrameSquare * GOLDEN_RATION)),
+                                                   (int) (sqrt(initialFrameSquare / GOLDEN_RATION)));
+
+        if (initialFrameSize.width - screenSize.width >= -0.001) {
+            initialFrameSize.width -= initialFrameSize.width * 5.0 / 100.0; 
+            initialFrameSize.height -= initialFrameSize.width * 5.0 / 100.0; 
+        }
+
+        if (initialFrameSize.height - screenSize.height >= -0.001) {
+            initialFrameSize.width -= initialFrameSize.width * 5.0 / 100.0;
+            initialFrameSize.height -= initialFrameSize.width * 5.0 / 100.0;
+        }
+
+        Point initialFrameLocation = new Point((int) ((screenSize.width - initialFrameSize.width) / 2.0),
+                                               (int) ((screenSize.height - initialFrameSize.height) / 2.0));
+
+        return new Rectangle(initialFrameLocation, initialFrameSize);
     }
 
     private void initMenuBar() {
