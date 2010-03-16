@@ -68,7 +68,7 @@ public class EditorWorkItemImplTest {
             allowing(mockMenuBarManager).createAndBindContextMenu(with(any(Component.class)), with(any(ActionSite
                     .class)));
 
-            allowing(mockStatusBarManager).setCursorPositionState(with(any(Point.class)));
+            allowing(mockStatusBarManager).setCaretPositionState(with(any(Point.class)));
 
             allowing(mockPreferencesManager).userNodeForPackage(EditorWorkItemImpl.class); will(returnValue(
                     mockEditorPrefsNode));
@@ -104,7 +104,7 @@ public class EditorWorkItemImplTest {
             allowing(mockMenuBarManager).createAndBindContextMenu(with(any(Component.class)), with(any(ActionSite
                     .class)));
 
-            allowing(mockStatusBarManager).setCursorPositionState(with(any(Point.class)));
+            allowing(mockStatusBarManager).setCaretPositionState(with(any(Point.class)));
 
             allowing(mockPreferencesManager).userNodeForPackage(EditorWorkItemImpl.class); will(returnValue(
                     mockEditorPrefsNode));
@@ -139,7 +139,7 @@ public class EditorWorkItemImplTest {
             allowing(mockMenuBarManager).createAndBindContextMenu(with(any(Component.class)), with(any(ActionSite
                     .class)));
 
-            allowing(mockStatusBarManager).setCursorPositionState(with(any(Point.class)));
+            allowing(mockStatusBarManager).setCaretPositionState(with(any(Point.class)));
 
             allowing(mockPreferencesManager).userNodeForPackage(EditorWorkItemImpl.class); will(returnValue(
                     mockEditorPrefsNode));
@@ -173,7 +173,7 @@ public class EditorWorkItemImplTest {
             allowing(mockMenuBarManager).createAndBindContextMenu(with(any(Component.class)), with(any(ActionSite
                     .class)));
 
-            allowing(mockStatusBarManager).setCursorPositionState(with(any(Point.class)));
+            allowing(mockStatusBarManager).setCaretPositionState(with(any(Point.class)));
 
             allowing(mockPreferencesManager).userNodeForPackage(EditorWorkItemImpl.class); will(returnValue(
                     mockEditorPrefsNode));

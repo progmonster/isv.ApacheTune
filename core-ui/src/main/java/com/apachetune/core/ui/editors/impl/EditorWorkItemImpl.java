@@ -254,13 +254,33 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         removeEditorPaneContent();
 
-        statusBarManager.setCursorPositionState(null);
+        resetCaretPositionState();
+    }
+
+    private void resetCaretPositionState() {
+        statusBarManager.setCaretPositionState(null);
     }
 
     @Override
     protected void doActivation() {
         contentPane.setSelected(true);
         editorPane.grabFocus();
+
+        updateCaretPositionState(editorPane.getCaretPosition());
+    }
+
+    protected void doDeactivation() {
+        resetCaretPositionState();
+    }
+
+    private void updateCaretPositionState(int pos) {
+        Element root = getDocument().getDefaultRootElement();
+
+        int line = root.getElementIndex( pos );
+
+        int col = pos - root.getElement( line ).getStartOffset();
+
+        statusBarManager.setCaretPositionState(new Point(col + 1, line + 1));
     }
 
     private void createEditorPaneContent() {
@@ -446,15 +466,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     private void initEditorPaneCaretListener() {
         editorPane.addCaretListener(new CaretListener() {
             public void caretUpdate(CaretEvent e) {
-                Element root = getDocument().getDefaultRootElement();
-
-                int dot = e.getDot();
-
-                int line = root.getElementIndex( dot );
-
-                int col = dot - root.getElement( line ).getStartOffset();
-
-                statusBarManager.setCursorPositionState(new Point(col + 1, line + 1));
+                updateCaretPositionState(e.getDot());
             }
         });
     }

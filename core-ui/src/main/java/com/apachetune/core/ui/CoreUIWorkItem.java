@@ -264,13 +264,13 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                                                    (int) (sqrt(initialFrameSquare / GOLDEN_RATION)));
 
         if (initialFrameSize.width - screenSize.width >= -0.001) {
-            initialFrameSize.width -= initialFrameSize.width * 5.0 / 100.0; 
-            initialFrameSize.height -= initialFrameSize.width * 5.0 / 100.0; 
+            initialFrameSize.width = (int) (initialFrameSize.width * (100.0 - 5.0) / 100.0); 
+            initialFrameSize.height = (int) (initialFrameSize.width * (100.0 - 5.0) / 100.0);
         }
 
         if (initialFrameSize.height - screenSize.height >= -0.001) {
-            initialFrameSize.width -= initialFrameSize.width * 5.0 / 100.0;
-            initialFrameSize.height -= initialFrameSize.width * 5.0 / 100.0;
+            initialFrameSize.width = (int) (initialFrameSize.width * (100.0 - 5.0) / 100.0);
+            initialFrameSize.height = (int) (initialFrameSize.width * (100.0 - 5.0) / 100.0);
         }
 
         Point initialFrameLocation = new Point((int) ((screenSize.width - initialFrameSize.width) / 2.0),

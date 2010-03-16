@@ -1,10 +1,12 @@
 package com.apachetune.core.ui.impl;
 
-import com.google.inject.*;
-import com.apachetune.core.ui.*;
+import com.apachetune.core.ui.StatusBarManager;
+import com.apachetune.core.ui.StatusBarView;
+import com.google.inject.Inject;
 
 import java.awt.*;
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -72,7 +74,7 @@ public class StatusBarManagerImpl implements StatusBarManager {
         }
     }
 
-    public void setCursorPositionState(Point position) {
+    public void setCaretPositionState(Point position) {
         statusBarView.setCursorPositionState(position);
     }
 

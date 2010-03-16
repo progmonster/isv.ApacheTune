@@ -15,5 +15,5 @@ public interface StatusBarManager {
 
     void removeMainStatus(String messageId);
 
-    void setCursorPositionState(Point position);
+    void setCaretPositionState(Point position);
 }
