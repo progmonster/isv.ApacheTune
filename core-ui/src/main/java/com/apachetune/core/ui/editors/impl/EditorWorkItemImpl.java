@@ -323,8 +323,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         }
 
         final int finalCaretPosition = caretPosition;
-
-                editorPane.setCaretPosition(min(finalCaretPosition, getContentLength()));
+        
+        editorPane.setCaretPosition(min(finalCaretPosition, getContentLength()));
     }
 
     private int getContentLength() {

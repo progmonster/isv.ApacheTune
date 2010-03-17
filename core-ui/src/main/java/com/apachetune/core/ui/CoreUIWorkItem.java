@@ -156,6 +156,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         ContentManager contentManager = toolWindowManager.getContentManager();
 
         MyDoggyTabbedContentManagerUI contentManagerUI = new MyDoggyTabbedContentManagerUI() {
+            @Override
             protected void setupActions() {
                 // Workaround. Switch tab actions are configuring when ManagerUI being created and its toolWindowManager
                 // property not set yet.

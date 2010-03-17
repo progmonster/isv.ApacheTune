@@ -9,17 +9,9 @@ package com.apachetune.httpserver;
 public class Constants {
     public static final String HTTP_SERVER_WORK_ITEM = "HTTP_SERVER_WORK_ITEM";
 
-    public static final String STDOUT_PANE_DOCUMENT = "STDOUT_PANE_DOCUMENT";
-
     public static final String OUTPUT_TOOL_WINDOW = "Output";
 
-    public static final String SHOW_SELECT_HTTP_SERVER_DIALOG_EVENT = "SHOW_SELECT_HTTP_SERVER_DIALOG_EVENT";
-
-    public static final String SHOW_SEARCH_HTTP_SERVER_DIALOG_EVENT = "SHOW_SEARCH_HTTP_SERVER_DIALOG_EVENT";
-
     public static final String SERVER_PATH_SELECTED_EVENT = "SERVER_PATH_SELECTED_EVENT";
-
-    public static final String SELECTED_SERVER_PATH_PERSISTED = "SELECTED_SERVER_PATH_PERSISTED";
 
     public static final String SERVER_MENU = "SERVER_MENU";
 
@@ -31,8 +23,6 @@ public class Constants {
 
     public static final String SERVER_CHECK_CONFIG_SYNTAX_ACTION = "SERVER_CHECK_CONFIG_SYNTAX_ACTION";
 
-    public static final String SERVER_CHECK_CONFIG_SYNTAX_EVENT = "SERVER_CHECK_CONFIG_SYNTAX_EVENT";
-
     public static final String SERVER_START_HTTP_SERVER_ACTION = "SERVER_START_HTTP_SERVER_ACTION";
 
     public static final String SERVER_STOP_HTTP_SERVER_ACTION = "SERVER_STOP_HTTP_SERVER_ACTION";
@@ -43,17 +33,9 @@ public class Constants {
 
     public static final String RUN_SERVER_WORKFLOW_WORK_ITEM = "RUN_SERVER_WORKFLOW_WORK_ITEM";
 
-    public static final String SERVER_START_HTTP_SERVER_EVENT = "SERVER_START_HTTP_SERVER_EVENT";
-
-    public static final String SERVER_STOP_HTTP_SERVER_EVENT = "SERVER_STOP_HTTP_SERVER_EVENT";
-
-    public static final String SERVER_RESTART_HTTP_SERVER_EVENT = "SERVER_RESTART_HTTP_SERVER_EVENT";
-
     public static final String SERVER_STARTING_STATUS = "SERVER_STARTING_STATUS";
 
     public static final String SERVER_STOPPING_STATUS = "SERVER_STOPPING_STATUS";
-
-    public static final String SERVER_RESTARTING_STATUS = "SERVER_RESTARTING_STATUS";
 
     public static final String CHECK_SYNTAX_ACTION_GROUP = "CHECK_SYNTAX_ACTION_GROUP";
 
@@ -66,8 +48,6 @@ public class Constants {
     public static final String APP_ICON = "app_icon_24.png";
 
     public static final String CONSOLE_WORK_ITEM = "CONSOLE_WORK_ITEM";
-    
-    public static final String SERVER_CLOSE_SERVER_EVENT = "SERVER_CLOSE_SERVER_EVENT";
     
     public static final String CURRENT_HTTP_SERVER_STATE = "CURRENT_HTTP_SERVER_STATE";
     
@@ -84,5 +64,8 @@ public class Constants {
     public static final String ACTIVE_CHILD_WORK_ITEM_PREF = "ACTIVE_CHILD_WORK_ITEM";
     
     public static final String ACTIVE_EDITOR_INFO = "ACTIVE_EDITOR_INFO";
-    public static final String VIEW_POSITION_PREFS_NODE_NAME = "VIEW_POSITION_PREFS_NODE_NAME";
+    
+    public static final String OUTPUT_WINDOW_ANCHOR_PREF = "OUTPUT_WINDOW_ANCHOR";
+
+    public static final String OUTPUT_WINDOW_DOCK_LENGTH_PREF = "OUTPUT_WINDOW_DOCK_LENGTH";
 }
