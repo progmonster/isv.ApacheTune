@@ -222,7 +222,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     private void restoreMainFrameBounds() {
         Preferences userNode = Preferences.userNodeForPackage(getClass());
 
-        final boolean isFrameMaximizied = userNode.getBoolean(MAIN_FRAME_MAXIMIZED_PERSISTED, true);
+        final boolean isFrameMaximizied = userNode.getBoolean(MAIN_FRAME_MAXIMIZED_PERSISTED, false);
 
         Rectangle initialBounds = getInitialBounds();
 
