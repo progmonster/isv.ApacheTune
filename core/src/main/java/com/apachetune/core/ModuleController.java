@@ -1,11 +1,11 @@
 package com.apachetune.core;
 
-import com.google.inject.*;
+import com.google.inject.Module;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public interface ModuleController {

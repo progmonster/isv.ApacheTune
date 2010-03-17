@@ -1,11 +1,12 @@
 package com.apachetune.core.utils;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.left;
+import static org.apache.commons.lang.StringUtils.right;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public final class Utils {

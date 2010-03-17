@@ -1,16 +1,18 @@
 package com.apachetune.core.ui.actions.impl;
 
-import com.apachetune.core.ui.actions.*;
-import static org.testng.Assert.*;
-import org.testng.annotations.*;
+import com.apachetune.core.ui.actions.Action;
+import com.apachetune.core.ui.actions.ActionGroup;
+import org.testng.annotations.Test;
 
-import static java.util.Arrays.*;
-import java.util.*;
+import java.util.Collection;
+
+import static java.util.Arrays.asList;
+import static org.testng.Assert.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 @Test

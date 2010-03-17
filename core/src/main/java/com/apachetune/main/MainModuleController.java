@@ -1,12 +1,14 @@
 package com.apachetune.main;
 
-import com.apachetune.core.*;
-import com.google.inject.*;
+import com.apachetune.core.ModuleController;
+import com.apachetune.core.RootWorkItem;
+import com.google.inject.Inject;
+import com.google.inject.Module;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class MainModuleController implements ModuleController {

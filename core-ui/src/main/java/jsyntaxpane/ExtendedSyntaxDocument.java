@@ -1,11 +1,11 @@
 package jsyntaxpane;
 
-import javax.swing.undo.*;
+import javax.swing.undo.UndoManager;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ExtendedSyntaxDocument extends SyntaxDocument {

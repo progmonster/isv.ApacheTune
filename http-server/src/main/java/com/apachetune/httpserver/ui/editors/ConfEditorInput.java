@@ -1,25 +1,28 @@
 package com.apachetune.httpserver.ui.editors;
 
-import com.apachetune.core.ui.editors.*;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.entities.*;
-import com.apachetune.httpserver.ui.resources.*;
-import com.google.inject.*;
-import static jsyntaxpane.DefaultSyntaxKit.*;
-import jsyntaxpane.jsyntaxkits.*;
-import org.apache.commons.io.*;
-import static org.apache.commons.lang.ArrayUtils.*;
-import org.apache.commons.lang.*;
+import com.apachetune.core.ui.editors.EditorInput;
+import com.apachetune.httpserver.entities.ServerObjectInfo;
+import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
+import com.google.inject.Inject;
+import jsyntaxpane.jsyntaxkits.HttpdConfSyntaxKit;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
 import java.io.*;
-import static java.io.File.*;
-import java.net.*;
+import java.net.URI;
+
+import static com.apachetune.httpserver.Constants.EDITOR_WORK_ITEM;
+import static com.apachetune.httpserver.Constants.TEXT_HTTPDCONF_CONTENT_TYPE;
+import static java.io.File.separatorChar;
+import static jsyntaxpane.DefaultSyntaxKit.getContentTypes;
+import static jsyntaxpane.DefaultSyntaxKit.registerContentType;
+import static org.apache.commons.lang.ArrayUtils.contains;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ConfEditorInput implements EditorInput {

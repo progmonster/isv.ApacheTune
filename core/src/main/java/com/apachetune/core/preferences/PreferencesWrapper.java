@@ -1,12 +1,15 @@
 package com.apachetune.core.preferences;
 
-import java.io.*;
-import java.util.prefs.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.NodeChangeListener;
+import java.util.prefs.PreferenceChangeListener;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class PreferencesWrapper implements Preferences {

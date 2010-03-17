@@ -1,7 +1,7 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.*;
-import com.google.inject.*;
+import com.apachetune.core.ui.StatusBarView;
+import com.google.inject.Inject;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.awt.*;
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class StatusBarViewImpl implements StatusBarView {

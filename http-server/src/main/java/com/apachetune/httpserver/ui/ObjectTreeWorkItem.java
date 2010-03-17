@@ -1,22 +1,26 @@
 package com.apachetune.httpserver.ui;
 
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.*;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.ui.resources.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import org.noos.xing.mydoggy.*;
-import static org.noos.xing.mydoggy.ToolWindowAnchor.*;
+import com.apachetune.core.ui.GenericUIWorkItem;
+import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.noos.xing.mydoggy.ToolWindow;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.io.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.io.IOException;
+
+import static com.apachetune.core.ui.Constants.OBJECT_TREE_TOOL_WINDOW;
+import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static com.apachetune.httpserver.Constants.OBJECT_TREE_WORK_ITEM;
+import static org.noos.xing.mydoggy.ToolWindowAnchor.LEFT;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ObjectTreeWorkItem extends GenericUIWorkItem implements FocusListener {

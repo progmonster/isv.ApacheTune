@@ -1,18 +1,20 @@
 package com.apachetune.core;
 
-import org.testng.annotations.*;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.assertEquals;
-import static org.testng.FileAssert.fail;
-import com.apachetune.core.utils.*;
-import com.apachetune.core.impl.*;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import com.apachetune.core.utils.BooleanValue;
+import org.testng.annotations.Test;
 
-import java.beans.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.FileAssert.fail;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 @Test

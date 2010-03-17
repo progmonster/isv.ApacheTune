@@ -1,17 +1,21 @@
 package com.apachetune.core.ui.actions.impl;
 
-import com.apachetune.core.ui.actions.*;
-import com.apachetune.core.utils.*;
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionPermission;
+import com.apachetune.core.ui.actions.ActionSite;
+import com.apachetune.core.utils.BooleanValue;
+import org.testng.annotations.Test;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import static org.testng.Assert.*;
 import static org.testng.FileAssert.fail;
-import org.testng.annotations.*;
-
-import java.beans.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 @Test

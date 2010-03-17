@@ -1,14 +1,15 @@
 package jsyntaxpane.jsyntaxkits;
 
-import jsyntaxpane.*;
-import jsyntaxpane.lexers.*;
+import jsyntaxpane.DefaultSyntaxKit;
+import jsyntaxpane.ExtendedSyntaxDocument;
+import jsyntaxpane.lexers.ExtendedLexer;
 
-import javax.swing.text.*;
+import javax.swing.text.Document;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ExtendedSyntaxKit extends DefaultSyntaxKit {

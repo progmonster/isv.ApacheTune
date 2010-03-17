@@ -1,17 +1,21 @@
 package com.apachetune.httpserver.entities.impl;
 
-import com.apachetune.httpserver.entities.*;
-import static com.apachetune.httpserver.entities.ServerObjectInfo.ServerObjectType.CONFIG_FILE;
+import com.apachetune.httpserver.entities.HttpServer;
+import com.apachetune.httpserver.entities.ServerObjectInfo;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.apachetune.httpserver.entities.ServerObjectInfo.ServerObjectType.CONFIG_FILE;
 import static java.io.File.separatorChar;
-import java.net.*;
-import java.util.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class LocalWindowsHttpServer implements HttpServer {

@@ -1,30 +1,38 @@
 package com.apachetune.httpserver.ui;
 
-import com.apachetune.core.*;
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.*;
-import com.apachetune.core.ui.actions.*;
+import com.apachetune.core.GenericWorkItem;
+import com.apachetune.core.Subscriber;
+import com.apachetune.core.ui.OutputPaneDocument;
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionManager;
+import com.apachetune.core.ui.actions.ActionPermission;
 import com.apachetune.httpserver.Constants;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.entities.*;
-import com.apachetune.httpserver.ui.actions.*;
-import com.apachetune.httpserver.ui.editors.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import static org.apache.commons.collections.CollectionUtils.*;
-import org.apache.commons.collections.*;
-import org.apache.commons.io.*;
-import org.noos.xing.mydoggy.*;
+import com.apachetune.httpserver.entities.HttpServer;
+import com.apachetune.httpserver.ui.actions.CheckServerActionSite;
+import com.apachetune.httpserver.ui.editors.ConfEditorWorkItem;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.apache.commons.collections.Predicate;
+import org.apache.commons.io.IOUtils;
+import org.noos.xing.mydoggy.ToolWindow;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
-import static java.awt.Color.*;
-import java.io.*;
-import java.util.regex.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static com.apachetune.httpserver.Constants.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
 import static java.util.regex.Pattern.*;
+import static org.apache.commons.collections.CollectionUtils.find;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements CheckServerActionSite {

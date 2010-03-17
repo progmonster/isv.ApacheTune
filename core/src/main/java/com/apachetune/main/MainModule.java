@@ -1,16 +1,21 @@
 package com.apachetune.main;
 
-import com.apachetune.core.*;
-import com.apachetune.core.preferences.*;
-import com.apachetune.core.preferences.impl.*;
-import com.apachetune.core.impl.*;
-import com.google.inject.*;
-import static com.google.inject.Scopes.*;
+import com.apachetune.core.AppManager;
+import com.apachetune.core.LicenseManager;
+import com.apachetune.core.RootWorkItem;
+import com.apachetune.core.impl.AppManagerImpl;
+import com.apachetune.core.impl.LicenseManagerImpl;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.core.preferences.impl.PreferencesManagerImpl;
+import com.google.inject.AbstractModule;
+
+import static com.google.inject.Scopes.SINGLETON;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class MainModule extends AbstractModule {

@@ -1,14 +1,14 @@
 package com.apachetune.core.ui;
 
-import org.apache.commons.io.*;
+import org.apache.commons.io.IOUtils;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public abstract class GenericResourceLocator implements ResourceLocator {

@@ -1,26 +1,29 @@
 package com.apachetune.httpserver.ui.smartparts.searchserver;
 
-import com.apachetune.core.*;
-import com.apachetune.core.ui.*;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.*;
-import com.google.common.base.*;
-import com.google.common.collect.*;
-import com.google.inject.*;
-import org.apache.commons.io.filefilter.*;
-import org.apache.commons.lang.*;
-import static org.apache.commons.lang.StringUtils.*;
+import com.apachetune.core.WorkItem;
+import com.apachetune.core.ui.Presenter;
+import com.apachetune.httpserver.HttpServerManager;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.inject.Inject;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.StringUtils;
 
 import javax.swing.*;
-import java.io.*;
-import static java.util.Arrays.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static com.apachetune.httpserver.Constants.SERVER_PATH_SELECTED_EVENT;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.defaultString;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class SearchServerPresenter implements Presenter<SearchServerDialog> {

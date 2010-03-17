@@ -1,14 +1,14 @@
 package com.apachetune.core.ui.editors;
 
-import com.apachetune.core.ui.*;
-import jsyntaxpane.*;
+import com.apachetune.core.ui.UIWorkItem;
+import jsyntaxpane.ExtendedSyntaxDocument;
 
 import java.awt.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public interface EditorWorkItem extends UIWorkItem {

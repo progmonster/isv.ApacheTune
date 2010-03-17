@@ -1,24 +1,32 @@
 package com.apachetune.core.ui;
 
-import static com.apachetune.core.ui.Constants.*;
 import com.apachetune.core.ui.actions.Action;
-import com.apachetune.core.ui.actions.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import static org.noos.xing.mydoggy.AggregationPosition.BOTTOM;
-import org.noos.xing.mydoggy.*;
+import com.apachetune.core.ui.actions.ActionGroup;
+import com.apachetune.core.ui.actions.ActionManager;
+import com.apachetune.core.ui.actions.ActionSite;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.noos.xing.mydoggy.Content;
+import org.noos.xing.mydoggy.ContentManager;
+import org.noos.xing.mydoggy.MultiSplitConstraint;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
 import javax.swing.*;
-import static javax.swing.SwingUtilities.*;
-import java.awt.event.*;
-import java.io.*;
-import static java.util.Arrays.*;
-import java.util.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.util.List;
+
+import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static java.util.Arrays.asList;
+import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
+import static org.noos.xing.mydoggy.AggregationPosition.BOTTOM;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class CoreUIUtils {

@@ -1,14 +1,19 @@
 package com.apachetune.core.impl;
 
-import com.apachetune.core.*;
-import static com.apachetune.core.Constants.*;
+import com.apachetune.core.ActivationListener;
+import com.apachetune.core.GenericWorkItem;
+import com.apachetune.core.RootWorkItem;
+import com.apachetune.core.WorkItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.apachetune.core.Constants.ROOT_WORK_ITEM_ID;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {

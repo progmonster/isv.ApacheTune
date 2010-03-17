@@ -1,13 +1,18 @@
 package com.apachetune.core.impl;
 
-import com.apachetune.core.*;
-import org.jmock.*;
-import org.testng.annotations.*;
+import com.apachetune.core.ActivationListener;
+import com.apachetune.core.RootWorkItem;
+import com.apachetune.core.SimpleWorkItem;
+import com.apachetune.core.WorkItem;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.Sequence;
+import org.testng.annotations.Test;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 @Test

@@ -1,26 +1,28 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.*;
-import com.apachetune.core.ui.actions.*;
+import com.apachetune.core.ui.CoreUIUtils;
+import com.apachetune.core.ui.MenuBarManager;
 import com.apachetune.core.ui.actions.Action;
-import com.google.inject.*;
-import com.google.common.base.*;
-import static com.google.common.collect.Collections2.filter;
+import com.apachetune.core.ui.actions.*;
+import com.google.common.base.Predicate;
+import com.google.inject.Inject;
 
 import javax.swing.*;
-import java.beans.*;
-import java.lang.reflect.*;
-import java.util.ArrayList;
-import static java.util.Arrays.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.List;
-import java.awt.*;
-import java.awt.event.*;
+
+import static com.google.common.collect.Collections2.filter;
+import static java.util.Arrays.asList;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class MenuBarManagerImpl implements MenuBarManager {

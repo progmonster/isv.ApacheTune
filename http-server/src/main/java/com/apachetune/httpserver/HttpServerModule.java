@@ -1,18 +1,20 @@
 package com.apachetune.httpserver;
 
-import com.apachetune.core.*;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.impl.*;
-import com.apachetune.httpserver.ui.*;
-import com.apachetune.httpserver.ui.resources.*;
-import com.google.inject.*;
-import static com.google.inject.Scopes.*;
-import com.google.inject.name.*;
+import com.apachetune.core.WorkItem;
+import com.apachetune.httpserver.impl.HttpServerManagerImpl;
+import com.apachetune.httpserver.impl.RecentOpenedServersManagerImpl;
+import com.apachetune.httpserver.ui.HttpServerWorkItem;
+import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
+import com.google.inject.AbstractModule;
+import com.google.inject.name.Names;
+
+import static com.apachetune.httpserver.Constants.HTTP_SERVER_WORK_ITEM;
+import static com.google.inject.Scopes.SINGLETON;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class HttpServerModule extends AbstractModule {

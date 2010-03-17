@@ -1,17 +1,21 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.*;
-import static org.apache.commons.lang.StringUtils.*;
+import com.apachetune.core.ui.OutputPaneDocument;
 
-import javax.swing.text.*;
-import static javax.swing.text.StyleConstants.*;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
 import java.awt.*;
-import static java.awt.Color.*;
+
+import static java.awt.Color.BLACK;
+import static javax.swing.text.StyleConstants.setForeground;
+import static org.apache.commons.lang.StringUtils.defaultString;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class OutputPaneDocumentImpl extends DefaultStyledDocument implements OutputPaneDocument {

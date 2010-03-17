@@ -1,19 +1,22 @@
 package com.apachetune.httpserver.ui.smartparts.searchserver;
 
 // TODO remove sun.swing.* dependence.
-import sun.swing.*;
+
+import sun.swing.DefaultLookup;
 
 import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.plaf.*;
-import javax.swing.table.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.UIResource;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class SourceTable extends JTable {

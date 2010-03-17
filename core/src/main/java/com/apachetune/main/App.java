@@ -1,13 +1,21 @@
 package com.apachetune.main;
 
-import com.apachetune.core.*;
-import com.google.inject.*;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import com.apachetune.core.ModuleController;
+import com.apachetune.core.RootWorkItem;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import javax.xml.parsers.*;
-import java.io.*;
-import java.util.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO FIX Maximizing persist MainFrame logic.
 // TODO Add a status bar.
@@ -28,7 +36,7 @@ import java.util.*;
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class App {

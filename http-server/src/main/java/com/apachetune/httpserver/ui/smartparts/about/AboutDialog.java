@@ -1,14 +1,14 @@
 package com.apachetune.httpserver.ui.smartparts.about;
 
-import com.apachetune.core.*;
+import com.apachetune.core.AppVersion;
 
-import java.net.*;
-import java.util.*;
+import java.net.URL;
+import java.util.Date;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public interface AboutDialog {

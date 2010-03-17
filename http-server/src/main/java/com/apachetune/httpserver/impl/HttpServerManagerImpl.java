@@ -1,16 +1,16 @@
 package com.apachetune.httpserver.impl;
 
-import com.apachetune.httpserver.*;
-import com.apachetune.httpserver.entities.*;
-import com.apachetune.httpserver.entities.impl.*;
+import com.apachetune.httpserver.HttpServerManager;
+import com.apachetune.httpserver.entities.HttpServer;
+import com.apachetune.httpserver.entities.impl.LocalWindowsHttpServer;
 
-import java.io.*;
-import java.net.*;
+import java.io.File;
+import java.net.URI;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class HttpServerManagerImpl implements HttpServerManager {

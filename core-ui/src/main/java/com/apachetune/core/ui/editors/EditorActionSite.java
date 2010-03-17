@@ -1,12 +1,15 @@
 package com.apachetune.core.ui.editors;
 
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionPermission;
+import com.apachetune.core.ui.actions.ActionSite;
+
 import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.actions.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public interface EditorActionSite extends ActionSite {

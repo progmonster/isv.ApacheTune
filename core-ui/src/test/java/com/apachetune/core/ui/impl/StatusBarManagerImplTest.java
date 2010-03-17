@@ -1,13 +1,16 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.*;
-import org.jmock.*;
-import org.testng.annotations.*;
+import com.apachetune.core.ui.StatusBarManager;
+import com.apachetune.core.ui.StatusBarView;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.Sequence;
+import org.testng.annotations.Test;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 @Test

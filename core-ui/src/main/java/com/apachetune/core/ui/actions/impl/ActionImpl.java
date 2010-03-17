@@ -2,18 +2,20 @@ package com.apachetune.core.ui.actions.impl;
 
 import com.apachetune.core.ui.actions.Action;
 import com.apachetune.core.ui.actions.*;
-import org.apache.commons.lang.*;
+import org.apache.commons.lang.ObjectUtils;
 
 import javax.swing.*;
-import java.awt.event.*;
-import java.lang.reflect.*;
-import static java.util.Arrays.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ActionImpl extends AbstractAction implements Action {

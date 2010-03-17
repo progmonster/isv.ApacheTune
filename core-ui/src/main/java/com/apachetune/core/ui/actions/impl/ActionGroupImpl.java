@@ -1,13 +1,15 @@
 package com.apachetune.core.ui.actions.impl;
 
-import com.apachetune.core.ui.actions.*;
+import com.apachetune.core.ui.actions.Action;
+import com.apachetune.core.ui.actions.ActionGroup;
+import com.apachetune.core.ui.actions.ActionGroupListener;
 
 import java.util.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ActionGroupImpl implements ActionGroup {

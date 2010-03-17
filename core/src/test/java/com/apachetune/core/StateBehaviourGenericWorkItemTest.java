@@ -1,14 +1,15 @@
 package com.apachetune.core;
 
-import com.apachetune.core.impl.*;
-import static org.testng.Assert.*;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
 import static org.testng.FileAssert.fail;
-import org.testng.annotations.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 @Test

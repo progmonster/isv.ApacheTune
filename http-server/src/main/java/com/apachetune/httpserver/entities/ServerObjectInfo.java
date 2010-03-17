@@ -1,6 +1,6 @@
 package com.apachetune.httpserver.entities;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * Contains server object info.
@@ -8,7 +8,7 @@ import java.io.*;
  * A server object are either a config file, a log file or any another entity that can be
  * represented both in the object tree view and a editor in the content manager.
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ServerObjectInfo {

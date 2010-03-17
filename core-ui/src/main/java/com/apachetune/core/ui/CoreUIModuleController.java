@@ -1,16 +1,20 @@
 package com.apachetune.core.ui;
 
-import com.apachetune.core.*;
-import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
-import com.google.inject.*;
-import com.google.inject.name.*;
+import com.apachetune.core.ModuleController;
+import com.apachetune.core.RootWorkItem;
+import com.apachetune.core.WorkItem;
+import com.google.inject.Inject;
+import com.google.inject.Module;
+import com.google.inject.name.Named;
 
 import java.awt.*;
+
+import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class CoreUIModuleController implements ModuleController {

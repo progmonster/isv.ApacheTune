@@ -1,17 +1,21 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.*;
-import com.google.inject.*;
-import static org.apache.commons.lang.StringUtils.*;
+import com.apachetune.core.ui.TitleBarManager;
+import com.google.inject.Inject;
 
 import javax.swing.*;
-import java.util.*;
-import static java.util.Collections.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.sort;
+import static org.apache.commons.lang.StringUtils.defaultString;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class TitleBarManagerImpl implements TitleBarManager {

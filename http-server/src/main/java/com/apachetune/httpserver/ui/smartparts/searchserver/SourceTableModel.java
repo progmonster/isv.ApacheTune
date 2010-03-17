@@ -1,13 +1,14 @@
 package com.apachetune.httpserver.ui.smartparts.searchserver;
 
-import javax.swing.table.*;
-import java.io.*;
-import java.util.*;
+import javax.swing.table.AbstractTableModel;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 class SourceTableModel extends AbstractTableModel {

@@ -1,17 +1,21 @@
 package com.apachetune.core.ui.impl;
 
-import com.google.inject.*;
-import com.apachetune.core.ui.*;
+import com.apachetune.core.ui.CoreUIUtils;
+import com.apachetune.core.ui.ToolBarManager;
+import com.google.inject.Inject;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class ToolBarManagerImpl implements ToolBarManager {

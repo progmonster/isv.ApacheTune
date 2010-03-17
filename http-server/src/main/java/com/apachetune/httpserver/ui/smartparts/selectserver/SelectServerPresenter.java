@@ -1,17 +1,18 @@
 package com.apachetune.httpserver.ui.smartparts.selectserver;
 
-import com.apachetune.core.*;
-import com.apachetune.core.ui.*;
+import com.apachetune.core.WorkItem;
+import com.apachetune.core.ui.Presenter;
 import com.apachetune.httpserver.Constants;
-import com.apachetune.httpserver.*;
-import com.google.inject.*;
+import com.apachetune.httpserver.HttpServerManager;
+import com.apachetune.httpserver.RecentOpenedServersManager;
+import com.google.inject.Inject;
 
-import java.io.*;
+import java.io.File;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class SelectServerPresenter implements Presenter<SelectServerDialog> {

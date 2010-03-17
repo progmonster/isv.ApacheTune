@@ -1,12 +1,12 @@
 package com.apachetune;
 
-import org.apache.commons.lang.exception.*;
-import org.testng.*;
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.testng.Reporter;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public final class TestUtils {

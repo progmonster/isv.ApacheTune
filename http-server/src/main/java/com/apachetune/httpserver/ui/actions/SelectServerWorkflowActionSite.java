@@ -1,16 +1,17 @@
 package com.apachetune.httpserver.ui.actions;
 
-import com.apachetune.core.ui.actions.*;
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionPermission;
+import com.apachetune.core.ui.actions.ActionSite;
+
 import static com.apachetune.core.ui.Constants.SERVER_REOPEN_SERVER_ACTION;
 import static com.apachetune.core.ui.Constants.SERVER_REOPEN_SERVER_CLEAR_LIST_ACTION;
-import static com.apachetune.httpserver.Constants.SERVER_SELECT_HTTP_SERVER_ACTION;
-import static com.apachetune.httpserver.Constants.SERVER_SEARCH_FOR_HTTP_SERVER_ACTION;
-import static com.apachetune.httpserver.Constants.SERVER_CLOSE_SERVER_ACTION;
+import static com.apachetune.httpserver.Constants.*;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public interface SelectServerWorkflowActionSite extends ActionSite {

@@ -1,11 +1,13 @@
 package com.apachetune.core.ui.actions.impl;
 
-import com.apachetune.core.ui.actions.*;
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionPermission;
+import com.apachetune.core.ui.actions.ActionSite;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 interface FakeActionSite extends ActionSite {

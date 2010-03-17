@@ -1,19 +1,21 @@
 package com.apachetune.core.ui.editors.impl;
 
-import com.apachetune.core.ui.editors.*;
+import com.apachetune.core.ui.editors.SaveFilesHelper;
+import com.apachetune.core.ui.editors.SaveFilesHelperCallBack;
 import com.apachetune.core.utils.StringValue;
-import com.google.inject.*;
-import static org.apache.commons.collections.CollectionUtils.*;
-import org.apache.commons.collections.*;
+import com.google.inject.Inject;
+import org.apache.commons.collections.Predicate;
 
 import javax.swing.*;
+import java.util.Collection;
+
 import static javax.swing.JOptionPane.*;
-import java.util.*;
+import static org.apache.commons.collections.CollectionUtils.exists;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class SaveFilesSeparatelyHelperImpl implements SaveFilesHelper {

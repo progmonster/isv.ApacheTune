@@ -1,25 +1,31 @@
 package com.apachetune.core.ui;
 
-import com.apachetune.core.*;
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.actions.*;
-import com.apachetune.core.ui.actions.impl.*;
-import com.apachetune.core.ui.editors.*;
-import com.apachetune.core.ui.editors.impl.*;
+import com.apachetune.core.WorkItem;
+import com.apachetune.core.ui.actions.ActionManager;
+import com.apachetune.core.ui.actions.impl.ActionManagerImpl;
+import com.apachetune.core.ui.editors.EditorManager;
+import com.apachetune.core.ui.editors.EditorWorkItem;
+import com.apachetune.core.ui.editors.SaveFilesHelper;
+import com.apachetune.core.ui.editors.impl.EditorManagerImpl;
+import com.apachetune.core.ui.editors.impl.EditorWorkItemImpl;
+import com.apachetune.core.ui.editors.impl.SaveAllFilesAtOnceHelperImpl;
+import com.apachetune.core.ui.editors.impl.SaveFilesSeparatelyHelperImpl;
 import com.apachetune.core.ui.impl.*;
-import com.apachetune.core.ui.resources.*;
-import com.google.inject.*;
-import static com.google.inject.Scopes.*;
-import static com.google.inject.name.Names.*;
-import org.noos.xing.mydoggy.*;
-import org.noos.xing.mydoggy.plaf.*;
+import com.apachetune.core.ui.resources.CoreUIResourceLocator;
+import com.google.inject.AbstractModule;
+import org.noos.xing.mydoggy.ToolWindowManager;
+import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;
 
 import javax.swing.*;
+
+import static com.apachetune.core.ui.Constants.*;
+import static com.google.inject.Scopes.SINGLETON;
+import static com.google.inject.name.Names.named;
 
 /**
  * FIXDOC                                   
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class CoreUIModule extends AbstractModule {

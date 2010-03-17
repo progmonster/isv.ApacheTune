@@ -1,32 +1,41 @@
 package com.apachetune.httpserver.ui;
 
-import static com.apachetune.core.ui.Constants.*;
-import com.apachetune.core.ui.*;
-import com.apachetune.core.ui.actions.*;
+import com.apachetune.core.ui.CoreUIUtils;
+import com.apachetune.core.ui.GenericUIWorkItem;
+import com.apachetune.core.ui.OutputPaneDocument;
+import com.apachetune.core.ui.StatusBarManager;
+import com.apachetune.core.ui.actions.ActionHandler;
+import com.apachetune.core.ui.actions.ActionManager;
+import com.apachetune.core.ui.actions.ActionPermission;
 import com.apachetune.core.utils.StringValue;
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.entities.*;
-import com.apachetune.httpserver.ui.actions.*;
-import com.google.inject.*;
-import com.google.inject.name.*;
-import org.apache.commons.io.*;
-import static org.apache.commons.lang.StringUtils.*;
-import static org.apache.commons.lang.exception.ExceptionUtils.*;
-import org.noos.xing.mydoggy.*;
+import com.apachetune.httpserver.entities.HttpServer;
+import com.apachetune.httpserver.ui.actions.RunServerWorkflowActionSite;
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
+import org.apache.commons.io.IOUtils;
+import org.noos.xing.mydoggy.ToolWindow;
+import org.noos.xing.mydoggy.ToolWindowManager;
 
 import javax.swing.*;
 import java.awt.*;
-import static java.awt.Color.*;
 import java.util.ArrayList;
-import static java.util.Arrays.*;
 import java.util.List;
-import java.util.concurrent.*;
-import static java.util.concurrent.Executors.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+
+import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static com.apachetune.httpserver.Constants.*;
+import static java.awt.Color.BLACK;
+import static java.awt.Color.RED;
+import static java.util.Arrays.asList;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunServerWorkflowActionSite {

@@ -1,14 +1,14 @@
 package com.apachetune.core.ui;
 
-import com.apachetune.core.*;
+import com.apachetune.core.GenericWorkItem;
 
 import javax.swing.*;
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * FIXDOC
  *
- * @author <a href="mailto:aleksey.katorgin@trustverse.com">Aleksey V. Katorgin</a>
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
 public abstract class GenericUIWorkItem extends GenericWorkItem implements UIWorkItem {
