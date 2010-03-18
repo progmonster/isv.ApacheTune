@@ -36,7 +36,6 @@ import java.util.prefs.BackingStoreException;
 import static com.apachetune.core.ui.Constants.*;
 import static java.awt.Color.RED;
 import static java.lang.Math.min;
-import static javax.swing.SwingUtilities.invokeLater;
 
 /**
  * FIXDOC
@@ -333,27 +332,24 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     private void restoreViewPosition() {
-        int viewPosition = 0;
+        final int viewPosition;
 
         if (hasStoredViewPosition()) {
-            viewPosition = getStoredViewPosition();
+            viewPosition = min(getStoredViewPosition(), getContentLength());
+        } else {
+            viewPosition = 0;
         }
 
-        viewPosition = min(viewPosition, getContentLength());
+            try {
+                Point restoredFirstVisiblePoint = editorPane.modelToView(viewPosition)
+                        .getLocation();
 
-        try {
-            final Point restoredFirstVisiblePoint = editorPane.modelToView(viewPosition).getLocation();
+                editorPane.scrollRectToVisible(new Rectangle(restoredFirstVisiblePoint, editorScrollPane.
+                        getViewport().getSize()));
+            } catch (BadLocationException e) {
+                e.printStackTrace();  // TODO Make it as a service.
+            }
 
-            invokeLater(new Runnable() {
-                public void run() {
-                    editorPane.scrollRectToVisible(new Rectangle(restoredFirstVisiblePoint, editorScrollPane.
-                            getViewport().getSize()));
-                }
-            });
-
-        } catch (BadLocationException e) {
-            e.printStackTrace();  // TODO Make it as a service.
-        }
     }
 
     private int getStoredViewPosition() {

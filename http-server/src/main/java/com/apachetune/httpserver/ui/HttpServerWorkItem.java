@@ -22,6 +22,7 @@ import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.apachetune.httpserver.ui.smartparts.about.AboutSmartPart;
 import com.apachetune.httpserver.ui.smartparts.searchserver.SearchServerSmartPart;
 import com.apachetune.httpserver.ui.smartparts.selectserver.SelectServerSmartPart;
+import com.apachetune.httpserver.ui.welcomescreen.WelcomeScreenWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
@@ -109,6 +110,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
     private final ToolWindowManager toolWindowManager;
 
+    private final Provider<WelcomeScreenWorkItem> welcomeScreenWorkItemProvider;
+
     @Inject
     public HttpServerWorkItem(
             JFrame mainFrame,
@@ -125,7 +128,9 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
             Provider<ConfEditorWorkItem> confEditorWorkItemProvider,
             @Named(SAVE_ALL_FILES_AT_ONCE_HELPER) Provider<SaveFilesHelper> saveAllFilesAtOnceHelperProvider,
             @Named(SAVE_ALL_FILES_SEPARATELY_HELPER) Provider<SaveFilesHelper> saveFilesSeparatelyHelperProvider,
-            PreferencesManager preferencesManager, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager) {
+            PreferencesManager preferencesManager,
+            @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
+            Provider<WelcomeScreenWorkItem> welcomeScreenWorkItemProvider) {
         super(HTTP_SERVER_WORK_ITEM);
 
         this.mainFrame = mainFrame;
@@ -150,6 +155,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         this.saveFilesSeparatelyHelperProvider = saveFilesSeparatelyHelperProvider;
         this.preferencesManager = preferencesManager;
         this.toolWindowManager = toolWindowManager;
+        this.welcomeScreenWorkItemProvider = welcomeScreenWorkItemProvider;
     }
 
     @Subscriber(eventId = EXIT_EVENT)
@@ -324,7 +330,11 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
         activate();
 
-        reopenLastOpenedHttpServer();
+        if (getServerWasOpenedFlag()) {
+            reopenLastOpenedHttpServer();
+        } else {
+            startWelcomeScreenWorkItem();
+        }
     }
 
     protected void doUIDispose() {
@@ -565,6 +575,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
 
         closeCurrentHttpServer();
 
+        closeWelcomeScreenWorkItem();
+
         recentOpenedServersManager.storeServerUriToRecentList(serverUri);
 
         HttpServer currentHttpServer = httpServerManager.getServer(serverUri);
@@ -650,6 +662,8 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         actionManager.updateActionSites(this);
 
         titleBarManager.removeTitle(LEVEL_2);
+
+        startWelcomeScreenWorkItem();
     }
 
     private boolean hasCurrentServer() {
@@ -818,6 +832,32 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         WorkItem lastActiveChildWorkItem = getDirectChildWorkItem(activeChildWorkItemInfo);
 
         lastActiveChildWorkItem.activate();
+    }
+
+    private void startWelcomeScreenWorkItem() {
+        if (getCurrentWelcomeScreenWorkItem() != null) {
+            return;
+        }
+
+        WelcomeScreenWorkItem welcomeScreenWI = welcomeScreenWorkItemProvider.get();
+
+        addChildWorkItem(welcomeScreenWI);
+
+        welcomeScreenWI.initialize();
+    }
+
+    private void closeWelcomeScreenWorkItem() {
+        WelcomeScreenWorkItem welcomeScreenWI = getCurrentWelcomeScreenWorkItem();
+
+        if (welcomeScreenWI == null) {
+            return;
+        }
+
+        welcomeScreenWI.dispose();
+    }
+
+    private WelcomeScreenWorkItem getCurrentWelcomeScreenWorkItem() {
+        return (WelcomeScreenWorkItem) getChildWorkItem(WELCOME_SCREEN_WORK_ITEM);
     }
 
     private class SaveConfFilesHelperCallBack extends SaveFilesHelperCallBackAdapter {

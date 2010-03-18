@@ -2,8 +2,8 @@ package com.apachetune.core.ui;
 
 import com.apachetune.core.GenericWorkItem;
 
-import javax.swing.*;
-import java.lang.reflect.InvocationTargetException;
+import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 
 /**
  * FIXDOC
@@ -30,36 +30,24 @@ public abstract class GenericUIWorkItem extends GenericWorkItem implements UIWor
     }
 
     protected final void doInitialize() {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        doUIInitialize();
-                    }
-                });
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
-            }
+        if (!isEventDispatchThread()) {
+            invokeLater(new Runnable() {
+                public void run() {
+                    doUIInitialize();
+                }
+            });
         } else {
             doUIInitialize();
         }
     }
 
     protected final void doDispose() {
-        if (!SwingUtilities.isEventDispatchThread()) {
-            try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        doUIDispose();
-                    }
-                });
-            } catch (InterruptedException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
-            }
+        if (!isEventDispatchThread()) {
+            invokeLater(new Runnable() {
+                public void run() {
+                    doUIDispose();
+                }
+            });
         } else {
             doUIDispose();
         }

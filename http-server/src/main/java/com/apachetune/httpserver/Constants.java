@@ -68,4 +68,6 @@ public class Constants {
     public static final String OUTPUT_WINDOW_ANCHOR_PREF = "OUTPUT_WINDOW_ANCHOR";
 
     public static final String OUTPUT_WINDOW_DOCK_LENGTH_PREF = "OUTPUT_WINDOW_DOCK_LENGTH";
+    
+    public static final String WELCOME_SCREEN_WORK_ITEM = "WELCOME_SCREEN_WORK_ITEM";
 }

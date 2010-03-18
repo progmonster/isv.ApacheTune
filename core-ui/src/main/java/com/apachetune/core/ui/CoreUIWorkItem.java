@@ -67,6 +67,8 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private final TitleBarManager titleBarManager;
 
+    private JPanel mainPanel;
+
     @Inject
     public CoreUIWorkItem(JFrame mainFrame, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
                           MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
@@ -114,6 +116,30 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         }
     }
 
+    public void switchToToolWindowManager() {
+        if (mainPanel.isAncestorOf((Component) toolWindowManager)) {
+            return;
+        }
+
+        mainPanel.removeAll();
+
+        mainPanel.add((Component) toolWindowManager);
+    }
+
+    public void switchToWelcomeScreen(final JPanel welcomeScreenPanel) {
+        if (welcomeScreenPanel == null) {
+            throw new NullPointerException("Argument welcomeScreenPanel cannot be a null [this = " + this + "]");
+        }
+
+        if (mainPanel.isAncestorOf(welcomeScreenPanel)) {
+            return;
+        }
+
+        mainPanel.removeAll();
+
+        mainPanel.add(welcomeScreenPanel);
+    }
+
     protected void doUIInitialize() {
         raiseEvent(SHOW_SPLASH_SCREEN_EVENT);
 
@@ -146,6 +172,8 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
         getRootWorkItem().removeChildActivationListener(this);
 
+        mainFrame.getContentPane().remove(mainPanel);
+
         mainFrame.setVisible(false);
         mainFrame.dispose();
 
@@ -170,7 +198,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
         contentManager.setEnabled(true);
 
-        mainFrame.getContentPane().add((Component) toolWindowManager);
+        mainPanel.add((Component) toolWindowManager);
     }
 
     private void disposeActions() {
@@ -203,6 +231,12 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 normalFrameBounds.setBounds(swingMaxWindowPatch.GetNormalBoundsAfterChangeSizeEvent(normalFrameBounds));
             }
         });
+
+        mainPanel = new JPanel();
+
+        mainPanel.setLayout(new GridLayout());
+
+        mainFrame.getContentPane().add(mainPanel);
     }
 
     private void initTitleBar() {
@@ -238,17 +272,9 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
         normalFrameBounds.setBounds(bounds);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                  mainFrame.setBounds(bounds);
-            }
-        });
+        mainFrame.setBounds(bounds);
 
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                mainFrame.setExtendedState(isFrameMaximizied ? MAXIMIZED_BOTH : NORMAL);
-            }
-        });
+        mainFrame.setExtendedState(isFrameMaximizied ? MAXIMIZED_BOTH : NORMAL);
     }
 
     private Rectangle getInitialBounds() {

@@ -26,7 +26,6 @@ import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.httpserver.Constants.*;
-import static javax.swing.SwingUtilities.invokeLater;
 import static org.noos.xing.mydoggy.ToolWindowAnchor.BOTTOM;
 import static org.noos.xing.mydoggy.ToolWindowType.DOCKED;
 
@@ -121,71 +120,30 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
     // FIX restore focus for Console if server was closed when this console was active.
 
     protected void doActivation() {
-        invokeLater(new Runnable() {
-            public void run() {
-                getOutputWindow().setSelected(true);
-            }
-        });
+        getOutputWindow().setSelected(true);
 
-        invokeLater(new Runnable() {
-            public void run() {
-                getOutputWindow().setActive(true);
-            }
-        });        
+        getOutputWindow().setActive(true);
     }
 
     protected void doUIInitialize() {
         stdoutPane = new JTextPane();
 
-        invokeLater(new Runnable() {
-            public void run() {
-                stdoutPane.setDocument(outputPaneDocument);
-            }
-        });
+        stdoutPane.setDocument(outputPaneDocument);
+        stdoutPane.setText("");
 
-        invokeLater(new Runnable() {
-            public void run() {
-                stdoutPane.setText("");
-            }
-        });
+        try {
+            ToolWindowAnchor anchor = getRestoredOutputWindowAnchor();
 
-        invokeLater(new Runnable() {
-            public void run() {
-                stdoutPane.setEditable(false);
-            }
-        });
+            // TODO Localize
+            toolWindowManager.registerToolWindow(OUTPUT_TOOL_WINDOW, "Output view", httpServerResourceLocator
+                    .loadIcon("console_view_icon.png"), stdoutPane, anchor);
+        } catch (IOException e) {
+            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+        }
 
-        invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ToolWindowAnchor anchor = getRestoredOutputWindowAnchor();
-
-                    // TODO Localize
-                    toolWindowManager.registerToolWindow(OUTPUT_TOOL_WINDOW, "Output view", httpServerResourceLocator
-                            .loadIcon("console_view_icon.png"), stdoutPane, anchor);
-                } catch (IOException e) {
-                    throw new RuntimeException("Internal error", e); // TODO Make it with a service.
-                }
-            }
-        });
-
-        invokeLater(new Runnable() {
-            public void run() {
-                getOutputWindowDocketDescriptor().setMinimumDockLength(MINIMAL_OUTPUT_WINDOW_DOCK_LENGTH);
-            }
-        });
-
-        invokeLater(new Runnable() {
-            public void run() {
-                getOutputWindowDocketDescriptor().setDockLength(getRestoredOutputWindowDockLength());
-            }
-        });
-
-        invokeLater(new Runnable() {
-            public void run() {
-                getOutputWindow().setVisible(true);
-            }
-        });
+        getOutputWindowDocketDescriptor().setMinimumDockLength(MINIMAL_OUTPUT_WINDOW_DOCK_LENGTH);
+        getOutputWindowDocketDescriptor().setDockLength(getRestoredOutputWindowDockLength());
+        getOutputWindow().setVisible(true);
 
         stdoutPane.addFocusListener(this);
 
