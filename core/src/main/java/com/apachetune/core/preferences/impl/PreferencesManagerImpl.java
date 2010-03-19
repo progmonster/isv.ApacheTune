@@ -1,8 +1,10 @@
 package com.apachetune.core.preferences.impl;
 
+import com.apachetune.core.AppManager;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.preferences.PreferencesWrapper;
+import com.google.inject.Inject;
 
 /**
  * FIXDOC
@@ -11,8 +13,16 @@ import com.apachetune.core.preferences.PreferencesWrapper;
  * @version 1.0
  */
 public class PreferencesManagerImpl implements PreferencesManager {
+    private final AppManager appManager;
+
+    @Inject
+    public PreferencesManagerImpl(final AppManager appManager) {
+        this.appManager = appManager;
+    }
+
     public Preferences systemNodeForPackage(Class<?> c) {
-        return new PreferencesWrapper(java.util.prefs.Preferences.systemNodeForPackage(c));
+        return new PreferencesWrapper(java.util.prefs.Preferences.systemNodeForPackage(c).node(appManager
+                .getFullAppName()));
     }
 
     public Preferences systemRoot() {
@@ -20,7 +30,8 @@ public class PreferencesManagerImpl implements PreferencesManager {
     }
 
     public Preferences userNodeForPackage(Class<?> c) {
-        return new PreferencesWrapper(java.util.prefs.Preferences.userNodeForPackage(c));
+        return new PreferencesWrapper(java.util.prefs.Preferences.userNodeForPackage(c).node(appManager
+                .getFullAppName()));
     }
 
     public Preferences userRoot() {

@@ -1,23 +1,34 @@
 package com.apachetune.httpserver.impl;
 
-import static com.apachetune.httpserver.Constants.*;
-import com.apachetune.httpserver.*;
-import org.apache.commons.lang.*;
+import com.apachetune.core.preferences.Preferences;
+import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.httpserver.RecentOpenedServerListChangedListener;
+import com.apachetune.httpserver.RecentOpenedServersManager;
+import com.google.inject.Inject;
+import org.apache.commons.lang.ArrayUtils;
 
-import static java.lang.StrictMath.*;
-import java.net.*;
-import java.text.*;
-import java.util.*;
-import java.util.prefs.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.prefs.BackingStoreException;
+
+import static com.apachetune.httpserver.Constants.RECENT_OPENED_SERVER;
+import static java.lang.StrictMath.min;
 
 public class RecentOpenedServersManagerImpl implements RecentOpenedServersManager {
     private static final int RECENT_LIST_SIZE = 5;
+
+    private final PreferencesManager preferencesManager;
 
     private final List<RecentOpenedServerListChangedListener> changeListener =
             new ArrayList<RecentOpenedServerListChangedListener>();
 
 
-    public RecentOpenedServersManagerImpl() {
+    @Inject
+    public RecentOpenedServersManagerImpl(final PreferencesManager preferencesManager) {
+        this.preferencesManager = preferencesManager;
         //noinspection ConstantConditions
         if (RECENT_LIST_SIZE < 0) {
             throw new RuntimeException("RECENT_LIST_SIZE can not be less than zero."); 
@@ -49,7 +60,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
             throw new IllegalStateException("It should be at least one previously opened http-server.");
         }
 
-        Preferences node = Preferences.userNodeForPackage(getClass());
+        Preferences node = preferencesManager.userNodeForPackage(getClass());
 
         String strServerUri = node.get(getServerItemKey(0), null);
 
@@ -61,7 +72,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     public boolean hasLastOpenedServer() {
-        Preferences node = Preferences.userNodeForPackage(getClass());
+        Preferences node = preferencesManager.userNodeForPackage(getClass());
 
         try {
             return ArrayUtils.contains(node.keys(), getServerItemKey(0));
@@ -79,7 +90,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     public List<URI> getServerUriList() {
         List<URI> serverUriList = new ArrayList<URI>(RECENT_LIST_SIZE);
 
-        Preferences node = Preferences.userNodeForPackage(getClass());
+        Preferences node = preferencesManager.userNodeForPackage(getClass());
 
         int serverUriIdx = 0;
 
@@ -105,7 +116,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     private void doClearServerUriList() {
-        Preferences node = Preferences.userNodeForPackage(getClass());
+        Preferences node = preferencesManager.userNodeForPackage(getClass());
 
         try {
             node.removeNode();
@@ -117,7 +128,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     private void updateServerUriList(List<URI> serverUriList) {
         doClearServerUriList();
 
-        Preferences node = Preferences.userNodeForPackage(getClass());
+        Preferences node = preferencesManager.userNodeForPackage(getClass());
 
         for (int serverUriIdx = 0; serverUriIdx < serverUriList.size(); serverUriIdx++) {
             node.put(getServerItemKey(serverUriIdx), serverUriList.get(serverUriIdx).toString());

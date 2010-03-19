@@ -114,4 +114,8 @@ public class AppManagerImpl implements AppManager {
 
         return MessageFormat.format(copyrightTemplate, copyrightYears); 
     }
+
+    public String getFullAppName() {
+        return getName() +'-' + getVersion().format();
+    }
 }

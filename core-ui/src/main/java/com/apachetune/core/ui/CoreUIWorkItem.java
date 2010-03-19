@@ -5,6 +5,8 @@ import com.apachetune.core.ActivationListener;
 import com.apachetune.core.AppManager;
 import com.apachetune.core.AppVersion;
 import com.apachetune.core.WorkItem;
+import com.apachetune.core.preferences.Preferences;
+import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.actions.*;
 import com.apachetune.core.ui.editors.EditorActionSite;
 import com.apachetune.core.ui.resources.CoreUIResourceLocator;
@@ -24,7 +26,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_1;
@@ -68,13 +69,19 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private final TitleBarManager titleBarManager;
 
+    private final PreferencesManager preferencesManager;
+
     private JPanel mainPanel;
 
     @Inject
-    public CoreUIWorkItem(JFrame mainFrame, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
-                          MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
-                          CoreUIResourceLocator coreUIResourceLocator, StatusBarManager statusBarManager,
-                          ToolBarManager toolBarManager, AppManager appManager, TitleBarManager titleBarManager) {
+    public CoreUIWorkItem(
+            JFrame mainFrame, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
+            MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
+            CoreUIResourceLocator coreUIResourceLocator, StatusBarManager statusBarManager,
+            ToolBarManager toolBarManager,
+            AppManager appManager,
+            TitleBarManager titleBarManager,
+            PreferencesManager preferencesManager) {
         super(CORE_UI_WORK_ITEM);
 
         this.mainFrame = mainFrame;
@@ -87,6 +94,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         this.statusBarManager = statusBarManager;
         this.appManager = appManager;
         this.titleBarManager = titleBarManager;
+        this.preferencesManager = preferencesManager;
     }
 
     public void onActivate(WorkItem workItem) {
@@ -257,7 +265,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     private void restoreMainFrameBounds() {
-        Preferences userNode = Preferences.userNodeForPackage(getClass());
+        Preferences userNode = preferencesManager.userNodeForPackage(getClass());
 
         final boolean isFrameMaximizied = userNode.getBoolean(MAIN_FRAME_MAXIMIZED_PERSISTED, false);
 
@@ -527,7 +535,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     private void storeMainFrameBounds() throws BackingStoreException {
-        Preferences userNode = Preferences.userNodeForPackage(getClass());
+        Preferences userNode = preferencesManager.userNodeForPackage(getClass());
 
         userNode.putBoolean(MAIN_FRAME_MAXIMIZED_PERSISTED, isFrameMaximized());
 

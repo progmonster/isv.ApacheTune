@@ -23,4 +23,6 @@ public interface AppManager {
     URL getWebSite();
 
     String getCopyrightText();
+
+    String getFullAppName();
 }
