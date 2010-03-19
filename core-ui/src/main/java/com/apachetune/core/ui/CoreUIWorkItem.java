@@ -1,5 +1,6 @@
 package com.apachetune.core.ui;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import com.apachetune.core.ActivationListener;
 import com.apachetune.core.AppManager;
 import com.apachetune.core.AppVersion;
@@ -146,6 +147,8 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         getRootWorkItem().addChildActivationListener(this);
 
         initMainFrame();
+        initNativeSwingLibrary();
+
         initActions();
         initMenuBar();
         initToolBar();
@@ -546,6 +549,10 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private boolean isNormalFrameState() {
         return !isFrameMaximized() && !isFrameIconified(); 
+    }
+
+    private void initNativeSwingLibrary() {
+        NativeInterface.open();
     }
 
     /* PATCH: Этот патч позволяет избежать ошибку, связанную с выдачей некорректного сотояния окна приложения при его

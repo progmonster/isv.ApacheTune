@@ -38,6 +38,9 @@
     <orderEntry type="library" exported="" name="Maven: org.swinglabs:swing-worker:1.1" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.l2fprod:common:7.3" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.google.collections:google-collections:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: swt:swt-win32:3.6M6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: djproject.sourceforge.net:DJNativeSwing:0-9-9-20100316" level="project" />
+    <orderEntry type="library" exported="" name="Maven: djproject.sourceforge.net:DJNativeSwing-SWT:0-9-9-20100316" level="project" />
     <orderEntry type="library" exported="" name="Maven: org.testng:testng:jdk15:5.8" level="project" />
     <orderEntry type="library" exported="" name="Maven: junit:junit:3.8.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jmock:jmock-legacy:2.5.1" level="project" />

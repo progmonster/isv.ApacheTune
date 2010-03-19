@@ -1,7 +1,7 @@
 package com.apachetune.httpserver.ui.welcomescreen;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
+import chrriis.common.WebServer;
+import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,10 +14,29 @@ import java.awt.*;
  */
 public class WelcomeScreenView {
     private JPanel mainPanel;
-    private JTree tree1;
 
     public JPanel getMainPanel() {
         return mainPanel;
+    }
+
+    private void createUIComponents() {
+        mainPanel = new JPanel();
+
+        mainPanel.setLayout(new GridLayout());
+
+        JWebBrowser browser = new JWebBrowser();
+
+        browser.setBarsVisible(false);
+
+        mainPanel.add(browser);
+
+        String startPageUrl = WebServer.getDefaultWebServer().getClassPathResourceURL(getClass().getName(),
+                                                                                      "index.html"
+        );
+
+        System.out.println(startPageUrl);
+
+        browser.navigate(startPageUrl);
     }
 
     {
@@ -35,15 +54,7 @@ public class WelcomeScreenView {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        tree1 = new JTree();
-        mainPanel.add(tree1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-                                                 GridConstraints.SIZEPOLICY_WANT_GROW,
-                                                 GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50),
-                                                 null, 0, false
-        )
-        );
+        createUIComponents();
     }
 
     /**

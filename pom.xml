@@ -123,6 +123,24 @@
                 <artifactId>google-collections</artifactId>
                 <version>1.0</version>
             </dependency>
+
+            <dependency>
+                <groupId>swt</groupId>
+                <artifactId>swt-win32</artifactId>
+                <version>3.6M6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>djproject.sourceforge.net</groupId>
+                <artifactId>DJNativeSwing</artifactId>
+                <version>0-9-9-20100316</version>
+            </dependency>
+
+            <dependency>
+                <groupId>djproject.sourceforge.net</groupId>
+                <artifactId>DJNativeSwing-SWT</artifactId>
+                <version>0-9-9-20100316</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -218,8 +236,22 @@
             <groupId>com.google.collections</groupId>
             <artifactId>google-collections</artifactId>
         </dependency>
-    </dependencies>
-    
+
+        <dependency>
+            <groupId>swt</groupId>
+            <artifactId>swt-win32</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>djproject.sourceforge.net</groupId>
+            <artifactId>DJNativeSwing</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>djproject.sourceforge.net</groupId>
+            <artifactId>DJNativeSwing-SWT</artifactId>
+        </dependency>
+    </dependencies>    
 
     <build>
         <!--<finalName>${project.artifactId}-${project.version}-r${buildNumber}</finalName>-->
