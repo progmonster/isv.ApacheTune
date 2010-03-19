@@ -27,6 +27,7 @@ public class WelcomeScreenView {
         JWebBrowser browser = new JWebBrowser();
 
         browser.setBarsVisible(false);
+        browser.setDefaultPopupMenuRegistered(false);
 
         mainPanel.add(browser);
 
