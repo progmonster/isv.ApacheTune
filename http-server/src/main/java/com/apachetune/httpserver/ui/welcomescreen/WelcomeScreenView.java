@@ -2,9 +2,14 @@ package com.apachetune.httpserver.ui.welcomescreen;
 
 import chrriis.common.WebServer;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
+import com.apachetune.httpserver.Constants;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static com.apachetune.httpserver.Constants.*;
 
 /**
  * FIXDOC
@@ -13,7 +18,13 @@ import java.awt.*;
  *         Created Date: 18.03.2010
  */
 public class WelcomeScreenView {
+    private final WelcomeScreenWorkItem workItem;
+
     private JPanel mainPanel;
+
+    public WelcomeScreenView(final WelcomeScreenWorkItem workItem) {
+        this.workItem = workItem;
+    }
 
     public JPanel getMainPanel() {
         return mainPanel;
@@ -29,15 +40,37 @@ public class WelcomeScreenView {
         browser.setBarsVisible(false);
         browser.setDefaultPopupMenuRegistered(false);
 
+        browser.addWebBrowserListener(new WebBrowserAdapter() {
+            public void commandReceived(final WebBrowserCommandEvent e) {
+                String cmd = e.getCommand();
+
+                if (cmd.equals("openServer")) {
+                    doOpenServer();
+                } else if (cmd.equals("searchServer")) {
+                    doSearchServer();
+                } else {
+                    // TODO Make it as a service.
+                    throw new RuntimeException("Unknown command [command = '" + cmd + "']");
+                }
+            }
+        }
+        );
+
         mainPanel.add(browser);
 
         String startPageUrl = WebServer.getDefaultWebServer().getClassPathResourceURL(getClass().getName(),
                                                                                       "index.html"
         );
 
-        System.out.println(startPageUrl);
-
         browser.navigate(startPageUrl);
+    }
+
+    private void doSearchServer() {
+        workItem.raiseEvent(SERVER_SEARCH_FOR_HTTP_SERVER_EVENT);
+    }
+
+    private void doOpenServer() {
+        workItem.raiseEvent(SERVER_SELECT_HTTP_SERVER_EVENT);
     }
 
     {

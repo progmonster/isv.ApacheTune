@@ -3,9 +3,11 @@
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-    <title>jQuery UI Example Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>The Welcome Screen - Main</title>
+
     <link type="text/css" href="jquery-ui/css/redmond/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />
+
     <script type="text/javascript" src="jquery-ui/js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="jquery-ui/js/jquery-ui-1.8rc3.custom.min.js"></script>
     <script type="text/javascript">
@@ -63,7 +65,6 @@
         });
     </script>
     <style type="text/css">
-        /*demo page css*/
         body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
         .demoHeaders { margin-top: 2em; }
         #dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
@@ -75,35 +76,72 @@
 </head>
 
 <body style="margin: 0px; padding: 0px; width: 100%; height: 100%;">
-
-<div style="background: url('img/welcome_screen_logo_fill.png') repeat-x;">
-    <img src="img/welcome_screen_logo.png" alt="Welcome Screen Logo" />
-</div>
+    <div style="background: url('img/welcome_screen_logo_fill.png') repeat-x;">
+        <img src="img/welcome_screen_logo.png" alt="Welcome Screen Logo" />
+    </div>
 
     <div class="ui-widget-content" style="margin: 4px; padding: 4px;">
         <h1>Welcome to The Apache HTTP Server Configuration Utility!</h1>
-        <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">This page demonstrates the widgets you downloaded using the theme you selected in the download builder. We've included and linked to minified versions of <a href="js/jquery-1.4.2.min.js">jQuery</a>, your personalized copy of <a href="js/jquery-ui-1.8rc3.custom.min.js">jQuery UI (js/jquery-ui-1.8rc3.custom.min.js)</a>, and <a href="css/redmond/jquery-ui-1.8rc3.custom.css">css/redmond/jquery-ui-1.8rc3.custom.css</a> which imports the entire jQuery UI CSS Framework. You can choose to link a subset of the CSS Framework depending on your needs. </p>
-        <p style="font-size: 1.2em; line-height: 1.5; margin: 1em 0; width: 50%;">You've downloaded components and a theme that are compatible with jQuery 1.3+. Please make sure you are using jQuery 1.3+ in your production environment. <em>If you need jQuery UI components that work with an earlier version of jQuery, you can choose an older version in the <a href="http://jqueryui.com/download">jQuery UI download builder</a>.</em></p>
+        <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">[TODO A product description text with a link to the product web-site.]</p>
 
         <p style="font-weight: bold; margin: 2em 0 1em; font-size: 1.3em;">YOU CAN:</p>
 
-            <!-- Accordion -->
-            <div id="accordion">
+        <div id="accordion">
+            <div style="float: left; width: 40%;">
+                <!-- TODO The first column -->
                 <div>
-                    <h3><a href="#">First</a></h3>
-                    <div>Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.</div>
+                    <h3><a href="#">Open an Apache HTTP Server</a></h3>
+
+                    <div>
+                        <p>Select and open an Apache HTTP Server installed locally on your computer. [TODO Rewrite text. It should means "open conf files to edit."]</p>
+
+                        <a href="command://openServer">Click to show the Open Server dialog</a>
+                    </div>
                 </div>
+
                 <div>
-                    <h3><a href="#">Second</a></h3>
-                    <div>Phasellus mattis tincidunt nibh.</div>
+                    <h3><a href="#">Search for Apache HTTP Server</a></h3>
+
+                    <div>
+                        <p>Search and open an Apache HTTP Server installed locally on your computer. [TODO Rewrite text. It should means "open conf files to edit."]</p>
+
+                        <a href="command://searchServer">Click to show the Search Server dialog</a>
+                    </div>
                 </div>
+
                 <div>
-                    <h3><a href="#">Third</a></h3>
-                    <div>Nam dui erat, auctor a, dignissim quis.</div>
+                    <h3><a href="#">Open a last opened Apache HTTP Server.</a></h3>
+
+                    <div>
+                        <p>Open a last opened local Apache HTTP Server from the recent list. [TODO Rewrite text. It should means "open conf files to edit."]</p>
+
+                        [TODO Show recent list with links to an open corresponding server action.]
+                    </div>
                 </div>
             </div>
-    </div>
 
+            <div style="width: 40%; clear: both;">
+                <!-- TODO The second column -->
+                <div>
+                    <h3><a href="#">Register and WIN ApacheTune Professional license from 50.</a></h3>
+
+                    <div>[TODO description]</div>
+                </div>
+
+                <div>
+                    <h3><a href="#">Donate and get ApacheTune Professional license</a></h3>
+
+                    <div>[TODO description]</div>
+                </div>
+
+                <div>
+                    <h3><a href="#">Send feedback and get ApacheTune Professional license</a></h3>
+
+                    <div>[TODO description]</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 

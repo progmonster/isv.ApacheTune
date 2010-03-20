@@ -176,6 +176,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     }
 
     @ActionHandler(SERVER_SELECT_HTTP_SERVER_ACTION)
+    @Subscriber(eventId = SERVER_SELECT_HTTP_SERVER_EVENT)
     public void onServerSelect() {
         SelectServerSmartPart selectServerSmartPart = selectServerSmartPartProvider.get();
 
@@ -189,6 +190,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
     }
 
     @ActionHandler(SERVER_SEARCH_FOR_HTTP_SERVER_ACTION)
+    @Subscriber(eventId = SERVER_SEARCH_FOR_HTTP_SERVER_EVENT)
     public void onServerSearch() {
         SearchServerSmartPart searchServerSmartPart = searchServerSmartPartProvider.get();
 

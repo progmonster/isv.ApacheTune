@@ -28,7 +28,7 @@ public class WelcomeScreenWorkItem extends GenericUIWorkItem {
     }
 
     protected void doUIInitialize() {
-            JPanel mainPanel = new WelcomeScreenView().getMainPanel();
+            JPanel mainPanel = new WelcomeScreenView(this).getMainPanel();
 
             coreUIWorkItem.switchToWelcomeScreen(mainPanel);
     }
