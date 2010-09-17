@@ -24,10 +24,12 @@
 	<cp>lib\commons-lang-2.4.jar</cp>
 	<cp>lib\core-1.0-lite-alpha-SNAPSHOT.jar</cp>
 	<cp>lib\core-ui-1.0-lite-alpha-SNAPSHOT.jar</cp>
+	<cp>lib\DJNativeSwing-0-9-9-20100316.jar</cp>
+	<cp>lib\DJNativeSwing-SWT-0-9-9-20100316.jar</cp>
 	<cp>lib\filters-2.0.235.jar</cp>
 	<cp>lib\forms-1.1-preview.jar</cp>
 	<cp>lib\forms_rt-7.0.3.jar</cp>
-	<cp>lib\google-collections-1.0-rc1.jar</cp>
+	<cp>lib\google-collections-1.0.jar</cp>
 	<cp>lib\guice-1.0.jar</cp>
 	<cp>lib\http-server-1.0-lite-alpha-SNAPSHOT.jar</cp>
 	<cp>lib\jdom-1.0.jar</cp>
@@ -37,6 +39,7 @@
 	<cp>lib\mydoggy-res-1.4.2.jar</cp>
 	<cp>lib\swing-worker-1.1.jar</cp>
 	<cp>lib\swingx-1.0.jar</cp>
+	<cp>lib\swt-win32-3.6M6.jar</cp>
 	<cp>lib\TableLayout-20050920.jar</cp>
   </classPath>
   <jre>

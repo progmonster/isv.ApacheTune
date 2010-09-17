@@ -292,6 +292,7 @@
                         <compilerArgument>-Xlint:unchecked</compilerArgument>
                         <source>1.6</source>
                         <target>1.6</target>
+                        <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
 
@@ -309,6 +310,7 @@
                   <artifactId>maven-surefire-plugin</artifactId>
                   <version>2.4.2</version>
                   <configuration>
+                    <argLine>-enableassertions</argLine>
                     <parallel>methods</parallel>
                     <threadCount>1</threadCount>
                   </configuration>
@@ -360,6 +362,13 @@
           <id>central</id>
           <name>Maven Repository Switchboard</name>
           <url>http://repo1.maven.org/maven2</url>
+        </repository>
+
+        <repository>
+            <id>maven2-repository.dev.java.net</id>
+            <name>Java.net Repository for Maven</name>
+            <url>http://download.java.net/maven/2/</url>
+            <layout>default</layout>
         </repository>
     </repositories>
 

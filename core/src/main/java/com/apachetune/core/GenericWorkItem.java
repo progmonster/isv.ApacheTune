@@ -12,6 +12,8 @@ import java.util.*;
 import static com.apachetune.core.Constants.EMPTY_EVENT;
 import static java.util.Arrays.asList;
 import static org.apache.commons.collections.CollectionUtils.find;
+import static org.apache.commons.lang.Validate.notEmpty;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -60,13 +62,8 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void setId(String id) {
-        if (id == null) {
-            throw new NullPointerException("Argument id cannot be a null [this = " + this + "]");
-        }
-
-        if (id.isEmpty()) {
-            throw new IllegalArgumentException("Argument id cannot be empty [this = " + this + "]");
-        }
+        notNull(id, "Argument id cannot be a null [this = " + this + "]");
+        notEmpty(id, "Argument id cannot be empty [this = " + this + "]");
 
         this.id = id;
     }
