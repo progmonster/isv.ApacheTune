@@ -10,4 +10,6 @@ import com.apachetune.core.WorkItem;
  */
 public interface Presenter<TView> {
     void initialize(WorkItem workItem, TView view);
+
+    void dispose();
 }

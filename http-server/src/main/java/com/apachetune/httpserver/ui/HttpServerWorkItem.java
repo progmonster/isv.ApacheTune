@@ -19,9 +19,9 @@ import com.apachetune.httpserver.ui.actions.RunServerWorkflowActionSite;
 import com.apachetune.httpserver.ui.actions.SelectServerWorkflowActionSite;
 import com.apachetune.httpserver.ui.editors.ConfEditorWorkItem;
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
-import com.apachetune.httpserver.ui.smartparts.about.AboutSmartPart;
-import com.apachetune.httpserver.ui.smartparts.searchserver.SearchServerSmartPart;
-import com.apachetune.httpserver.ui.smartparts.selectserver.SelectServerSmartPart;
+import com.apachetune.httpserver.ui.about.AboutSmartPart;
+import com.apachetune.httpserver.ui.searchserver.SearchServerSmartPart;
+import com.apachetune.httpserver.ui.selectserver.SelectServerSmartPart;
 import com.apachetune.httpserver.ui.welcomescreen.WelcomeScreenWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
@@ -495,7 +495,7 @@ public class HttpServerWorkItem extends GenericUIWorkItem implements SelectServe
         updateRecentOpenedServersMenu();
 
         recentOpenedServersManager.addServerListChangedListener(new RecentOpenedServerListChangedListener() {
-            public void onListChanged() {
+            public void onRecentOpenedServerListChanged() {
                 updateRecentOpenedServersMenu();
             }
         }

@@ -82,7 +82,13 @@
 
     <div class="ui-widget-content" style="margin: 4px; padding: 4px;">
         <h1>Welcome to The Apache HTTP Server Configuration Utility!</h1>
-        <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">[TODO A product description text with a link to the product web-site.]</p>
+        <br />
+        <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">This is a free open source graphical
+            Apache HTTP Server configure utility.
+            <br /><br />
+            Visit our site <a href="http://apachetune.com/">apachetune.com</a> to get more information about this
+            <br />product and obtain source code if you need.
+        </p>
 
         <p style="font-weight: bold; margin: 2em 0 1em; font-size: 1.3em;">YOU CAN:</p>
 
@@ -93,7 +99,7 @@
                     <h3><a href="#">Open an Apache HTTP Server</a></h3>
 
                     <div>
-                        <p>Select and open an Apache HTTP Server installed locally on your computer. [TODO Rewrite text. It should means "open conf files to edit."]</p>
+                        <p>Select and open an Apache HTTP Server to configure installed locally on your computer.</p>
 
                         <a href="command://openServer">Click to show the Open Server dialog</a>
                     </div>
@@ -103,7 +109,7 @@
                     <h3><a href="#">Search for Apache HTTP Server</a></h3>
 
                     <div>
-                        <p>Search and open an Apache HTTP Server installed locally on your computer. [TODO Rewrite text. It should means "open conf files to edit."]</p>
+                        <p>Search and open an Apache HTTP Server to configure installed locally on your computer.</p>
 
                         <a href="command://searchServer">Click to show the Search Server dialog</a>
                     </div>
@@ -113,9 +119,15 @@
                     <h3><a href="#">Open a last opened Apache HTTP Server.</a></h3>
 
                     <div>
-                        <p>Open a last opened local Apache HTTP Server from the recent list. [TODO Rewrite text. It should means "open conf files to edit."]</p>
-
-                        [TODO Show recent list with links to an open corresponding server action.]
+                        <p>Open a last edited Apache HTTP Server configuration from the recent list.</p>
+#if($recentServerList.size() > 0)
+#foreach($recentServer in $recentServerList)
+                        $recentServer.toString()  
+                        <br />
+#end
+#else
+                        <b>There are no last edited Apache HTTP server config paths.</b>
+#end
                     </div>
                 </div>
             </div>

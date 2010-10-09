@@ -18,7 +18,7 @@ import static com.apachetune.httpserver.Constants.RECENT_OPENED_SERVER;
 import static java.lang.StrictMath.min;
 
 public class RecentOpenedServersManagerImpl implements RecentOpenedServersManager {
-    private static final int RECENT_LIST_SIZE = 5;
+    static final int RECENT_LIST_SIZE = 5;
 
     private final PreferencesManager preferencesManager;
 
@@ -115,6 +115,15 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         changeListener.add(listener);
     }
 
+    @Override
+    public void removeServerListChangedListener(RecentOpenedServerListChangedListener listener) {
+        if (listener == null) {
+            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
+        }
+
+        changeListener.remove(listener);
+    }
+
     private void doClearServerUriList() {
         Preferences node = preferencesManager.userNodeForPackage(getClass());
 
@@ -150,7 +159,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
                 changeListener);
 
         for (RecentOpenedServerListChangedListener listener : listeners) {
-            listener.onListChanged();
+            listener.onRecentOpenedServerListChanged();
         }
     }
 

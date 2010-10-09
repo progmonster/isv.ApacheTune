@@ -30,11 +30,52 @@
             <version>1.0-lite-alpha-SNAPSHOT</version>
         </dependency>
 
-        <!-- TODO This dependency repeated in sub-project. Remove duplicates -->
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>djproject.sourceforge.net</groupId>
+            <artifactId>DJNativeSwing</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>djproject.sourceforge.net</groupId>
+            <artifactId>DJNativeSwing-SWT</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.l2fprod</groupId>
+            <artifactId>common</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swingx</artifactId>
         </dependency>
     </dependencies>
 

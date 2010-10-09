@@ -20,5 +20,7 @@ public interface RecentOpenedServersManager {
 
     void addServerListChangedListener(RecentOpenedServerListChangedListener listener);
 
+    void removeServerListChangedListener(RecentOpenedServerListChangedListener listener);
+
     void clearServerUriList();
 }

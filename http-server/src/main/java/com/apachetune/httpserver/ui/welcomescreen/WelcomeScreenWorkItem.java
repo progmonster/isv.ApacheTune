@@ -1,14 +1,9 @@
 package com.apachetune.httpserver.ui.welcomescreen;
 
-import com.apachetune.core.WorkItem;
-import com.apachetune.core.ui.CoreUIWorkItem;
 import com.apachetune.core.ui.GenericUIWorkItem;
 import com.google.inject.Inject;
-import com.google.inject.name.Named;
+import com.google.inject.Provider;
 
-import javax.swing.*;
-
-import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.httpserver.Constants.WELCOME_SCREEN_WORK_ITEM;
 
 /**
@@ -18,22 +13,25 @@ import static com.apachetune.httpserver.Constants.WELCOME_SCREEN_WORK_ITEM;
  *         Created Date: 18.03.2010
  */
 public class WelcomeScreenWorkItem extends GenericUIWorkItem {
-    private final CoreUIWorkItem coreUIWorkItem;
+    private final Provider<WelcomeScreenSmartPart> welcomeScreenSmartPartProvider;
+
+    private WelcomeScreenSmartPart welcomeScreenSmartPart;
 
     @Inject
-    public WelcomeScreenWorkItem(@Named(CORE_UI_WORK_ITEM) WorkItem coreUIWorkItem) {
+    public WelcomeScreenWorkItem(Provider<WelcomeScreenSmartPart> welcomeScreenSmartPartProvider) {
         super(WELCOME_SCREEN_WORK_ITEM);
 
-        this.coreUIWorkItem = (CoreUIWorkItem) coreUIWorkItem;
+        this.welcomeScreenSmartPartProvider = welcomeScreenSmartPartProvider;
     }
 
     protected void doUIInitialize() {
-            JPanel mainPanel = new WelcomeScreenView(this).getMainPanel();
+        welcomeScreenSmartPart = welcomeScreenSmartPartProvider.get();
 
-            coreUIWorkItem.switchToWelcomeScreen(mainPanel);
+        welcomeScreenSmartPart.initialize(this);
     }
 
+    @Override
     protected void doUIDispose() {
-        coreUIWorkItem.switchToToolWindowManager();
+        welcomeScreenSmartPart.dispose();
     }
 }

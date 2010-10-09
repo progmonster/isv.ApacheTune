@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
  */
 @Test
 public class StatusBarManagerImplTest {
+    @Test
     public void testAddMainStatus() {
         Mockery mockContext = new Mockery();
 

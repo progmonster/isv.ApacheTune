@@ -7,5 +7,5 @@ package com.apachetune.httpserver;
  * @version 1.0
  */
 public interface RecentOpenedServerListChangedListener {
-    void onListChanged();
+    void onRecentOpenedServerListChanged();
 }
