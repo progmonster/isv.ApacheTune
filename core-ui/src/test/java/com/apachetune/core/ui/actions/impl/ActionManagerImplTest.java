@@ -2,12 +2,12 @@ package com.apachetune.core.ui.actions.impl;
 
 import com.apachetune.core.ui.actions.Action;
 import com.apachetune.core.ui.actions.ActionGroup;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
-import static org.testng.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * FIXDOC
@@ -15,7 +15,6 @@ import static org.testng.Assert.*;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class ActionManagerImplTest {
     @Test
     public void testCreateActionGroup() {
@@ -23,7 +22,7 @@ public class ActionManagerImplTest {
 
         ActionGroup actionGroup = actionManagerImpl.createActionGroup("fakeActionGroup");
 
-        assertEquals(actionGroup.getId(), "fakeActionGroup");
+        assertThat(actionGroup.getId()).isEqualTo("fakeActionGroup");
     }
 
     @Test
@@ -32,8 +31,8 @@ public class ActionManagerImplTest {
 
         Action action = actionManagerImpl.createAction("fakeAction", FakeActionSite.class);
 
-        assertEquals(action.getId(), "fakeAction");
-        assertEquals(action.getActionSiteClass(), FakeActionSite.class);
+        assertThat(action.getId()).isEqualTo("fakeAction");
+        assertThat(action.getActionSiteClass()).isEqualTo(FakeActionSite.class);
     }
 
     @Test
@@ -46,8 +45,8 @@ public class ActionManagerImplTest {
 
         Collection<ActionGroup> actionGroups = actionManagerImpl.getActionGroups();
 
-        assertEquals(actionGroups.size(), 1);
-        assertTrue(actionGroups.contains(expActionGroup));
+        assertThat(actionGroups.size()).isEqualTo(1);
+        assertThat(actionGroups.contains(expActionGroup)).isTrue();
     }
 
     @Test
@@ -61,7 +60,7 @@ public class ActionManagerImplTest {
 
         Collection<ActionGroup> actionGroups = actionManagerImpl.getActionGroups();
 
-        assertTrue(actionGroups.isEmpty());
+        assertThat(actionGroups.isEmpty()).isTrue();
     }
 
     @Test
@@ -74,10 +73,10 @@ public class ActionManagerImplTest {
 
         ActionGroup actionGroup = actionManagerImpl.getActionGroup("fakeActionGroup");
 
-        assertEquals(actionGroup, expActionGroup);        
+        assertThat(actionGroup).isEqualTo(expActionGroup);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailRegisterActionGroupTwice() {
         ActionManagerImpl actionManagerImpl = new ActionManagerImpl();
 
@@ -85,16 +84,10 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.registerActionGroup(expActionGroup);
 
-        try {
-            actionManagerImpl.registerActionGroup(expActionGroup);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        actionManagerImpl.registerActionGroup(expActionGroup);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailRegisterActionTwice() {
         ActionManagerImpl actionManagerImpl = new ActionManagerImpl();
 
@@ -112,13 +105,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.registerActionGroup(actionGroup1);
 
-        try {
-            actionManagerImpl.registerActionGroup(actionGroup2);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        actionManagerImpl.registerActionGroup(actionGroup2);
     }
 
     @Test
@@ -135,8 +122,8 @@ public class ActionManagerImplTest {
 
         Collection<ActionGroup> actionGroups = actionManagerImpl.getActionGroups();
 
-        assertEquals(actionGroups.size(), 2);
-        assertTrue(actionGroups.containsAll(asList(expActionGroup1, expActionGroup2)));
+        assertThat(actionGroups.size()).isEqualTo(2);
+        assertThat(actionGroups.containsAll(asList(expActionGroup1, expActionGroup2))).isTrue();
     }
 
     @Test
@@ -153,7 +140,7 @@ public class ActionManagerImplTest {
 
         Action action = actionManagerImpl.getAction("fakeAction");
 
-        assertEquals(action, expAction);
+        assertThat(action).isEqualTo(expAction);
     }
 
     @Test
@@ -170,7 +157,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.registerActionGroup(actionGroup);
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -188,7 +175,7 @@ public class ActionManagerImplTest {
         actionManagerImpl.registerActionGroup(actionGroup);
         actionManagerImpl.unregisterActionGroup(actionGroup);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -203,7 +190,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.registerActionGroup(actionGroup);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -221,7 +208,7 @@ public class ActionManagerImplTest {
         actionManagerImpl.activateActionSites(new FakeActionSiteObject(true));
         actionManagerImpl.activateActionSites(new FakeActionSiteObject(false));
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -239,7 +226,7 @@ public class ActionManagerImplTest {
         actionManagerImpl.activateActionSites(new FakeActionSiteObject(false));
         actionManagerImpl.activateActionSites(new FakeActionSiteObject(true));
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -261,9 +248,10 @@ public class ActionManagerImplTest {
         actionManagerImpl.activateActionSites(fakeActionSiteObject);
         actionManagerImpl.deactivateActionSites(fakeActionSiteObject);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
+    @Test
     public void testStayEnabledWhenPreviousActionSiteObjectDeactivatedButHasActionSiteObject() {
         ActionManagerImpl actionManagerImpl = new ActionManagerImpl();
 
@@ -283,7 +271,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.deactivateActionSites(fakeActionSiteObject);
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -311,7 +299,7 @@ public class ActionManagerImplTest {
 
         actionGroup.addAction(action);
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -330,7 +318,7 @@ public class ActionManagerImplTest {
 
         actionGroup.removeAction(action);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -345,7 +333,7 @@ public class ActionManagerImplTest {
 
         actionGroup.addAction(action);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -362,7 +350,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.activateActionSites(new FakeActionSiteObject(true));
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -379,7 +367,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.activateActionSites(new Object());
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -402,7 +390,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.deactivateActionSites(emptyActionSiteObject);
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -423,7 +411,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.deactivateActionSites(fakeActionSiteObject);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -442,7 +430,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.registerActionGroup(actionGroup);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -465,7 +453,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.updateActionSites(fakeActionSiteObject);
         
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
     @Test
@@ -488,7 +476,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.updateActionSites(fakeActionSiteObject);
 
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -509,7 +497,7 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.updateActionSites(new Object());
         
-        assertFalse(action.isEnabled());
+        assertThat(action.isEnabled()).isFalse();
     }
 
     @Test
@@ -530,11 +518,11 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.updateActionSites(new Object());
 
-        assertTrue(action.isEnabled());
+        assertThat(action.isEnabled()).isTrue();
     }
 
-    @Test
-    void testFailOnRegisterActionWithNotNullActionSiteObject() {
+    @Test(expected = Exception.class)
+    public void testFailOnRegisterActionWithNotNullActionSiteObject() {
         ActionManagerImpl actionManagerImpl = new ActionManagerImpl();
 
         ActionGroup actionGroup = actionManagerImpl.createActionGroup("fakeActionGroup");
@@ -545,17 +533,11 @@ public class ActionManagerImplTest {
 
         actionGroup.addAction(action);
 
-        try {
-            actionManagerImpl.registerActionGroup(actionGroup);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        actionManagerImpl.registerActionGroup(actionGroup);
     }
 
     @Test
-    void testSetActionSiteObjectToNullInUnregisteredAction() {
+    public void testSetActionSiteObjectToNullInUnregisteredAction() {
         ActionManagerImpl actionManagerImpl = new ActionManagerImpl();
 
         ActionGroup actionGroup = actionManagerImpl.createActionGroup("fakeActionGroup");
@@ -570,11 +552,11 @@ public class ActionManagerImplTest {
 
         actionGroup.removeAction(action);
 
-        assertNull(action.getActionSite());
+        assertThat(action.getActionSite()).isNull();
     }
 
-    @Test
-    void testFailOnExternalChangingOfActionSiteObjectInActionWhileOneIsRegisteredInActionManager() {
+    @Test(expected = Exception.class)
+    public void testFailOnExternalChangingOfActionSiteObjectInActionWhileOneIsRegisteredInActionManager() {
         ActionManagerImpl actionManagerImpl = new ActionManagerImpl();
 
         ActionGroup actionGroup = actionManagerImpl.createActionGroup("fakeActionGroup");
@@ -585,12 +567,6 @@ public class ActionManagerImplTest {
 
         actionManagerImpl.registerActionGroup(actionGroup);
 
-        try {
-            action.setActionSite(new FakeActionSiteObject());
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        action.setActionSite(new FakeActionSiteObject());
     }
 }

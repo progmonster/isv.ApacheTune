@@ -6,7 +6,7 @@ package com.apachetune.core;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-class TestEventWorkItem extends SimpleWorkItem {
+class FakeEventWorkItem extends SimpleWorkItem {
     private final EventHistory eventHistory;
 
     /**
@@ -15,7 +15,7 @@ class TestEventWorkItem extends SimpleWorkItem {
      * @param id FIXDOC
      * @param eventHistory FIXDOC
      */
-    public TestEventWorkItem(String id, EventHistory eventHistory) {
+    public FakeEventWorkItem(String id, EventHistory eventHistory) {
         super(id);
 
         assert eventHistory != null;
@@ -41,7 +41,7 @@ class TestEventWorkItem extends SimpleWorkItem {
 
     @SuppressWarnings({"UnusedDeclaration"})
     @Subscriber(eventId = "NON_HANDLING_TEST_EVENT")
-    private void onNonHandlingTestEvent(Object data) {
-        org.testng.Assert.fail("A non-handling event handler was called.");
+    private void onNonHandlingTestEvent(Object data) throws Exception {
+        throw new Exception("A non-handling event handler was called.");
     }
 }

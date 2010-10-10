@@ -1,10 +1,9 @@
 package com.apachetune.core;
 
 import com.apachetune.core.impl.RootWorkItemImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.FileAssert.fail;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * FIXDOC
@@ -12,7 +11,6 @@ import static org.testng.FileAssert.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class StateBehaviourGenericWorkItemTest {
     @Test
     public void testSetAndGetState() {
@@ -20,7 +18,7 @@ public class StateBehaviourGenericWorkItemTest {
 
         workItem.setState("FAKE_STATE", 65467);
 
-        assertEquals(workItem.getState("FAKE_STATE"), 65467);
+        assertThat(workItem.getState("FAKE_STATE")).isEqualTo(65467);
     }
 
     @Test
@@ -37,7 +35,7 @@ public class StateBehaviourGenericWorkItemTest {
 
         parentWorkItem.addChildWorkItem(childWorkItem);
 
-        assertEquals(childWorkItem.getState("FAKE_VALUE"), 556);
+        assertThat(childWorkItem.getState("FAKE_VALUE")).isEqualTo(556);
     }
 
     @Test
@@ -47,7 +45,7 @@ public class StateBehaviourGenericWorkItemTest {
         workItem.setState("FAKE_STATE", 65467);
         workItem.setState("FAKE_STATE", 988);
 
-        assertEquals(workItem.getState("FAKE_STATE"), 988);
+        assertThat(workItem.getState("FAKE_STATE")).isEqualTo(988);
     }
 
 
@@ -67,32 +65,26 @@ public class StateBehaviourGenericWorkItemTest {
 
         childWorkItem.setState("FAKE_VALUE", 200);
 
-        assertEquals(childWorkItem.getState("FAKE_VALUE"), 200);
-        assertEquals(parentWorkItem.getState("FAKE_VALUE"), 200);
+        assertThat(childWorkItem.getState("FAKE_VALUE")).isEqualTo(200);
+        assertThat(parentWorkItem.getState("FAKE_VALUE")).isEqualTo(200);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnGetNonExistsState() {
         WorkItem workItem = new SimpleWorkItem("TEST_WORKITEM");
 
-        try {
-            assertEquals(workItem.getState("FAKE_STATE"), 65467);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        workItem.getState("FAKE_STATE");
     }
 
     @Test
     public void testHasState() {
         WorkItem workItem = new SimpleWorkItem("TEST_WORKITEM");
 
-        assertEquals(workItem.hasState("FAKE_STATE"), false);
+        assertThat(workItem.hasState("FAKE_STATE")).isEqualTo(false);
 
         workItem.setState("FAKE_STATE", 65467);
 
-        assertEquals(workItem.hasState("FAKE_STATE"), true);        
+        assertThat(workItem.hasState("FAKE_STATE")).isEqualTo(true);
     }
 
     @Test
@@ -107,11 +99,11 @@ public class StateBehaviourGenericWorkItemTest {
 
         parentWorkItem.addChildWorkItem(childWorkItem);
 
-        assertEquals(childWorkItem.hasState("FAKE_VALUE"), false);
+        assertThat(childWorkItem.hasState("FAKE_VALUE")).isEqualTo(false);
 
         parentWorkItem.setState("FAKE_VALUE", 556);
 
-        assertEquals(childWorkItem.hasState("FAKE_VALUE"), true);
+        assertThat(childWorkItem.hasState("FAKE_VALUE")).isEqualTo(true);
     }
 
     @Test
@@ -122,20 +114,14 @@ public class StateBehaviourGenericWorkItemTest {
 
         workItem.removeState("FAKE_STATE");
 
-        assertEquals(workItem.hasState("FAKE_STATE"), false);
+        assertThat(workItem.hasState("FAKE_STATE")).isEqualTo(false);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnRemoveNonExistsState() {
         WorkItem workItem = new SimpleWorkItem("TEST_WORKITEM");
 
-        try {
-            workItem.removeState("FAKE_STATE");
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        workItem.removeState("FAKE_STATE");
     }
 
     @Test
@@ -154,7 +140,7 @@ public class StateBehaviourGenericWorkItemTest {
 
         childWorkItem.removeState("FAKE_VALUE");
 
-        assertEquals(childWorkItem.hasState("FAKE_VALUE"), false);
-        assertEquals(parentWorkItem.hasState("FAKE_VALUE"), false);
+        assertThat(childWorkItem.hasState("FAKE_VALUE")).isEqualTo(false);
+        assertThat(parentWorkItem.hasState("FAKE_VALUE")).isEqualTo(false);
     }
 }

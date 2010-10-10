@@ -4,13 +4,13 @@ import com.apachetune.core.ui.actions.ActionHandler;
 import com.apachetune.core.ui.actions.ActionPermission;
 import com.apachetune.core.ui.actions.ActionSite;
 import com.apachetune.core.utils.BooleanValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import static org.testng.Assert.*;
-import static org.testng.FileAssert.fail;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * FIXDOC
@@ -18,57 +18,32 @@ import static org.testng.FileAssert.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class ActionImplTest {
     @Test
     public void testGetActionSiteClass() throws Exception {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        assertEquals(actionImpl.getActionSiteClass(), FakeActionSite.class);
+        assertThat(actionImpl.getActionSiteClass()).isEqualTo(FakeActionSite.class);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnSetActionSiteClassWithoutHandler() {
-        try {
-            new ActionImpl("fakeAction", FakeActionSiteWithoutHandler.class);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        new ActionImpl("fakeAction", FakeActionSiteWithoutHandler.class);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnSetActionSiteClassWithoutPermitMethod() {
-        try {
-            new ActionImpl("fakeAction", FakeActionSiteWithoutPermitMethod.class);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        new ActionImpl("fakeAction", FakeActionSiteWithoutPermitMethod.class);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnSetActionSiteClassWithDuplicatedHandler() {
-        try {
-            new ActionImpl("fakeAction", FakeActionSiteWithDuplicatedHandler.class);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        new ActionImpl("fakeAction", FakeActionSiteWithDuplicatedHandler.class);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnSetActionSiteClassWithDuplicatedPermitMethod() {
-        try {
-            new ActionImpl("fakeAction", FakeActionSiteWithDuplicatedPermitMethod.class);
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        new ActionImpl("fakeAction", FakeActionSiteWithDuplicatedPermitMethod.class);
     }
 
     @Test
@@ -79,14 +54,14 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(expActionSite);
 
-        assertEquals(actionImpl.getActionSite(), expActionSite);
+        assertThat(actionImpl.getActionSite()).isEqualTo(expActionSite);
     }
 
     @Test
     public void testInitialActionStateIsDisabled() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        assertFalse(actionImpl.isEnabled());
+        assertThat(actionImpl.isEnabled()).isFalse();
     }
 
     @Test
@@ -95,7 +70,7 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(new FakeActionSiteObject(true));
 
-        assertTrue(actionImpl.isEnabled());
+        assertThat(actionImpl.isEnabled()).isTrue();
     }
 
     @Test
@@ -104,7 +79,7 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(new FakeActionSiteObject(false));
 
-        assertFalse(actionImpl.isEnabled());
+        assertThat(actionImpl.isEnabled()).isFalse();
     }
 
     @Test
@@ -113,7 +88,7 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(null);
 
-        assertFalse(actionImpl.isEnabled());
+        assertThat(actionImpl.isEnabled()).isFalse();
     }
 
     @Test
@@ -124,7 +99,7 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(new FakeActionSiteObject(false));
 
-        assertFalse(actionImpl.isEnabled());
+        assertThat(actionImpl.isEnabled()).isFalse();
     }
 
     @Test
@@ -135,7 +110,7 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(new FakeActionSiteObject(true));
 
-        assertTrue(actionImpl.isEnabled());
+        assertThat(actionImpl.isEnabled()).isTrue();
     }
 
     @Test
@@ -159,146 +134,110 @@ public class ActionImplTest {
         }
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void failOnSetActionSiteObjectWithDuplicateHandlers() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        try {
-            actionImpl.setActionSite(new FakeActionSite() {
-                public void onTestAction() {
-                    // No-op.
-                }
+        actionImpl.setActionSite(new FakeActionSite() {
+            public void onTestAction() {
+                // No-op.
+            }
 
-                public boolean isTestActionEnabled() {
-                    return false;
-                }
+            public boolean isTestActionEnabled() {
+                return false;
+            }
 
-                @ActionHandler("fakeAction")
-                public void onTestAction2() {
-                    // No-op.
-                }
-            });
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+            @ActionHandler("fakeAction")
+            public void onTestAction2() {
+                // No-op.
+            }
+        });
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void failOnSetActionSiteObjectWithDuplicatePermitMethods() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        try {
-            actionImpl.setActionSite(new FakeActionSite() {
-                public void onTestAction() {
-                    // No-op.
-                }
+        actionImpl.setActionSite(new FakeActionSite() {
+            public void onTestAction() {
+                // No-op.
+            }
 
-                public boolean isTestActionEnabled() {
-                    return false;
-                }
+            public boolean isTestActionEnabled() {
+                return false;
+            }
 
-                @ActionPermission("fakeAction")
-                public boolean isTestActionEnabled2() {
-                    return false;
-                }
-            });
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+            @ActionPermission("fakeAction")
+            public boolean isTestActionEnabled2() {
+                return false;
+            }
+        });
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void failOnSetActionSiteObjectWithoutAnnotatedHandlerImplementation() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        try {
-            actionImpl.setActionSite(new FakeActionSite() {
-                public void onTestAction() {
-                    // No-op.
-                }
+        actionImpl.setActionSite(new FakeActionSite() {
+            public void onTestAction() {
+                // No-op.
+            }
 
-                @ActionPermission("fakeAction")
-                public boolean isTestActionEnabled() {
-                    return false;
-                }
+            @ActionPermission("fakeAction")
+            public boolean isTestActionEnabled() {
+                return false;
+            }
 
-                @ActionHandler("fakeAction")
-                public void onTestAction2() {
-                    // No-op.
-                }
-            });
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+            @ActionHandler("fakeAction")
+            public void onTestAction2() {
+                // No-op.
+            }
+        });
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void failOnSetActionSiteObjectWithoutAnnotatedPermissionMethodImplementation() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        try {
-            actionImpl.setActionSite(new FakeActionSite() {
-                @ActionHandler("fakeAction")
-                public void onTestAction() {
-                    // No-op.
-                }
+        actionImpl.setActionSite(new FakeActionSite() {
+            @ActionHandler("fakeAction")
+            public void onTestAction() {
+                // No-op.
+            }
 
-                public boolean isTestActionEnabled() {
-                    return false;
-                }
+            public boolean isTestActionEnabled() {
+                return false;
+            }
 
-                @ActionPermission("fakeAction")
-                public boolean isTestActionEnabled2() {
-                    return false;
-                }
-            });
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+            @ActionPermission("fakeAction")
+            public boolean isTestActionEnabled2() {
+                return false;
+            }
+        });
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void failOnAddingActionSiteObjectWithoutRequiredActionSiteInterface() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        try {
-            actionImpl.setActionSite(new ActionSite() {
-                @ActionHandler("fakeAction")
-                public void onTestAction() {
-                    // No-op.
-                }
+        actionImpl.setActionSite(new ActionSite() {
+            @ActionHandler("fakeAction")
+            public void onTestAction() {
+                // No-op.
+            }
 
-                @ActionPermission("fakeAction")
-                public boolean isTestActionEnabled() {
-                    return false;
-                }
-            });
-            
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+            @ActionPermission("fakeAction")
+            public boolean isTestActionEnabled() {
+                return false;
+            }
+        });
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void failOnActionPerformWhenDisabled() {
         ActionImpl actionImpl = new ActionImpl("fakeAction", FakeActionSite.class);
 
-        try {
-            actionImpl.actionPerformed(null);            
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        actionImpl.actionPerformed(null);
     }
 
     @Test
@@ -321,7 +260,7 @@ public class ActionImplTest {
 
         actionImpl.actionPerformed(null);
 
-        assertTrue(isPerformed.value);
+        assertThat(isPerformed.value).isTrue();
     }
 
     @Test
@@ -334,9 +273,9 @@ public class ActionImplTest {
 
         actionImpl.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                assertEquals(evt.getPropertyName(), "actionSite");
-                assertNull(evt.getOldValue());
-                assertEquals(evt.getNewValue(), fakeActionSiteObject);
+                assertThat(evt.getPropertyName()).isEqualTo("actionSite");
+                assertThat(evt.getOldValue()).isNull();
+                assertThat(evt.getNewValue()).isEqualTo(fakeActionSiteObject);
 
                 isPerformed.value = true;
             }
@@ -344,7 +283,7 @@ public class ActionImplTest {
 
         actionImpl.setActionSite(fakeActionSiteObject);
 
-        assertTrue(isPerformed.value);
+        assertThat(isPerformed.value).isTrue();
     }
 }
 

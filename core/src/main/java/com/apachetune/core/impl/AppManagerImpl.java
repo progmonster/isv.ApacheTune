@@ -38,6 +38,7 @@ public class AppManagerImpl implements AppManager {
     private static final String VENDOR_PROP = "vendor";
 
     private static final String BUILD_DATE_PROP = "buildDate";
+
     private Properties appProps;
 
     public AppManagerImpl() {

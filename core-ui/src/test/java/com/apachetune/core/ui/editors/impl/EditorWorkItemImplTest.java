@@ -1,6 +1,35 @@
 package com.apachetune.core.ui.editors.impl;
 
-import org.testng.annotations.Test;
+import com.apachetune.core.RootWorkItem;
+import com.apachetune.core.impl.RootWorkItemImpl;
+import com.apachetune.core.preferences.Preferences;
+import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.core.ui.CoreUIUtils;
+import com.apachetune.core.ui.MenuBarManager;
+import com.apachetune.core.ui.StatusBarManager;
+import com.apachetune.core.ui.actions.ActionManager;
+import com.apachetune.core.ui.actions.ActionSite;
+import com.apachetune.core.ui.editors.EditorInput;
+import com.apachetune.core.ui.editors.EditorWorkItem;
+import jsyntaxpane.DefaultSyntaxKit;
+import jsyntaxpane.jsyntaxkits.ExtendedSyntaxKit;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.noos.xing.mydoggy.ToolWindowManager;
+import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;
+
+import javax.swing.*;
+import java.awt.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import static com.apachetune.core.ui.Constants.CARET_POSITION_PREFS_NODE_NAME;
+import static com.apachetune.core.ui.Constants.VIEW_POSITION_PREFS_NODE_NAME;
+import static org.fest.assertions.Assertions.assertThat;
+
 
 /**
  * FIXDOC
@@ -8,9 +37,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class EditorWorkItemImplTest {
-/* FIX tests
     private ActionManager mockActionManager;
 
     private StatusBarManager mockStatusBarManager;
@@ -33,7 +60,7 @@ public class EditorWorkItemImplTest {
 
     private ToolWindowManager toolWindowManager;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         DefaultSyntaxKit.registerContentType("text/plain", ExtendedSyntaxKit.class.getName());
 
@@ -61,6 +88,7 @@ public class EditorWorkItemImplTest {
     }
 
     @Test
+    @Ignore
     public void testSetCursorToTopLeftCornerForFirstOpenedDocument() {
         mockContext.checking(new Expectations() {{
             allowing(mockActionManager).updateActionSites(with(any(Object.class)));
@@ -93,10 +121,11 @@ public class EditorWorkItemImplTest {
 
         mockContext.assertIsSatisfied();
 
-        assertEquals(editorWorkItem.getCaretPosition(), 0);
+        assertThat(editorWorkItem.getCaretPosition()).isEqualTo(0);
     }
 
     @Test
+    @Ignore
     public void testRestoreCursorPositionForReopenedDocument() {
         mockContext.checking(new Expectations() {{
             allowing(mockActionManager).updateActionSites(with(any(Object.class)));
@@ -127,11 +156,12 @@ public class EditorWorkItemImplTest {
 
         mockContext.assertIsSatisfied();
 
-        assertEquals(editorWorkItem.getCaretPosition(), 10);
+        assertThat(editorWorkItem.getCaretPosition()).isEqualTo(10);
     }
 
 
     @Test
+    @Ignore
     public void testSetCursorToLastPositionForTruncatedDocumentAndOutOfTheNewBoundsCursor() {
         mockContext.checking(new Expectations() {{
             allowing(mockActionManager).updateActionSites(with(any(Object.class)));
@@ -162,10 +192,11 @@ public class EditorWorkItemImplTest {
 
         mockContext.assertIsSatisfied();
 
-        assertEquals(editorWorkItem.getCaretPosition(), mockEditorInput.loadContent().length() - 1);
+        assertThat(editorWorkItem.getCaretPosition()).isEqualTo(mockEditorInput.loadContent().length() - 1);
     }
 
     @Test
+    @Ignore
     public void testStoreCursorPosition() throws Exception {
         mockContext.checking(new Expectations() {{
             allowing(mockActionManager).updateActionSites(with(any(Object.class)));
@@ -247,5 +278,4 @@ class MockEditorInput implements EditorInput {
             throw new RuntimeException("Internal error.", e);
         }
     }
-*/
 }

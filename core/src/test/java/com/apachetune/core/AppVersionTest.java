@@ -1,9 +1,9 @@
 package com.apachetune.core;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.FileAssert.fail;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * FIXDOC
@@ -11,7 +11,6 @@ import static org.testng.FileAssert.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class AppVersionTest {
     @Test
     public void testParseVersionLineFull() {
@@ -19,16 +18,16 @@ public class AppVersionTest {
 
         AppVersion appVersion = new AppVersion(versionLine);
 
-        assertEquals(appVersion.getMajor(), "12");
-        assertEquals(appVersion.getMinor(), "14");
-        assertEquals(appVersion.getEdition(), "lite");
-        assertEquals(appVersion.getBuild(), "alpha-SNAPSHOT");
+        assertThat(appVersion.getMajor()).isEqualTo("12");
+        assertThat(appVersion.getMinor()).isEqualTo("14");
+        assertThat(appVersion.getEdition()).isEqualTo("lite");
+        assertThat(appVersion.getBuild()).isEqualTo("alpha-SNAPSHOT");
 
         versionLine = "12.14-lite-beta";
 
         appVersion = new AppVersion(versionLine);
 
-        assertEquals(appVersion.getBuild(), "beta");
+        assertThat(appVersion.getBuild()).isEqualTo("beta");
     }
 
     @Test
@@ -37,10 +36,10 @@ public class AppVersionTest {
 
         AppVersion appVersion = new AppVersion(versionLine);
 
-        assertEquals(appVersion.getMajor(), "12");
-        assertEquals(appVersion.getMinor(), "14");
-        assertEquals(appVersion.getEdition(), "lite");
-        assertEquals(appVersion.getBuild(), null);
+        assertThat(appVersion.getMajor()).isEqualTo("12");
+        assertThat(appVersion.getMinor()).isEqualTo("14");
+        assertThat(appVersion.getEdition()).isEqualTo("lite");
+        assertThat(appVersion.getBuild()).isNull();
     }
 
     @Test
@@ -49,10 +48,10 @@ public class AppVersionTest {
 
         AppVersion appVersion = new AppVersion(versionLine);
 
-        assertEquals(appVersion.getMajor(), "12");
-        assertEquals(appVersion.getMinor(), "14");
-        assertEquals(appVersion.getEdition(), null);
-        assertEquals(appVersion.getBuild(), null);
+        assertThat(appVersion.getMajor()).isEqualTo("12");
+        assertThat(appVersion.getMinor()).isEqualTo("14");
+        assertThat(appVersion.getEdition()).isNull();
+        assertThat(appVersion.getBuild()).isNull();
     }
 
     @Test
@@ -86,7 +85,7 @@ public class AppVersionTest {
 
         String formattedVersionLine = appVersion.format("//{major}:{minor}-{edition}_{build}//");        
 
-        assertEquals(formattedVersionLine, "//12:14-lite_alpha-SNAPSHOT//");
+        assertThat(formattedVersionLine).isEqualTo("//12:14-lite_alpha-SNAPSHOT//");
     }
 
     @Test
@@ -97,6 +96,6 @@ public class AppVersionTest {
 
         String formattedVersionLine = appVersion.format("//{major}:{minor}-{edition}_{build}//");
 
-        assertEquals(formattedVersionLine, "//12:14//");
+        assertThat(formattedVersionLine).isEqualTo("//12:14//");
     }
 }

@@ -1,13 +1,11 @@
 package com.apachetune.core;
 
 import com.apachetune.core.impl.RootWorkItemImpl;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static com.apachetune.TestUtils.failBecauseExceptionWasExpected;
-import static com.apachetune.TestUtils.reportExpectedException;
-import static org.testng.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
 
 /**
  * FIXDOC
@@ -15,7 +13,6 @@ import static org.testng.Assert.*;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class ContainerBehaviourGenericWorkItemTest {
     @Test
     public void testAddChildWorkItem() {
@@ -29,7 +26,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         WorkItem addedWorkItem = workItem.getDirectChildWorkItem("CHILD_TEST_WORK_ITEM");
 
-        assertEquals(addedWorkItem, childWorkItem);
+        assertThat(addedWorkItem).isEqualTo(childWorkItem);
     }
 
     @Test
@@ -46,7 +43,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         aa.addChildWorkItem(aaa);
 
-        assertEquals(a.getChildWorkItem("AAA"), aaa);
+        assertThat(a.getChildWorkItem("AAA")).isEqualTo(aaa);
     }
 
     @Test
@@ -63,8 +60,8 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         aa.addChildWorkItem(aaa);
 
-        assertTrue(a.hasDirectChildWorkItem("AA"));
-        assertFalse(a.hasDirectChildWorkItem("AAA"));
+        assertThat(a.hasDirectChildWorkItem("AA")).isTrue();
+        assertThat(a.hasDirectChildWorkItem("AAA")).isFalse();
     }
 
     @Test
@@ -85,8 +82,8 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         aa.addChildWorkItem(aaa);
 
-        assertTrue(a.hasChildWorkItem("AAA"));
-        assertFalse(aa.hasChildWorkItem("AB"));
+        assertThat(a.hasChildWorkItem("AAA")).isTrue();
+        assertThat(aa.hasChildWorkItem("AB")).isFalse();
     }
 
     @Test
@@ -95,10 +92,10 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         a.setRootWorkItem(new RootWorkItemImpl());
 
-        assertNull(a.getChildWorkItem("NON_EXISTING_WORK_ITEM"));
+        assertThat(a.getChildWorkItem("NON_EXISTING_WORK_ITEM")).isNull();
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnDuplicateAddingOfChildWorkItem() {
         WorkItem rootWorkItem = new RootWorkItemImpl();
 
@@ -110,13 +107,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         workItem.addChildWorkItem(childWorkItem);
 
-        try {
-            workItem.addChildWorkItem(childWorkItem);
-
-            failBecauseExceptionWasExpected();
-        } catch (IllegalArgumentException e) {
-            reportExpectedException(e);
-        }
+        workItem.addChildWorkItem(childWorkItem);
     }
 
     @Test
@@ -149,7 +140,7 @@ public class ContainerBehaviourGenericWorkItemTest {
         workItem.removeDirectChildWorkItem(childWorkItem.getId());
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnRemoveNonAddedDirectChildWorkItem() {
         WorkItem rootWorkItem = new RootWorkItemImpl();
 
@@ -159,13 +150,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORK_ITEM");
 
-        try {
-            workItem.removeDirectChildWorkItem(childWorkItem.getId());
-
-            failBecauseExceptionWasExpected();
-        } catch (IllegalArgumentException e) {
-            reportExpectedException(e);
-        }
+        workItem.removeDirectChildWorkItem(childWorkItem.getId());
     }
 
     @Test
@@ -180,26 +165,20 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         workItem.addChildWorkItem(childWorkItem);
 
-        assertEquals(childWorkItem.getParent(), workItem);
-        assertEquals(childWorkItem.getRootWorkItem(), rootWorkItem);
+        assertThat(childWorkItem.getParent()).isEqualTo(workItem);
+        assertThat(childWorkItem.getRootWorkItem()).isEqualTo(rootWorkItem);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnAddingToContainerWhichHasNoParent() {
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORK_ITEM");
 
-        try {
-            workItem.addChildWorkItem(childWorkItem);
-
-            failBecauseExceptionWasExpected();
-        } catch (IllegalArgumentException e) {
-            reportExpectedException(e);
-        }
+        workItem.addChildWorkItem(childWorkItem);
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testFailOnAddingToContainerEarlyAddedChildWorkItem() {
         RootWorkItem rootWorkItem = new RootWorkItemImpl();
 
@@ -207,16 +186,10 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         rootWorkItem.addChildWorkItem(childWorkItem);
 
-        try {
-            rootWorkItem.addChildWorkItem(childWorkItem);
-
-            failBecauseExceptionWasExpected();
-        } catch (IllegalArgumentException e) {
-            reportExpectedException(e);
-        }
+        rootWorkItem.addChildWorkItem(childWorkItem);
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnAddingWorkItemToHimself() {
         WorkItem rootWorkItem = new RootWorkItemImpl();
 
@@ -224,13 +197,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         rootWorkItem.addChildWorkItem(workItem);
 
-        try {
-            workItem.addChildWorkItem(workItem);
-
-            failBecauseExceptionWasExpected();
-        } catch (IllegalArgumentException e) {
-            reportExpectedException(e);
-        }
+        workItem.addChildWorkItem(workItem);
     }
 
     @Test
@@ -245,9 +212,9 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         root.addChildWorkItem(b);
 
-        assertTrue(a.hasAncestor(root));
-        assertFalse(a.hasAncestor(b));
-        assertFalse(a.hasAncestor(a));
+        assertThat(a.hasAncestor(root)).isTrue();
+        assertThat(a.hasAncestor(b)).isFalse();
+        assertThat(a.hasAncestor(a)).isFalse();
     }
 
     @Test
@@ -256,17 +223,17 @@ public class ContainerBehaviourGenericWorkItemTest {
 
         final RootWorkItem rootWorkItem = new RootWorkItemImpl();
 
-        final WorkItem childWorkItemA = new TestEventWorkItem("CHILD_WORK_ITEM_A", eventHistory);
+        final WorkItem childWorkItemA = new FakeEventWorkItem("CHILD_WORK_ITEM_A", eventHistory);
 
-        final WorkItem childWorkItemAA = new TestEventWorkItem("CHILD_WORK_ITEM_AA", eventHistory);
+        final WorkItem childWorkItemAA = new FakeEventWorkItem("CHILD_WORK_ITEM_AA", eventHistory);
 
-        final WorkItem childWorkItemAB = new TestEventWorkItem("CHILD_WORK_ITEM_AB", eventHistory);
+        final WorkItem childWorkItemAB = new FakeEventWorkItem("CHILD_WORK_ITEM_AB", eventHistory);
 
-        final WorkItem childWorkItemB = new TestEventWorkItem("CHILD_WORK_ITEM_B", eventHistory);
+        final WorkItem childWorkItemB = new FakeEventWorkItem("CHILD_WORK_ITEM_B", eventHistory);
 
-        final WorkItem childWorkItemBA = new TestEventWorkItem("CHILD_WORK_ITEM_BA", eventHistory);
+        final WorkItem childWorkItemBA = new FakeEventWorkItem("CHILD_WORK_ITEM_BA", eventHistory);
 
-        final WorkItem childWorkItemBB = new TestEventWorkItem("CHILD_WORK_ITEM_BB", eventHistory);
+        final WorkItem childWorkItemBB = new FakeEventWorkItem("CHILD_WORK_ITEM_BB", eventHistory);
 
         rootWorkItem.addChildWorkItem(childWorkItemA);
         rootWorkItem.addChildWorkItem(childWorkItemB);
@@ -300,7 +267,7 @@ public class ContainerBehaviourGenericWorkItemTest {
             addEvent(childWorkItemBB.getId(), "any message", "2");
         }};
 
-        assertEquals(eventHistory, expectedEventHistory);
+        assertThat(eventHistory).isEqualTo(expectedEventHistory);
     }
 
     @Test

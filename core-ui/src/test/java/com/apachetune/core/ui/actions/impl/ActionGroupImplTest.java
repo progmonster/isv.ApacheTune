@@ -5,13 +5,14 @@ import com.apachetune.core.ui.actions.ActionGroup;
 import com.apachetune.core.ui.actions.ActionGroupListener;
 import com.apachetune.core.utils.BooleanValue;
 import org.apache.commons.collections.CollectionUtils;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.util.Collection;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.collections.PredicateUtils.equalPredicate;
-import static org.testng.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * FIXDOC
@@ -19,7 +20,6 @@ import static org.testng.Assert.*;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class ActionGroupImplTest {
     @Test
     public void testAddAction() {
@@ -31,11 +31,11 @@ public class ActionGroupImplTest {
 
         Collection<Action> actionsInTheGroup = actionGroupImpl.getActions();
 
-        assertEquals(actionsInTheGroup.size(), 1);
+        assertThat(actionsInTheGroup.size()).isEqualTo(1);
 
         Action action = actionsInTheGroup.iterator().next();
 
-        assertEquals(action, expAction);
+        assertThat(action).isEqualTo(expAction);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class ActionGroupImplTest {
 
         Collection<Action> actionsInTheGroup = actionGroupImpl.getActions();
 
-        assertFalse(CollectionUtils.exists(actionsInTheGroup, equalPredicate(action2)));
+        assertThat(CollectionUtils.exists(actionsInTheGroup, equalPredicate(action2))).isFalse();
     }
 
     @Test
@@ -90,7 +90,7 @@ public class ActionGroupImplTest {
             public void onActionAdded(ActionGroup actionGroup, Action action) {
                 isRaised.value = true;
 
-                assertEquals(action, expAction);
+                assertThat(action).isEqualTo(expAction);
             }
 
             public void onActionRemoved(ActionGroup actionGroup, Action action) {
@@ -100,7 +100,7 @@ public class ActionGroupImplTest {
 
         actionGroupImpl.addAction(expAction);
         
-        assertTrue(isRaised.value);
+        assertThat(isRaised.value).isTrue();
     }
 
     @Test
@@ -121,13 +121,13 @@ public class ActionGroupImplTest {
             public void onActionRemoved(ActionGroup actionGroup, Action action) {
                 isRaised.value = true;
 
-                assertEquals(action, expAction);
+                assertThat(action).isEqualTo(expAction);
             }
         });
 
         actionGroupImpl.removeAction(expAction);
 
-        assertTrue(isRaised.value);
+        assertThat(isRaised.value).isTrue();
     }
 
     @Test

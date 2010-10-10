@@ -35,11 +35,9 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>5.9</version>
-                <classifier>jdk15</classifier>
-                <scope>test</scope>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.8.1</version>
             </dependency>
 
             <dependency>
@@ -302,7 +300,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <testng.junit>false</testng.junit>
 
         <app.vendor>Aleksey V. Katorgin</app.vendor>
         <app.website>http://apachetune.com/</app.website>

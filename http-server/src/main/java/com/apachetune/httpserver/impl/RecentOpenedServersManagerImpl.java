@@ -46,11 +46,11 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
 
         serverUriList.remove(serverUri);
 
-        serverUriList = serverUriList.subList(0, min(serverUriList.size(), RECENT_LIST_SIZE - 1));
-
         serverUriList.add(0, serverUri);
 
-        updateServerUriList(serverUriList);
+        doUpdateServerUriList(serverUriList);
+
+        doTruncateServerUriList();
 
         notifyChangeListeners();
     }
@@ -134,7 +134,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         }
     }
 
-    private void updateServerUriList(List<URI> serverUriList) {
+    private void doUpdateServerUriList(List<URI> serverUriList) {
         doClearServerUriList();
 
         Preferences node = preferencesManager.userNodeForPackage(getClass());
@@ -164,12 +164,16 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     private void truncateListToMaxSize() {
+        doTruncateServerUriList();
+
+        notifyChangeListeners();
+    }
+
+    private void doTruncateServerUriList() {
         List<URI> serverUriList = getServerUriList();
 
         serverUriList = serverUriList.subList(0, min(serverUriList.size(), RECENT_LIST_SIZE));
 
-        updateServerUriList(serverUriList);
-
-        notifyChangeListeners();
+        doUpdateServerUriList(serverUriList);
     }
 }

@@ -7,7 +7,7 @@ import com.apachetune.core.WorkItem;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * FIXDOC
@@ -15,7 +15,6 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class RootWorkItemImplTest {
     @Test
     public void testRaiseEventsOnChildActivation() {

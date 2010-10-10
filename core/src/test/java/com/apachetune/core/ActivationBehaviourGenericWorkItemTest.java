@@ -2,9 +2,11 @@ package com.apachetune.core;
 
 import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.utils.BooleanValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import static org.testng.Assert.*;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+
 
 /**
  * FIXDOC
@@ -12,7 +14,6 @@ import static org.testng.Assert.*;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class ActivationBehaviourGenericWorkItemTest {
     @Test
     public void testDefaultInactive() {
@@ -22,7 +23,7 @@ public class ActivationBehaviourGenericWorkItemTest {
         
         rootWorkItem.addChildWorkItem(workItem);
         
-        assertFalse(workItem.isActive());
+        assertThat(workItem.isActive()).isFalse();
     }
 
     @Test
@@ -35,7 +36,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         workItem.activate();
 
-        assertTrue(workItem.isActive());
+        assertThat(workItem.isActive()).isTrue();
     }
 
     @Test
@@ -49,7 +50,7 @@ public class ActivationBehaviourGenericWorkItemTest {
         workItem.activate();
         workItem.deactivate();
 
-        assertFalse(workItem.isActive());
+        assertThat(workItem.isActive()).isFalse();
     }
 
     @Test
@@ -74,7 +75,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         workItem.activate();
 
-        assertTrue(wasRaised.value);
+        assertThat(wasRaised.value).isTrue();
     }
 
     @Test
@@ -124,7 +125,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         workItem.deactivate();
 
-        assertTrue(wasRaised.value);
+        assertThat(wasRaised.value).isTrue();
     }
 
     @Test
@@ -166,9 +167,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         aa.activate();
 
-        assertTrue(a.isActive());
-        assertTrue(root.isActive());
-        assertFalse(b.isActive());
+        assertThat(a.isActive()).isTrue();
+        assertThat(root.isActive()).isTrue();
+        assertThat(b.isActive()).isFalse();
     }
 
     @Test
@@ -190,9 +191,9 @@ public class ActivationBehaviourGenericWorkItemTest {
         a.activate();
         root.deactivate();
 
-        assertFalse(root.isActive());
-        assertFalse(a.isActive());
-        assertFalse(aa.isActive());
+        assertThat(root.isActive()).isFalse();
+        assertThat(a.isActive()).isFalse();
+        assertThat(aa.isActive()).isFalse();
     }
     
     @Test
@@ -225,8 +226,8 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         b.activate();
 
-        assertFalse(aa.isActive());
-        assertFalse(a.isActive());
+        assertThat(aa.isActive()).isFalse();
+        assertThat(a.isActive()).isFalse();
     }
 
     @Test
@@ -278,8 +279,8 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         a.activate();
 
-        assertEquals(root.getActiveChild(), a);
-        assertEquals(a.getActiveChild(), a);
+        assertThat(root.getActiveChild()).isEqualTo(a);
+        assertThat(a.getActiveChild()).isEqualTo(a);
     }
 
     @Test
@@ -300,8 +301,8 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         aa.activate();
 
-        assertEquals(root.getDirectActiveChild(), a);
-        assertNull(aa.getDirectActiveChild());
+        assertThat(root.getDirectActiveChild()).isEqualTo(a);
+        assertThat(aa.getDirectActiveChild()).isNull();
     }
 
     @Test
@@ -322,8 +323,8 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         b.activate();
 
-        assertNull(a.getActiveChild());
-        assertNull(aa.getActiveChild());
+        assertThat(a.getActiveChild()).isNull();
+        assertThat(aa.getActiveChild()).isNull();
     }
 
 
@@ -345,8 +346,8 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         b.activate();
 
-        assertNull(a.getDirectActiveChild());
-        assertNull(aa.getDirectActiveChild());
+        assertThat(a.getDirectActiveChild()).isNull();
+        assertThat(aa.getDirectActiveChild()).isNull();
     }
 
     @Test
@@ -361,7 +362,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         root.removeDirectChildWorkItem(a);
 
-        assertFalse(a.isActive());
+        assertThat(a.isActive()).isFalse();
     }
 
     @Test
@@ -378,6 +379,6 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         a.dispose();
 
-        assertFalse(a.isActive());
+        assertThat(a.isActive()).isFalse();
     }
 }

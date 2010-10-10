@@ -2,10 +2,11 @@ package com.apachetune.core;
 
 import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.utils.BooleanValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
-import static org.testng.Assert.assertTrue;
-import static org.testng.FileAssert.fail;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
+
 
 /**
  * FIXDOC
@@ -13,7 +14,6 @@ import static org.testng.FileAssert.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class GenericWorkItemLifecycleTest {
     @Test
     public void testOnInitializedEvent() {
@@ -37,7 +37,7 @@ public class GenericWorkItemLifecycleTest {
 
         workItem.initialize();
 
-        assertTrue(isRaised.value);
+        assertThat(isRaised.value).isTrue();
     }
 
     @Test
@@ -63,7 +63,7 @@ public class GenericWorkItemLifecycleTest {
         workItem.initialize();
         workItem.dispose();
 
-        assertTrue(isRaised.value);
+        assertThat(isRaised.value).isTrue();
     }
 
     @Test
@@ -116,7 +116,7 @@ public class GenericWorkItemLifecycleTest {
         workItem.dispose();
     }
 
-    @Test
+    @Test(expected = Exception.class)
     public void testFailOnInitializeAfterDispose() {
         RootWorkItem rootWorkItem = new RootWorkItemImpl();
 
@@ -127,12 +127,6 @@ public class GenericWorkItemLifecycleTest {
         workItem.initialize();
         workItem.dispose();
 
-        try {
-            workItem.initialize();
-
-            fail();
-        } catch (Exception e) {
-            // No-op.
-        }
+        workItem.initialize();
     }
 }

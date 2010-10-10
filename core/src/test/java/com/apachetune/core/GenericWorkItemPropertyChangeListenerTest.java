@@ -2,14 +2,13 @@ package com.apachetune.core;
 
 import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.utils.BooleanValue;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-import static org.testng.FileAssert.fail;
+import static org.fest.assertions.Assertions.assertThat;
+import static org.fest.assertions.Fail.fail;
 
 /**
  * FIXDOC
@@ -17,7 +16,6 @@ import static org.testng.FileAssert.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-@Test
 public class GenericWorkItemPropertyChangeListenerTest {
     @Test
     public void testPropertyChangeEvent() {
@@ -33,17 +31,17 @@ public class GenericWorkItemPropertyChangeListenerTest {
             public void propertyChange(PropertyChangeEvent evt) {
                 isRaised.value = true;
 
-                assertEquals(evt.getSource(), workItem);
-                assertEquals(evt.getPropertyName(), "fakeProperty");
-                assertEquals(evt.getOldValue(), "fakeOldValue");
-                assertEquals(evt.getNewValue(), "fakeNewValue");
+                assertThat(evt.getSource()).isEqualTo(workItem);
+                assertThat(evt.getPropertyName()).isEqualTo("fakeProperty");
+                assertThat(evt.getOldValue()).isEqualTo("fakeOldValue");
+                assertThat(evt.getNewValue()).isEqualTo("fakeNewValue");
             }
         });
 
         workItem.initialize();
         workItem.fireEvent();
 
-        assertTrue(isRaised.value);
+        assertThat(isRaised.value).isTrue();
     }
 
     @Test
