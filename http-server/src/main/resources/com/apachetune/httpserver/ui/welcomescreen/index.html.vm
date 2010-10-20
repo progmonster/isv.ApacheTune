@@ -86,7 +86,7 @@
         <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">This is a free open source graphical
             Apache HTTP Server configure utility.
             <br /><br />
-            Visit our site <a href="http://apachetune.com/">apachetune.com</a> to get more information about this
+            Visit our site <a href="command://openProductWebPortal">apachetune.com</a> to get more information about this
             <br />product and obtain source code if you need.
         </p>
 
@@ -112,22 +112,6 @@
                         <p>Search and open an Apache HTTP Server to configure installed locally on your computer.</p>
 
                         <a href="command://searchServer">Click to show the Search Server dialog</a>
-                    </div>
-                </div>
-
-                <div>
-                    <h3><a href="#">Open a last opened Apache HTTP Server.</a></h3>
-
-                    <div>
-                        <p>Open a last edited Apache HTTP Server configuration from the recent list.</p>
-#if($recentServerList.size() > 0)
-#foreach($recentServer in $recentServerList)
-                        $recentServer.toString()  
-                        <br />
-#end
-#else
-                        <b>There are no last edited Apache HTTP server config paths.</b>
-#end
                     </div>
                 </div>
             </div>

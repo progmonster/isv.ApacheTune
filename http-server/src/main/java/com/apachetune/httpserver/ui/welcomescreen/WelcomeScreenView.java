@@ -1,14 +1,17 @@
 package com.apachetune.httpserver.ui.welcomescreen;
 
-import javax.swing.*;
+import com.apachetune.core.ui.NView;
+
 import java.net.URI;
 import java.util.List;
 
 /**
  * FIXDOC
  */
-public interface WelcomeScreen {
-    JPanel getMainPanel();
-
+public interface WelcomeScreenView extends NView {
     void setRecentOpenedServerList(List<URI> serverUriList);
+
+    void openStartPage();
+
+    void reloadStartPage();
 }

@@ -4,9 +4,13 @@ import chrriis.common.WebServer;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
+import com.apachetune.core.AppManager;
 import com.apachetune.core.WorkItem;
-import com.apachetune.core.ui.SmartPart;
+import com.apachetune.core.ui.CoreUIWorkItem;
+import com.apachetune.core.ui.NSmartPart;
+import com.apachetune.core.ui.UIWorkItem;
 import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 
@@ -14,9 +18,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
-import static com.apachetune.httpserver.ui.welcomescreen.WelcomeScreenSmartPart.WEB_CONTENT_PATH;
+import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
@@ -27,44 +32,44 @@ import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  *         Created Date: 18.03.2010
  */
-public class WelcomeScreenSmartPart implements VelocityContextProvider, SmartPart, WelcomeScreen {
-    private final WelcomeScreenPresenter presenter;
-
+public class WelcomeScreenSmartPart implements VelocityContextProvider, NSmartPart, WelcomeScreenView {
     private static final String START_PAGE_RELATIVE_URL = "index.html.vm";
 
-    // todo change to real value. Make it relative on app directory. Rename to WEB_CONTENT_RELATIVE_PATH.
-    static final String WEB_CONTENT_PATH = "C:\\temp\\task.apachetune.start_page";
+    private final WelcomeScreenPresenter presenter;
 
-    private final JFrame mainFrame;
+    private final AppManager appManager;
 
-    private WelcomeScreenWorkItem workItem;
+    private final CoreUIWorkItem coreUIWorkItem;
 
     private JPanel mainPanel;
 
     private JWebBrowser browser;
 
-    private List<URI> serverUriList;
+    private final Object listLock = new Object();
 
     @Inject
-    public WelcomeScreenSmartPart(final WelcomeScreenPresenter presenter, final JFrame mainFrame) {
+    public WelcomeScreenSmartPart(final WelcomeScreenPresenter presenter,
+                                  final @Named(CORE_UI_WORK_ITEM) WorkItem coreUIWorkItem,
+                                  final AppManager appManager) {
         this.presenter = presenter;
-        this.mainFrame = mainFrame;
+        this.appManager = appManager;
+        this.coreUIWorkItem = (CoreUIWorkItem) coreUIWorkItem;
 
         WebServer.getDefaultWebServer().addContentProvider(new WebServer.WebServerContentProvider() {
             @Override
             public WebServer.WebServerContent getWebServerContent(WebServer.HTTPRequest httpRequest) {
-                return new DefaultWebServerContent(httpRequest, WelcomeScreenSmartPart.this);
+                synchronized (listLock) {
+                    return new DefaultWebServerContent(httpRequest, WelcomeScreenSmartPart.this);
+                }
             }
         });
     }
 
     @Override
     public VelocityContext getVelocityContext() {
-        VelocityContext ctx = new VelocityContext();
+            VelocityContext ctx = new VelocityContext();
 
-        ctx.put("recentServerList", serverUriList);
-
-        return ctx;
+            return ctx;
     }
 
     public JPanel getMainPanel() {
@@ -73,38 +78,18 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, SmartPar
 
     @Override
     public void setRecentOpenedServerList(List<URI> serverUriList) {
-        this.serverUriList = serverUriList;
-
-        openStartPage();
+       // TODO Recent list does not supported in this version. Implement it
     }
 
     @Override
-    public void initialize(final WorkItem workItem) {
+    public void initialize(final UIWorkItem workItem) {
         notNull(workItem, "[this=" + this + ']');
 
-        this.workItem = (WelcomeScreenWorkItem) workItem;
-
         presenter.initialize(workItem, this);
-    }
 
-    @Override
-    public void run() {
-        openStartPage();
-    }
-
-    @Override
-    public void dispose() {
-        presenter.dispose();
-    }
-
-    private void createUIComponents() {
-        mainPanel = new JPanel();
-
-        mainPanel.setLayout(new GridLayout());
+        coreUIWorkItem.switchToWelcomeScreen(getMainPanel());
 
         browser = new JWebBrowser();
-
-        browser.setBarsVisible(false);
 
         browser.setDefaultPopupMenuRegistered(false);
 
@@ -116,6 +101,14 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, SmartPar
                     presenter.OnShowOpenServerDialog();
                 } else if (cmd.equals("searchServer")) {
                     presenter.OnShowSearchServerDialog();
+                } else if (cmd.equals("openProductWebPortal")) {
+                    try {
+                        Desktop.getDesktop().browse(new URI(appManager.getProductWebPortalUri()));
+                    } catch (IOException e1) {
+                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    } catch (URISyntaxException e1) {
+                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
                 } else {
                     // TODO Make it as a service.
                     throw new RuntimeException("Unknown command [command = '" + cmd + "']");
@@ -125,9 +118,30 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, SmartPar
         );
 
         mainPanel.add(browser);
+
+        browser.setBarsVisible(false);
+
+        presenter.onViewReady();
     }
 
-    private void openStartPage() {
+    @Override
+    public void close() {
+        presenter.onCloseView();
+
+        presenter.dispose();
+    }
+
+    private void createUIComponents() {
+        mainPanel = new JPanel();
+
+        mainPanel.setLayout(new GridLayout());
+    }
+
+    public void reloadStartPage() {
+        // No-op.
+    }
+
+    public void openStartPage() {
         browser.navigate(getStartPageUrl());
     }
 
@@ -188,9 +202,7 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
     @Override
     public InputStream getInputStream() {
         try {
-            File contentFile = new File(WEB_CONTENT_PATH + File.separator + request.getResourcePath());
-
-            InputStream contentIS = new FileInputStream(contentFile);
+            InputStream contentIS = getClass().getResourceAsStream("." + request.getResourcePath());
 
             if (getResourceExtension().equals("vm")) {
                 Reader contentReader = new InputStreamReader(contentIS, "UTF-8");
@@ -199,8 +211,6 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
             } else {
                 return contentIS;
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Internal error", e); // TODO Make it with a service.
         }

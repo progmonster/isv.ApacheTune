@@ -307,7 +307,9 @@ public abstract class GenericWorkItem implements WorkItem {
             caller = this;
         }
 
-        callHandlers(eventId, data);
+        callObjectHandlers(this, eventId, data);
+
+        onRaiseEvent(eventId, data, caller);
 
         List<WorkItem> childWorkItemListCopy = new ArrayList<WorkItem>(childWorkItems.values());
 
@@ -411,10 +413,10 @@ public abstract class GenericWorkItem implements WorkItem {
             throw new IllegalArgumentException("Work item must have a parent or should be a root work item before" +
                     " call this method [this = " + this + "]");
         }
-        
+
         WorkItem parent = getParent();
 
-        return (parent != null) && ((parent.equals(testAncestor)) || parent.hasAncestor(testAncestor));  
+        return (parent != null) && ((parent.equals(testAncestor)) || parent.hasAncestor(testAncestor));
     }
 
     public void activate() {
@@ -442,12 +444,12 @@ public abstract class GenericWorkItem implements WorkItem {
         if (parentWorkItem != null) {
             parentWorkItem.activate();
         }
-        
+
         doActivation();
 
         isActive = true;
         isAboutToBeActivated = false;
-        
+
         fireOnActivateEvent();
 
         if (!isRootWorkItem()) {
@@ -547,7 +549,7 @@ public abstract class GenericWorkItem implements WorkItem {
         if (listener == null) {
             throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
         }
-        
+
         lifecycleListeners.remove(listener);
     }
 
@@ -580,6 +582,10 @@ public abstract class GenericWorkItem implements WorkItem {
         return "WorkItem [id: " + id + ']';
     }
 
+    protected void onRaiseEvent(String eventId, Object data, WorkItem caller) {
+        // No-op.
+    }
+
     protected abstract void doInitialize();
 
     protected abstract void doDispose();
@@ -605,7 +611,35 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     protected final void firePropertyChangeEvent(String propertyName, Object oldValue, Object newValue) {
-        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);        
+        propertyChangeSupport.firePropertyChange(propertyName, oldValue, newValue);
+    }
+
+    protected final void callObjectHandlers(Object obj, String eventId, Object data) {
+        for (Method method : obj.getClass().getDeclaredMethods()) {
+            Subscriber subscriberAnn =  method.getAnnotation(Subscriber.class);
+
+            if (subscriberAnn != null) {
+                String annEventId = subscriberAnn.eventId();
+
+                if (eventId.equals(annEventId)) {
+                    try {
+                        method.setAccessible(true);
+
+                        Class<?>[] paramTypes = method.getParameterTypes();
+
+                        if (paramTypes.length == 0) {
+                            method.invoke(obj);
+                        } else {
+                            method.invoke(obj, data);
+                        }
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvocationTargetException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
     }
 
     private GenericWorkItem getCommonAncestor(GenericWorkItem workItem) {
@@ -651,34 +685,6 @@ public abstract class GenericWorkItem implements WorkItem {
 
         for (ActivationListener listener : listeners) {
             listener.onDeactivate(this);
-        }
-    }
-
-    private void callHandlers(String eventId, Object data) {
-        for (Method method : getClass().getDeclaredMethods()) {
-            Subscriber subscriberAnn =  method.getAnnotation(Subscriber.class);
-
-            if (subscriberAnn != null) {
-                String annEventId = subscriberAnn.eventId();
-
-                if (eventId.equals(annEventId)) {
-                    try {
-                        method.setAccessible(true);
-
-                        Class<?>[] paramTypes = method.getParameterTypes();
-
-                        if (paramTypes.length == 0) {
-                            method.invoke(this);
-                        } else {
-                            method.invoke(this, data);
-                        }
-                    } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
-                    } catch (InvocationTargetException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
         }
     }
 

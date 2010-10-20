@@ -20,7 +20,7 @@
         </constraints>
         <properties>
           <horizontalAlignment value="0"/>
-          <icon value="com/apachetune/httpserver/ui/smartparts/about/light_version_about_dialog_image.png"/>
+          <icon value="com/apachetune/httpserver/ui/about/light_version_about_dialog_image.png"/>
           <iconTextGap value="0"/>
           <text value=""/>
           <verticalAlignment value="1"/>
@@ -159,7 +159,7 @@
           </grid>
         </constraints>
         <properties>
-          <icon value="com/apachetune/httpserver/ui/smartparts/about/product_name_as_mini_image.png"/>
+          <icon value="com/apachetune/httpserver/ui/about/product_name_as_mini_image.png"/>
           <text value=""/>
         </properties>
       </component>

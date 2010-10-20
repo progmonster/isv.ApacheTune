@@ -39,6 +39,8 @@ public class AppManagerImpl implements AppManager {
 
     private static final String BUILD_DATE_PROP = "buildDate";
 
+    private static final String PRODUCT_WEB_PORTAL_URI_PROP = "productWebPortalUri";
+
     private Properties appProps;
 
     public AppManagerImpl() {
@@ -118,5 +120,9 @@ public class AppManagerImpl implements AppManager {
 
     public String getFullAppName() {
         return getName() +'-' + getVersion().format();
+    }
+
+    public String getProductWebPortalUri() {
+        return appProps.getProperty(PRODUCT_WEB_PORTAL_URI_PROP);
     }
 }

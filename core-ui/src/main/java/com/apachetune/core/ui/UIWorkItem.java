@@ -10,4 +10,8 @@ import com.apachetune.core.WorkItem;
  */
 public interface UIWorkItem extends WorkItem {
     boolean needActionManagerAutobinding();
+
+    void addPresenter(Object presenter);
+
+    void removePresenter(Object presenter);    
 }

@@ -25,4 +25,6 @@ public interface AppManager {
     String getCopyrightText();
 
     String getFullAppName();
+
+    String getProductWebPortalUri();
 }
