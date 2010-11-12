@@ -10,6 +10,7 @@ import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.actions.*;
 import com.apachetune.core.ui.editors.EditorActionSite;
 import com.apachetune.core.ui.resources.CoreUIResourceLocator;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import jsyntaxpane.DefaultSyntaxKit;

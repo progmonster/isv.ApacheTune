@@ -10,6 +10,7 @@ import com.apachetune.httpserver.Constants;
 import com.apachetune.httpserver.entities.HttpServer;
 import com.apachetune.httpserver.ui.actions.CheckServerActionSite;
 import com.apachetune.httpserver.ui.editors.ConfEditorWorkItem;
+import com.apachetune.httpserver.ui.impl.HttpServerWorkItemImpl;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.apache.commons.collections.Predicate;
@@ -119,8 +120,8 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
         }
     }
 
-    private HttpServerWorkItem getParentWorkItem() {
-        return (HttpServerWorkItem) getParent();
+    private HttpServerWorkItemImpl getParentWorkItem() {
+        return (HttpServerWorkItemImpl) getParent();
     }
 
     @Subscriber(eventId = ON_HIGHLIGHT_SYNTAX_ERROR_EVENT)

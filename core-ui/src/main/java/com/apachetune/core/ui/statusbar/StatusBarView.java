@@ -1,4 +1,4 @@
-package com.apachetune.core.ui;
+package com.apachetune.core.ui.statusbar;
 
 import java.awt.*;
 
@@ -14,4 +14,8 @@ public interface StatusBarView {
     void setMainMessage(String message);
 
     void setCursorPositionState(Point position);
+
+    void addStatusBarSite(StatusBarSite site);
+
+    void removeStatusBarSite(StatusBarSite site);
 }

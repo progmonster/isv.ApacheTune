@@ -3,13 +3,14 @@ package com.apachetune.httpserver.ui;
 import com.apachetune.core.ui.CoreUIUtils;
 import com.apachetune.core.ui.GenericUIWorkItem;
 import com.apachetune.core.ui.OutputPaneDocument;
-import com.apachetune.core.ui.StatusBarManager;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.core.ui.actions.ActionHandler;
 import com.apachetune.core.ui.actions.ActionManager;
 import com.apachetune.core.ui.actions.ActionPermission;
 import com.apachetune.core.utils.StringValue;
 import com.apachetune.httpserver.entities.HttpServer;
 import com.apachetune.httpserver.ui.actions.RunServerWorkflowActionSite;
+import com.apachetune.httpserver.ui.impl.HttpServerWorkItemImpl;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.apache.commons.io.IOUtils;
@@ -154,8 +155,8 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
         coreUIUtils.safeEDTCall(setStdoutTextTask);
     }
 
-    private HttpServerWorkItem getParentWorkItem() {
-        return (HttpServerWorkItem) getParent();
+    private HttpServerWorkItemImpl getParentWorkItem() {
+        return (HttpServerWorkItemImpl) getParent();
     }
 
     private class TaskRunner implements Callable<Void> {

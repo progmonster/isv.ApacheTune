@@ -1,7 +1,7 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.StatusBarManager;
-import com.apachetune.core.ui.StatusBarView;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
+import com.apachetune.core.ui.statusbar.StatusBarView;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;

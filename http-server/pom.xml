@@ -44,7 +44,7 @@
 
         <dependency>
             <groupId>org.jmock</groupId>
-            <artifactId>jmock-legacy</artifactId>
+            <artifactId>jmock-junit4</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -81,6 +81,11 @@
         <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>net.java.balloontip</groupId>
+            <artifactId>balloontip</artifactId>
         </dependency>
     </dependencies>
 

@@ -6,7 +6,7 @@ import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.CoreUIUtils;
 import com.apachetune.core.ui.MenuBarManager;
-import com.apachetune.core.ui.StatusBarManager;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.core.ui.actions.ActionManager;
 import com.apachetune.core.ui.actions.ActionSite;
 import com.apachetune.core.ui.editors.EditorInput;

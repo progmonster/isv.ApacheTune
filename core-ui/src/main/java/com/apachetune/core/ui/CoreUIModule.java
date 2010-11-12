@@ -12,6 +12,8 @@ import com.apachetune.core.ui.editors.impl.SaveAllFilesAtOnceHelperImpl;
 import com.apachetune.core.ui.editors.impl.SaveFilesSeparatelyHelperImpl;
 import com.apachetune.core.ui.impl.*;
 import com.apachetune.core.ui.resources.CoreUIResourceLocator;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
+import com.apachetune.core.ui.statusbar.StatusBarView;
 import com.google.inject.AbstractModule;
 import org.noos.xing.mydoggy.ToolWindowManager;
 import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;

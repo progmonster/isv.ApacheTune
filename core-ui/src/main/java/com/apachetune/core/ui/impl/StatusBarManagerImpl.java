@@ -1,7 +1,8 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.StatusBarManager;
-import com.apachetune.core.ui.StatusBarView;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
+import com.apachetune.core.ui.statusbar.StatusBarSite;
+import com.apachetune.core.ui.statusbar.StatusBarView;
 import com.google.inject.Inject;
 
 import java.awt.*;
@@ -76,6 +77,16 @@ public class StatusBarManagerImpl implements StatusBarManager {
 
     public void setCaretPositionState(Point position) {
         statusBarView.setCursorPositionState(position);
+    }
+
+    @Override
+    public void addStatusBarSite(StatusBarSite site) {
+        statusBarView.addStatusBarSite(site);
+    }
+
+    @Override
+    public void removeStatusBarSite(StatusBarSite site) {
+        statusBarView.removeStatusBarSite(site);
     }
 
     private void removeLastById(String messageId) {

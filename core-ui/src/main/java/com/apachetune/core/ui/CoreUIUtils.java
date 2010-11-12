@@ -4,6 +4,7 @@ import com.apachetune.core.ui.actions.Action;
 import com.apachetune.core.ui.actions.ActionGroup;
 import com.apachetune.core.ui.actions.ActionManager;
 import com.apachetune.core.ui.actions.ActionSite;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.noos.xing.mydoggy.Content;

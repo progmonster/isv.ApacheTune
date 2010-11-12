@@ -1,6 +1,7 @@
 package com.apachetune.core.ui.impl;
 
-import com.apachetune.core.ui.StatusBarView;
+import com.apachetune.core.ui.statusbar.StatusBarSite;
+import com.apachetune.core.ui.statusbar.StatusBarView;
 import com.google.inject.Inject;
 
 import javax.swing.*;
@@ -55,7 +56,7 @@ public class StatusBarViewImpl implements StatusBarView {
             throw new NullPointerException("Argument message cannot be a null [this = " + this + "]");
         }
 
-        mainMessageLabel.setText(message);               
+        mainMessageLabel.setText(message);
     }
 
     public void setCursorPositionState(Point position) {
@@ -66,5 +67,15 @@ public class StatusBarViewImpl implements StatusBarView {
             cursorPositionLabel.setVisible(false);
             cursorPositionLabel.setText("");
         }
+    }
+
+    @Override
+    public void addStatusBarSite(StatusBarSite site) {
+        statusBar.add(site.getSiteComponent());
+    }
+
+    @Override
+    public void removeStatusBarSite(StatusBarSite site) {
+        statusBar.remove(site.getSiteComponent());
     }
 }

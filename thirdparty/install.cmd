@@ -10,6 +10,8 @@ call mvn install:install-file -Dfile=DJNativeSwing-SWT-0-9-9-20100914.src.zip -D
 call mvn install:install-file -Dfile=DJNativeSwing-0-9-9-20100914.jar -DgroupId=djproject.sourceforge.net -DartifactId=DJNativeSwing -Dversion=0-9-9-20100914 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=DJNativeSwing-0-9-9-20100914.src.zip -DgroupId=djproject.sourceforge.net -DartifactId=DJNativeSwing -Dversion=0-9-9-20100914 -Dpackaging=jar -Dclassifier=sources
 
+call mvn install:install-file -Dfile=balloontip-1.1.jar -DgroupId=net.java.balloontip -DartifactId=balloontip -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=balloontip-1.1.src.zip -DgroupId=net.java.balloontip -DartifactId=balloontip -Dversion=1.1 -Dpackaging=jar -Dclassifier=sources
 
 
 
