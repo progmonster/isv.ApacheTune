@@ -1,18 +1,25 @@
 package com.apachetune.httpserver.ui.messagesystem;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * FIXDOC
  */
 public interface MessageStore {
-    MessageTimestamp getLastTimestamp();
+    void initialize() throws SQLException;
 
-    List<NewsMessage> getMessages();
+    void dispose() throws SQLException;
 
-    List<NewsMessage> getUnreadMessages();
+    MessageTimestamp getLastTimestamp() throws SQLException;
 
-    void storeMessages(List<NewsMessage> messages);
+    List<NewsMessage> getMessages() throws SQLException;
 
-    void deleteMessages(List<NewsMessage> messages);
+    List<NewsMessage> getUnreadMessages() throws SQLException;
+
+    void storeMessages(List<NewsMessage> messages) throws SQLException;
+
+    void deleteMessages(List<NewsMessage> messages) throws SQLException;
+
+    void deleteAllMessages() throws SQLException;
 }

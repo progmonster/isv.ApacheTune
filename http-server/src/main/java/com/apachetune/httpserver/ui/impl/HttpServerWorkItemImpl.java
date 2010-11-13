@@ -336,7 +336,9 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
             initActions();
             initMenu();
             initToolBar();
+
             getMessageManager().initialize();
+            getMessageManager().start();
         } catch (IOException e) {
             throw new RuntimeException("Internal error", e); // TODO Make it with a service.
         }
@@ -353,6 +355,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
     }
 
     protected void doUIDispose() {
+        getMessageManager().stop();
         getMessageManager().dispose();
 
         storeCurrentServerToRecentListIfItWasCleared();

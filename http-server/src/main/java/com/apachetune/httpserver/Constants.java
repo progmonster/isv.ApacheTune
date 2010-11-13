@@ -74,4 +74,6 @@ public class Constants {
     public static final String OUTPUT_WINDOW_DOCK_LENGTH_PREF = "OUTPUT_WINDOW_DOCK_LENGTH";
     
     public static final String WELCOME_SCREEN_WORK_ITEM = "WELCOME_SCREEN_WORK_ITEM";
+
+    public static final String MESSAGE_STORE_DB_URL_PROP_NAME = "MESSAGE_STORE_DB_URL_PROP_NAME";
 }

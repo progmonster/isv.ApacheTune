@@ -1,10 +1,7 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
 import com.apachetune.core.ui.statusbar.StatusBarManager;
-import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.*;
-import com.apachetune.httpserver.ui.messagesystem.messagedialog.MessageSmartPart;
-import com.google.inject.Provider;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;
@@ -16,8 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.swing.*;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -33,10 +28,6 @@ public class MessageManagerImplTest {
 
     private StatusBarManager mockStatusBarManager;
 
-    private Provider<MessageSmartPart> mockMessageSmartPartProvider;
-
-    private HttpServerWorkItem mockHttpServerWorkItem;
-
     private MessageStatusBarSite mockMessageStatusBarSite;
 
     private MessageStore mockMessageStore;
@@ -46,12 +37,8 @@ public class MessageManagerImplTest {
     private MessageManager testSubj;
 
     @Before
-    public void prepare_test() {
+    public void prepare_test() throws Exception {
         mockStatusBarManager = mockCtx.mock(StatusBarManager.class);
-
-        mockMessageSmartPartProvider = mockCtx.mock(Provider.class);
-
-        mockHttpServerWorkItem = mockCtx.mock(HttpServerWorkItem.class);
 
         mockMessageStatusBarSite = mockCtx.mock(MessageStatusBarSite.class);
 
@@ -59,27 +46,31 @@ public class MessageManagerImplTest {
 
         mockRemoteManager = mockCtx.mock(RemoteManager.class);
 
-        testSubj = new MessageManagerImpl(mockStatusBarManager, mockMessageSmartPartProvider, mockHttpServerWorkItem,
-                mockMessageStatusBarSite, mockMessageStore, mockRemoteManager);
+        testSubj = new MessageManagerImpl(mockStatusBarManager, mockMessageStatusBarSite, mockMessageStore,
+                mockRemoteManager);
 
         mockCtx.checking(new Expectations() {{
             ignoring(mockStatusBarManager).addStatusBarSite(mockMessageStatusBarSite);
+
+            ignoring(mockMessageStore).initialize();
         }});
 
         testSubj.initialize();
     }
 
     @After
-    public void dispose_test_subject() {
+    public void dispose_test_subject() throws Exception {
         mockCtx.checking(new Expectations() {{
             ignoring(mockStatusBarManager).removeStatusBarSite(mockMessageStatusBarSite);
+
+            ignoring(mockMessageStore).dispose();
         }});
 
         testSubj.dispose();
     }
 
     @Test
-    public void test_get_last_loaded_message_timestamp() {
+    public void test_get_last_loaded_message_timestamp() throws Exception {
         mockCtx.checking(new Expectations() {{
             allowing(mockMessageStore).getLastTimestamp();
             will(returnValue(MessageTimestamp.create(123)));
@@ -89,7 +80,7 @@ public class MessageManagerImplTest {
     }
 
     @Test
-    public void test_lists() {
+    public void test_lists() throws Exception {
         final NewsMessage expMsg1 = new NewsMessage(MessageTimestamp.create(1), "expMsg1", "expMsg1 content", true);
 
         final NewsMessage expMsg2 = new NewsMessage(MessageTimestamp.create(1), "expMsg2", "expMsg2 content", false);
@@ -117,7 +108,7 @@ public class MessageManagerImplTest {
     }
 
     @Test
-    public void test_load_new_messages_on_start() {
+    public void test_load_new_messages_on_start() throws Exception {
         final NewsMessage expMsg = new NewsMessage(MessageTimestamp.create(1), "expMsg", "expMsg content", true);
 
         final Sequence sequence = mockCtx.sequence("flow");
@@ -165,7 +156,7 @@ public class MessageManagerImplTest {
     }
 
     @Test
-    public void test_mark_message_as_read() {
+    public void test_mark_message_as_read() throws Exception {
         final NewsMessage expMsg = new NewsMessage(MessageTimestamp.create(1), "expMsg", "expMsg content", true);
 
         final States state = mockCtx.states("test_state").startsAs("initial_state");
@@ -200,7 +191,7 @@ public class MessageManagerImplTest {
     }
 
     @Test
-    public void test_mark_message_as_unread() {
+    public void test_mark_message_as_unread() throws Exception {
         final NewsMessage expMsg = new NewsMessage(MessageTimestamp.create(1), "expMsg", "expMsg content", true);
 
         final States state = mockCtx.states("test_state").startsAs("initial_state");
@@ -234,7 +225,7 @@ public class MessageManagerImplTest {
     }
 
     @Test
-    public void test_delete_message() {
+    public void test_delete_message() throws Exception {
         final NewsMessage expMsg = new NewsMessage(MessageTimestamp.create(1), "expMsg", "expMsg content", true);
 
         final States state = mockCtx.states("test_state").startsAs("initial_state");

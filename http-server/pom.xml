@@ -87,6 +87,11 @@
             <groupId>net.java.balloontip</groupId>
             <artifactId>balloontip</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

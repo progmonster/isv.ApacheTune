@@ -32,6 +32,8 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
 
         button = new JButton("M"); // todo replace with images
 
+        button.setEnabled(false);
+
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

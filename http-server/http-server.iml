@@ -50,6 +50,7 @@
     <orderEntry type="library" name="Maven: com.jhlabs:filters:2.0.235" level="project" />
     <orderEntry type="library" name="Maven: org.swinglabs:swing-worker:1.1" level="project" />
     <orderEntry type="library" name="Maven: net.java.balloontip:balloontip:1.1" level="project" />
+    <orderEntry type="library" name="Maven: com.h2database:h2:1.2.142" level="project" />
   </component>
 </module>
 
