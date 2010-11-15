@@ -8,5 +8,8 @@ package com.apachetune.core;
  */
 public class ApplicationException extends Exception {
     private static final long serialVersionUID = -2166899409610457949L;
-    
+
+    public ApplicationException(String msg) {
+        super(msg);
+    }
 }

@@ -62,7 +62,7 @@ public class MessageTimestamp {
 
         @Override
         public final boolean isEmpty() {
-            return super.isEmpty();
+            return true;
         }
     }
 }

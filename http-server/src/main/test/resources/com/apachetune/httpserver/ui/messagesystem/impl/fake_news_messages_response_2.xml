@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<news-messages>
+    <message tstmp="1" dataEncoding="Base64" dataMimeType="text/html">
+        <subject>c3ViamVjdDE=</subject> <!-- subject1 -->
+        <content>Y29udGVudDE=</content> <!-- content1 -->
+    </message>
+
+    <message tstmp="2" dataEncoding="Base64" dataMimeType="text/html">
+        <subject>c3ViamVjdDI=</subject> <!-- subject2 -->
+        <content>Y29udGVudDI=</content> <!-- content2 -->
+    </message>
+</news-messages>
