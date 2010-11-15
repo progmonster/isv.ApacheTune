@@ -30,6 +30,7 @@ import java.util.List;
 import static com.apachetune.httpserver.Constants.REMOTE_MESSAGE_SERVICE_URL_PROP_NAME;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
+import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 
 /**
  * FIXDOC
@@ -63,12 +64,18 @@ public class RemoteManagerImpl implements RemoteManager {
 
         List<NewsMessage> resultList = emptyList();
 
+        int resultCode;
+
         try {
-            client.executeMethod(method);
+            resultCode = client.executeMethod(method);
 
-            String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8");
+            if (resultCode == SC_OK) {
+                String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8");
 
-            resultList = parseResponse(response);                        
+                resultList = parseResponse(response);
+            } else {
+                logger.error("Remote news message service returned error response code [code=" + resultCode + ']');
+            }
         } catch (IOException e) {
             logger.error("Error getting news messages from remote", e);
         }

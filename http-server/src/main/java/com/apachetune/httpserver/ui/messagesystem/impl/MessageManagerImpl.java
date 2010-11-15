@@ -24,7 +24,7 @@ public class MessageManagerImpl implements MessageManager {
 
     private static final String HAVE_UNREAD_MESSAGES_MSG_TMPL = "There are {0} unread messages";  // todo localize
 
-    private static final int SHOW_NEWS_MESSAGES_BALLOON_DELAY_IN_MSEC = 60 * 1000;
+    private static final int LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC = 10 * 1000; // todo 10 -> 60
 
     private final StatusBarManager statusBarManager;
 
@@ -92,19 +92,9 @@ public class MessageManagerImpl implements MessageManager {
 
     @Override
     public final void start() {
-        try {
-            List<NewsMessage> newsMessages = remoteManager.loadNewMessages(messageStore.getLastTimestamp());
+        updateNotificationArea();
 
-            if (!newsMessages.isEmpty()) {
-                messageStore.storeMessages(newsMessages);
-
-                updateNotificationArea();
-
-                scheduleShowBalloonTask();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        scheduleLoadNewMessagesTask();
     }
 
     @Override
@@ -202,51 +192,62 @@ public class MessageManagerImpl implements MessageManager {
         }
     }
 
-    private void scheduleShowBalloonTask() {
+    private void scheduleLoadNewMessagesTask() {
         if (!isSchedulerInitialized) {
-            logger.error("Cannot shedule show balloon task.");
+            logger.error("Cannot shedule load new messages task.");
             
             return;
         }
 
-        ShowNewMessagesBalloonTask task = new ShowNewMessagesBalloonTask();
+        LoadNewsMessagesTask task = new LoadNewsMessagesTask();
 
         JobDetail jobDetail = new JobDetail();
 
-        jobDetail.setName("showNewMessagesBalloonTask");
-        jobDetail.setJobClass(ShowNewMessagesBalloonJob.class);
+        jobDetail.setName("loadNewsMessagesTask");
+        jobDetail.setJobClass(LoadNewsMessagesJob.class);
 
         Map dataMap = jobDetail.getJobDataMap();
 
-        dataMap.put("showNewMessagesBalloonTask", task);
+        dataMap.put("loadNewsMessagesTask", task);
 
         SimpleTrigger trigger = new SimpleTrigger();
 
-        trigger.setName("showNewMessagesBalloonTrigger");
-        trigger.setStartTime(new Date(System.currentTimeMillis() + SHOW_NEWS_MESSAGES_BALLOON_DELAY_IN_MSEC));
+        trigger.setName("loadNewsMessagesTrigger");
+        trigger.setStartTime(new Date(System.currentTimeMillis() + LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC));
         trigger.setRepeatCount(0);
 
         try {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            logger.error("Cannot shedule show balloon task.", e);
+            logger.error("Cannot shedule load new messages task.", e);
         }
     }
 
-    public class ShowNewMessagesBalloonTask {
-        public final void showNewMessagesBalloon() {
-            messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
+    public class LoadNewsMessagesTask {
+        public final void execute() {
+            List<NewsMessage> newsMessages = remoteManager.loadNewMessages(getLastLoadedMessageTimestamp());
+
+            if (newsMessages.size() > 0) {
+                try {
+                    messageStore.storeMessages(newsMessages);
+
+                    updateNotificationArea();
+                    messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
+                } catch (SQLException e) {
+                    logger.error("Internal error", e);
+                }
+            }
         }
     }
 
-    public static class ShowNewMessagesBalloonJob implements Job {
+    public static class LoadNewsMessagesJob implements Job {
         @Override
         public final void execute(JobExecutionContext ctx) throws JobExecutionException {
             Map dataMap = ctx.getJobDetail().getJobDataMap(); 
 
-            ShowNewMessagesBalloonTask task = (ShowNewMessagesBalloonTask) dataMap.get("showNewMessagesBalloonTask");
+            LoadNewsMessagesTask task = (LoadNewsMessagesTask) dataMap.get("loadNewsMessagesTask");
 
-            task.showNewMessagesBalloon();
+            task.execute();
         }
     }
 }
