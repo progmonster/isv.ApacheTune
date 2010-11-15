@@ -9,4 +9,8 @@ public class RemoteManagerImplException extends ApplicationException {
     public RemoteManagerImplException(String msg) {
         super(msg);
     }
+
+    public RemoteManagerImplException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
 }

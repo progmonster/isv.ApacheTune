@@ -6,6 +6,8 @@ import com.apachetune.core.WorkItem;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.name.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 
@@ -18,6 +20,8 @@ import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
  * @version 1.0
  */
 public class CoreUIModuleController implements ModuleController {
+    private static final Logger logger = LoggerFactory.getLogger(CoreUIModuleController.class);
+
     private final Module coreUIModule = new CoreUIModule();
 
     @Inject @Named(CORE_UI_WORK_ITEM)
@@ -46,8 +50,7 @@ public class CoreUIModuleController implements ModuleController {
                 try {
                     super.dispatchEvent(event);
                 } catch (Throwable cause) {
-                    // TODO FIX. Exceptions do not catch by with section.
-                    cause.printStackTrace(); // TODO log it. And send feedback.
+                    logger.error("Internal error", cause);                   
                 }
             }
         });

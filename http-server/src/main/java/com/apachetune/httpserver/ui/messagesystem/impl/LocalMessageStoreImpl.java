@@ -5,17 +5,22 @@ import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.apachetune.httpserver.Constants.MESSAGE_STORE_DB_URL_PROP_NAME;
+import static java.util.Collections.emptyList;
 
 /**
  * FIXDOC
  */
 public class LocalMessageStoreImpl implements MessageStore {
+    private static final Logger logger = LoggerFactory.getLogger(LocalMessageStoreImpl.class);
+
     private static final String NEWS_MESSAGE_TABLE_RECREATE_SQL =
             "create table if not exists news_messages (tstmp bigint primary key, subject varchar, content nvarchar," +
                     " unread boolean)";
@@ -40,6 +45,8 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     private Connection connection;
 
+    private boolean isInitialized;
+
     @Inject
     public LocalMessageStoreImpl(@Named(MESSAGE_STORE_DB_URL_PROP_NAME) String dbUrl) {
         this.dbUrl = dbUrl;
@@ -52,15 +59,23 @@ public class LocalMessageStoreImpl implements MessageStore {
         connection.setAutoCommit(false);
 
         createSchema();
+
+        isInitialized = true;
     }
 
     @Override
     public final void dispose() throws SQLException {
-        connection.close();
+        if (connection != null) {
+            connection.close();
+        }
     }
 
     @Override
     public final MessageTimestamp getLastTimestamp() throws SQLException {
+        if (!checkInitialized()) {
+            return MessageTimestamp.createEmpty();
+        }
+
         if (getMessages().size() > 0) {
             Statement st = connection.createStatement();
 
@@ -80,6 +95,10 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     @Override
     public final List<NewsMessage> getMessages() throws SQLException {
+        if (!checkInitialized()) {
+            return emptyList();
+        }
+
         Statement st = connection.createStatement();
 
         try {
@@ -97,6 +116,10 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     @Override
     public final List<NewsMessage> getUnreadMessages() throws SQLException {
+        if (!checkInitialized()) {
+            return emptyList();
+        }
+
         Statement st = connection.createStatement();
 
         try {
@@ -114,6 +137,10 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     @Override
     public final void storeMessages(List<NewsMessage> messages) throws SQLException {
+        if (!checkInitialized()) {
+            return;
+        }
+
         for (NewsMessage msg : messages) {
             if (updateMessage(msg) == 0) {
                 insertMessage(msg);
@@ -125,6 +152,10 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     @Override
     public final void deleteMessages(List<NewsMessage> messages) throws SQLException {
+        if (!checkInitialized()) {
+            return;
+        }
+
         for (NewsMessage msg : messages) {
             deleteMessage(msg);
 
@@ -134,6 +165,10 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     @Override
     public final void deleteAllMessages() throws SQLException {
+        if (!checkInitialized()) {
+            return;
+        }
+
         Statement st = connection.createStatement();
 
         try {
@@ -150,7 +185,7 @@ public class LocalMessageStoreImpl implements MessageStore {
 
         try {
             ps.setLong(1, msg.getTimestamp().getValue());
-            
+
             ps.execute();
         } finally {
             ps.close();
@@ -215,5 +250,13 @@ public class LocalMessageStoreImpl implements MessageStore {
         } finally {
             st.close();
         }
+    }
+
+    private boolean checkInitialized() {
+        if (!isInitialized) {
+            logger.error("Local news message database was not initialized.");
+        }
+
+        return isInitialized;
     }
 }

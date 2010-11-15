@@ -1,10 +1,12 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
+import com.apachetune.core.AppManager;
 import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.apachetune.httpserver.ui.messagesystem.RemoteManager;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
@@ -15,16 +17,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +39,13 @@ public class RemoteManagerImpl implements RemoteManager {
 
     private final String remoteServiceUrl;
 
+    private final AppManager appManager;
+
     @Inject
-    public RemoteManagerImpl(@Named(REMOTE_MESSAGE_SERVICE_URL_PROP_NAME) String remoteServiceUrl) {
+    public RemoteManagerImpl(@Named(REMOTE_MESSAGE_SERVICE_URL_PROP_NAME) String remoteServiceUrl,
+                             AppManager appManager) {
         this.remoteServiceUrl = remoteServiceUrl;
+        this.appManager = appManager;
     }
 
     @Override
@@ -56,9 +58,8 @@ public class RemoteManagerImpl implements RemoteManager {
 
         String strTimeStamp = !timestamp.isEmpty() ? "" + timestamp.getValue() : "";
 
-        String appFullName = "apachetune-2.3"; // todo
-
-        method.setQueryString(format("action=get-news-messages&tstmp={0}&app-fullname={1}", strTimeStamp, appFullName));
+        method.setQueryString(format("action=get-news-messages&tstmp={0}&app-fullname={1}", strTimeStamp,
+                appManager.getFullAppName()));
 
         List<NewsMessage> resultList = emptyList();
 
@@ -98,14 +99,8 @@ public class RemoteManagerImpl implements RemoteManager {
 
                 resultList.add(msg);
             }
-        } catch (ParserConfigurationException e) {
-            logger.error("Error during parsing news messages from remote", e);
-        } catch (SAXException e) {
-            logger.error("Error during parsing news messages from remote", e);
-        } catch (IOException e) {
-            logger.error("Error during parsing news messages from remote", e);
-        } catch (RemoteManagerImplException e) {
-            logger.error("Error during parsing news messages from remote", e);
+        } catch (Throwable cause) {
+            logger.error("Error during parsing news messages from remote", cause);
         }
 
         return resultList;
@@ -121,7 +116,7 @@ public class RemoteManagerImpl implements RemoteManager {
 
         String dataMimeType = msgElem.getAttribute("dataMimeType");
 
-        if (!dataMimeType.equals("Base64")) {
+        if (!dataMimeType.equals("text/html")) {
             throw new RemoteManagerImplException(
                     "Message mime/type should be text/html [dataMimeType=" + dataMimeType + ']');
         }
@@ -136,10 +131,57 @@ public class RemoteManagerImpl implements RemoteManager {
             throw new RemoteManagerImplException("Message timestamp should be a number [tstmp=" + strTimestamp + ']');
         }
 
-        // todo
-        //content
-        //subject
+        if (timestamp <= 0) {
+            throw new RemoteManagerImplException(
+                    "Message timestamp should be a non null positive value [tstmp=" + timestamp + ']');
+        }
 
-        return null; // TODO implement
+        String base64Subject = getChildElementContent(msgElem, "subject");
+
+        String subject;
+
+        try {
+            subject = new String(Base64.decodeBase64(base64Subject), "UTF-8");
+        } catch (Throwable cause) {
+            throw new RemoteManagerImplException(
+                    "Error during parsing message subject [unparsed_subject=" + base64Subject + ']', cause);
+        }
+
+        String base64Content = getChildElementContent(msgElem, "content");
+
+        String content;
+
+        try {
+            content = new String(Base64.decodeBase64(base64Content), "UTF-8");
+        } catch (Throwable cause) {
+            throw new RemoteManagerImplException(
+                    "Error during parsing message content [unparsed_content=" + base64Content + ']', cause);
+        }
+
+        NewsMessage msg = new NewsMessage(MessageTimestamp.create(timestamp), subject, content, true);
+
+        return msg;
+    }
+
+    private String getChildElementContent(Element element, String childElementName) throws RemoteManagerImplException {
+        NodeList childElems = element.getElementsByTagName(childElementName);
+
+        if (childElems.getLength() != 1) {
+            throw new RemoteManagerImplException(
+                    "Error during parsing message. Multiple children elements with same name. [child_element_name=" +
+                            childElementName + ']');
+        }
+
+        String result;
+
+        try {
+            Element childElem = (Element) childElems.item(0);
+
+            result = childElem.getTextContent().trim();
+        } catch (Throwable cause) {
+            throw new RemoteManagerImplException("Error during parsing message", cause);
+        }
+
+        return result;
     }
 }

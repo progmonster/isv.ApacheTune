@@ -24,7 +24,7 @@ import static org.fest.assertions.Assertions.assertThat;
  */
 @RunWith(JMock.class)
 public class MessageManagerImplTest {
-    private Mockery mockCtx = new JUnit4Mockery();
+    private final Mockery mockCtx = new JUnit4Mockery();
 
     private StatusBarManager mockStatusBarManager;
 

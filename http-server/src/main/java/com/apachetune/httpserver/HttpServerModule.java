@@ -43,7 +43,7 @@ public class HttpServerModule extends AbstractModule {
         bind(MessageStore.class).to(LocalMessageStoreImpl.class).in(SINGLETON);
 
         bind(String.class).annotatedWith(Names.named(MESSAGE_STORE_DB_URL_PROP_NAME))
-                .toInstance("jdbc:h2:message_db");
+                .toInstance("jdbc:h2:message_db;FILE_LOCK=SERIALIZED");
 
         bind(MessageStatusBarSite.class).to(MessageStatusBarSiteImpl.class).in(SINGLETON);
 

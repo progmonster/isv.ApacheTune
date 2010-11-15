@@ -1,12 +1,18 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
+import com.apachetune.core.AppManager;
 import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.apachetune.httpserver.ui.messagesystem.RemoteManager;
 import org.apache.commons.io.IOUtils;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
 import org.simpleframework.http.core.Container;
@@ -24,10 +30,13 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * FIXDOC
  */
+@RunWith(JMock.class)
 public class RemoteManagerImplTest {
     private static final Logger logger = LoggerFactory.getLogger(RemoteManagerImplTest.class);
 
     private static final String testRemoteServiceUrl = "http://localhost:8181/";
+
+    private final Mockery mockCtx = new JUnit4Mockery();
 
     private Connection connection;
 
@@ -35,8 +44,17 @@ public class RemoteManagerImplTest {
 
     private HttpService httpService;
 
+    private AppManager mockAppManager;
+
     @Before
     public void prepare_test() throws Exception {
+        mockAppManager = mockCtx.mock(AppManager.class);
+
+        mockCtx.checking(new Expectations() {{
+            allowing(mockAppManager).getFullAppName();
+            will(returnValue("apache-tune-test-version"));
+        }});
+        
         httpService = new HttpService();
 
         connection = new SocketConnection(httpService);
@@ -45,7 +63,7 @@ public class RemoteManagerImplTest {
 
         connection.connect(address);
 
-        testSubject = new RemoteManagerImpl(testRemoteServiceUrl);
+        testSubject = new RemoteManagerImpl(testRemoteServiceUrl, mockAppManager);
     }
 
     @After
@@ -66,7 +84,7 @@ public class RemoteManagerImplTest {
                     body = response.getPrintStream();
 
                     assertThat(request.getQuery().toString())
-                            .isEqualTo("action=get-news-messages&tstmp=2&app-fullname=apachetune-2.3");
+                            .isEqualTo("action=get-news-messages&tstmp=2&app-fullname=apache-tune-test-version");
 
                     response.set("Content-Type", "text/xml");
 
@@ -94,6 +112,10 @@ public class RemoteManagerImplTest {
 
     @Test
     public void test_load_new_messages_first_time() throws Exception {
+        final NewsMessage expMsg1 = new NewsMessage(MessageTimestamp.create(1), "subject1", "content1", true);
+                                                                                                      
+        final NewsMessage expMsg2 = new NewsMessage(MessageTimestamp.create(2), "subject2", "content2", true);
+
         Container handler = new Container() {
             @Override
             public void handle(Request request, Response response) {
@@ -103,7 +125,7 @@ public class RemoteManagerImplTest {
                     body = response.getPrintStream();
 
                     assertThat(request.getQuery().toString())
-                            .isEqualTo("action=get-news-messages&tstmp=&app-fullname=apachetune-2.3");
+                            .isEqualTo("action=get-news-messages&tstmp=&app-fullname=apache-tune-test-version");
 
                     response.set("Content-Type", "text/xml");
 
@@ -124,11 +146,14 @@ public class RemoteManagerImplTest {
 
         httpService.setHandler(handler);
 
-        RemoteManager testSubject = new RemoteManagerImpl(testRemoteServiceUrl);
+        RemoteManager testSubject = new RemoteManagerImpl(testRemoteServiceUrl, mockAppManager);
 
         List<NewsMessage> loadedMessages = testSubject.loadNewMessages(MessageTimestamp.createEmpty());
 
         assertThat(loadedMessages.size()).isEqualTo(2);
+
+        assertThat(loadedMessages.get(0)).isEqualTo(expMsg1);
+        assertThat(loadedMessages.get(1)).isEqualTo(expMsg2);
     }
 
     private class HttpService implements Container {
