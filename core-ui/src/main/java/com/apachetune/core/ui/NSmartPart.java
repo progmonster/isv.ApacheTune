@@ -5,4 +5,6 @@ package com.apachetune.core.ui;
  */
 public interface NSmartPart extends NView {
     void initialize(UIWorkItem workItem);
+
+    void run();
 }

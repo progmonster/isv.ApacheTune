@@ -1,6 +1,7 @@
 package com.apachetune.httpserver.ui.messagesystem;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -11,15 +12,19 @@ public interface MessageStore {
 
     void dispose() throws SQLException;
 
-    MessageTimestamp getLastTimestamp() throws SQLException;
+    MessageTimestamp getLastTimestamp();
 
-    List<NewsMessage> getMessages() throws SQLException;
+    List<NewsMessage> getMessages();
 
-    List<NewsMessage> getUnreadMessages() throws SQLException;
+    List<NewsMessage> getUnreadMessages();
 
-    void storeMessages(List<NewsMessage> messages) throws SQLException;
+    void storeMessages(Collection<NewsMessage> messages);
 
-    void deleteMessages(List<NewsMessage> messages) throws SQLException;
+    void deleteMessages(Collection<NewsMessage> messages);
 
-    void deleteAllMessages() throws SQLException;
+    void deleteAllMessages();
+
+    void addDataChangedListener(MessageStoreDataChangedListener listener);
+
+    void removeDataChangedListener(MessageStoreDataChangedListener listener);
 }

@@ -52,21 +52,12 @@ public class NewsMessage {
 
         NewsMessage that = (NewsMessage) o;
 
-        if (isUnread != that.isUnread) return false;
-        if (content != null ? !content.equals(that.content) : that.content != null) return false;
-        if (subject != null ? !subject.equals(that.subject) : that.subject != null) return false;
-        if (timestamp != null ? !timestamp.equals(that.timestamp) : that.timestamp != null) return false;
-
-        return true;
+        return timestamp.equals(that.timestamp);
     }
 
     @Override
     public final int hashCode() {
-        int result = timestamp != null ? timestamp.hashCode() : 0;
-        result = 31 * result + (subject != null ? subject.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        result = 31 * result + (isUnread ? 1 : 0);
-        return result;
+        return timestamp.hashCode();
     }
 
     @Override

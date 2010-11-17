@@ -1,6 +1,10 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
+import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.MessageStatusBarSite;
+import com.apachetune.httpserver.ui.messagesystem.messagedialog.MessageSmartPart;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.styles.BalloonTipStyle;
 import net.java.balloontip.styles.EdgedBalloonStyle;
@@ -23,27 +27,42 @@ import static net.java.balloontip.BalloonTip.Orientation.RIGHT_BELOW;
 public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
     public static final int BALLOON_TIP_SHOW_TIME = 10000;
 
-    private final JPanel panel;
+    private final Provider<MessageSmartPart> messageSmartPartProvider;
 
-    private final JButton button;
+    private final HttpServerWorkItem httpServerWorkItem;
 
-    public MessageStatusBarSiteImpl() {
+    private JPanel panel;
+
+    private JButton button;
+
+    @Inject
+    public MessageStatusBarSiteImpl(Provider<MessageSmartPart> messageSmartPartProvider,
+                                    HttpServerWorkItem httpServerWorkItem) {
+        this.messageSmartPartProvider = messageSmartPartProvider;
+        this.httpServerWorkItem = httpServerWorkItem;
+    }
+
+    @Override
+    public final void initialize() {
         panel = new JPanel();
 
         button = new JButton("M"); // todo replace with images
 
-        button.setEnabled(false);
+        button.setEnabled(true);
 
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-          /*      messageSmartPartProvider.get().initialize(httpServerWorkItem);
-*/
-                // TODO show message list dialog
+                showMessageDialog();
             }
         });
 
         panel.add(button);
+    }
+
+    @Override
+    public final void dispose() {
+        // No-op.
     }
 
     @Override
@@ -53,7 +72,7 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
 
     @Override
     public final void setNotificationAreaActive(boolean isActive) {
-        button.setEnabled(isActive);
+        // todo show highlighted icon if active and vice versa
     }
 
     @Override
@@ -70,7 +89,7 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
         tipLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // todo show message list dialog
+                showMessageDialog();
             }
         });
 
@@ -79,5 +98,15 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
                         ALIGNED, 40, 20, true);
 
         TimingUtils.showTimedBalloon(balloonTip, BALLOON_TIP_SHOW_TIME);
+    }
+
+    private void showMessageDialog() {
+        MessageSmartPart msgDialogSmartPart = this.messageSmartPartProvider.get();
+
+        msgDialogSmartPart.initialize(this.httpServerWorkItem);
+
+        msgDialogSmartPart.run();
+
+        msgDialogSmartPart.close();
     }
 }

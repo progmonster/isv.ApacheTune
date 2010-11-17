@@ -1,6 +1,7 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
 import com.apachetune.httpserver.ui.messagesystem.MessageStore;
+import com.apachetune.httpserver.ui.messagesystem.MessageStoreDataChangedListener;
 import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.google.inject.Inject;
@@ -10,8 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import static com.apachetune.core.utils.Utils.close;
 import static com.apachetune.httpserver.Constants.MESSAGE_STORE_DB_URL_PROP_NAME;
 import static java.util.Collections.emptyList;
 
@@ -24,6 +27,9 @@ public class LocalMessageStoreImpl implements MessageStore {
     private static final String NEWS_MESSAGE_TABLE_RECREATE_SQL =
             "create table if not exists news_messages (tstmp bigint primary key, subject varchar, content nvarchar," +
                     " unread boolean)";
+
+    private static final String PROPS_TABLE_RECREATE_SQL =
+            "create table if not exists props (prop_name varchar primary key, prop_value varchar)";
 
     private static final String INSERT_NEWS_MESSAGE_SQL =
             "insert into news_messages (tstmp, subject, content, unread) values (?, ?, ?, ?)";
@@ -41,7 +47,19 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     private static final String DELETE_NEWS_MESSAGE_SQL = "delete from news_messages where tstmp = ?";
 
+    private static final String GET_LAST_TIMESTAMP_FROM_PROPS_SQL =
+            "select prop_value from props where prop_name = 'last_stored_timestamp'";
+
+    private static final String UPDATE_NEW_LAST_TIMESTAMP_IN_PROPS_SQL =
+            "update props set prop_value = ? where prop_name = 'last_stored_timestamp'";
+
+    private static final String STORE_NEW_LAST_TIMESTAMP_TO_PROPS_SQL =
+            "insert into props (prop_name, prop_value) values (?, ?)";
+
     private final String dbUrl;
+
+    private List<MessageStoreDataChangedListener> dataChangedListeners =
+            new ArrayList<MessageStoreDataChangedListener>();
 
     private Connection connection;
 
@@ -71,112 +89,221 @@ public class LocalMessageStoreImpl implements MessageStore {
     }
 
     @Override
-    public final MessageTimestamp getLastTimestamp() throws SQLException {
+    public final MessageTimestamp getLastTimestamp() {
         if (!checkInitialized()) {
             return MessageTimestamp.createEmpty();
         }
 
-        if (getMessages().size() > 0) {
-            Statement st = connection.createStatement();
+        Statement st = null;
 
-            try {
-                ResultSet rs = st.executeQuery("select max(tstmp) from news_messages");
+        ResultSet rs = null;
 
-                rs.next();
+        try {
+            st = connection.createStatement();
 
-                return MessageTimestamp.create(rs.getLong(1));                
-            } finally {
-                st.close();
+            rs = st.executeQuery(GET_LAST_TIMESTAMP_FROM_PROPS_SQL);
+
+            if (rs.next()) {
+                return MessageTimestamp.create(Long.parseLong(rs.getString(1)));
+            } else {
+                return MessageTimestamp.createEmpty();
             }
-        } else {
+        } catch (SQLException e) {
+            logger.error("Error during getting last stored timestamp of message.", e);
+
             return MessageTimestamp.createEmpty();
+        } finally {
+            close(rs);
+            close(st);
         }
     }
 
     @Override
-    public final List<NewsMessage> getMessages() throws SQLException {
+    public final List<NewsMessage> getMessages() {
         if (!checkInitialized()) {
             return emptyList();
         }
 
-        Statement st = connection.createStatement();
+        Statement st = null;
+
+        ResultSet rs = null;
 
         try {
-            ResultSet rs = st.executeQuery(SELECT_ALL_NEWS_MESSAGES_SQL);
+            st = connection.createStatement();
 
-            try {
-                return resultSetToMessageList(rs);
-            } finally {
-                rs.close();
-            }
+            rs = st.executeQuery(SELECT_ALL_NEWS_MESSAGES_SQL);
+
+            return resultSetToMessageList(rs);
+        } catch (SQLException e) {
+            logger.error("Error during loading stored messages.", e);
+
+            return emptyList();
         } finally {
-            st.close();
+            close(rs);
+            close(st);
         }
     }
 
     @Override
-    public final List<NewsMessage> getUnreadMessages() throws SQLException {
+    public final List<NewsMessage> getUnreadMessages() {
         if (!checkInitialized()) {
             return emptyList();
         }
 
-        Statement st = connection.createStatement();
+        Statement st = null;
+
+        ResultSet rs = null;
 
         try {
-            ResultSet rs = st.executeQuery(SELECT_UNREAD_NEWS_MESSAGES_SQL);
+            st = connection.createStatement();
 
-            try {
-                return resultSetToMessageList(rs);
-            } finally {
-                rs.close();
-            }
+            rs = st.executeQuery(SELECT_UNREAD_NEWS_MESSAGES_SQL);
+
+            return resultSetToMessageList(rs);
+        } catch (SQLException e) {
+            logger.error("Error during loading stored unread messages.", e);
+
+            return emptyList();
         } finally {
-            st.close();
+            close(rs);
+            close(st);
         }
     }
 
     @Override
-    public final void storeMessages(List<NewsMessage> messages) throws SQLException {
+    public final void storeMessages(Collection<NewsMessage> messages) {
         if (!checkInitialized()) {
             return;
         }
 
-        for (NewsMessage msg : messages) {
-            if (updateMessage(msg) == 0) {
-                insertMessage(msg);
+        if (messages.isEmpty()) {
+            return;
+        }
+
+        long newMaxTimestamp = -1;
+
+        try {
+            for (NewsMessage msg : messages) {
+                if (updateMessage(msg) == 0) {
+                    insertMessage(msg);
+
+                    newMaxTimestamp = Math.max(newMaxTimestamp, msg.getTimestamp().getValue());
+                }
             }
-        }
-
-        connection.commit();
-    }
-
-    @Override
-    public final void deleteMessages(List<NewsMessage> messages) throws SQLException {
-        if (!checkInitialized()) {
-            return;
-        }
-
-        for (NewsMessage msg : messages) {
-            deleteMessage(msg);
 
             connection.commit();
+        } catch (SQLException e) {
+            logger.error("Error during storing news messages.", e);
         }
+
+        if (newMaxTimestamp == -1) {
+            return;
+        }
+
+        try {
+            if (getLastTimestamp().isEmpty()) {
+                storeNewLastTimestamp(newMaxTimestamp);
+
+                connection.commit();
+            } else if (getLastTimestamp().getValue() < newMaxTimestamp) {
+                updateNewLastTimestamp(newMaxTimestamp);
+
+                connection.commit();
+            }
+        } catch (SQLException e) {
+            logger.error("Error during storing news messages.", e);
+        }
+
+        notifyDataChanged();
     }
 
     @Override
-    public final void deleteAllMessages() throws SQLException {
+    public final void deleteMessages(Collection<NewsMessage> messages) {
         if (!checkInitialized()) {
             return;
         }
 
-        Statement st = connection.createStatement();
+        if (messages.isEmpty()) {
+            return;
+        }
 
         try {
+            for (NewsMessage msg : messages) {
+                deleteMessage(msg);
+
+                connection.commit();
+            }
+        } catch (SQLException e) {
+            logger.error("Error during deleting news messages from store.", e);
+        }
+
+        notifyDataChanged();
+    }
+
+    @Override
+    public final void deleteAllMessages() {
+        if (!checkInitialized()) {
+            return;
+        }
+
+        Statement st = null;
+
+        try {
+            st = connection.createStatement();
+
             st.execute(DELETE_ALL_NEWS_MESSAGES_SQL);
 
             connection.commit();
+        } catch (SQLException e) {
+            logger.error("Error during deleting all news messages from store.", e);
         } finally {
-            st.close();
+            close(st);
+        }
+
+        notifyDataChanged();
+    }
+
+    @Override
+    public final void addDataChangedListener(MessageStoreDataChangedListener listener) {
+        dataChangedListeners.add(listener);
+    }
+
+    @Override
+    public final void removeDataChangedListener(MessageStoreDataChangedListener listener) {
+        dataChangedListeners.remove(listener);
+    }
+
+    private void notifyDataChanged() {
+        List<MessageStoreDataChangedListener> listeners =
+                new ArrayList<MessageStoreDataChangedListener>(dataChangedListeners);
+
+        for (MessageStoreDataChangedListener listener : listeners) {
+            listener.onStoredDataChanged();
+        }
+    }
+
+    private void updateNewLastTimestamp(long newMaxTimestamp) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(UPDATE_NEW_LAST_TIMESTAMP_IN_PROPS_SQL);
+
+        try {
+            ps.setString(1, "" + newMaxTimestamp);
+
+            ps.execute();
+        } finally {
+            ps.close();
+        }
+    }
+
+    private void storeNewLastTimestamp(long newMaxTimestamp) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(STORE_NEW_LAST_TIMESTAMP_TO_PROPS_SQL);
+
+        try {
+            ps.setString(1, "last_stored_timestamp");
+            ps.setString(2, "" + newMaxTimestamp);
+
+            ps.execute();
+        } finally {
+            ps.close();
         }
     }
 
@@ -245,6 +372,7 @@ public class LocalMessageStoreImpl implements MessageStore {
 
         try {
             st.execute(NEWS_MESSAGE_TABLE_RECREATE_SQL);
+            st.execute(PROPS_TABLE_RECREATE_SQL);
 
             connection.commit();
         } finally {

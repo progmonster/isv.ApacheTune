@@ -1,5 +1,12 @@
 package com.apachetune.core.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import static org.apache.commons.lang.StringUtils.left;
 import static org.apache.commons.lang.StringUtils.right;
 
@@ -10,6 +17,8 @@ import static org.apache.commons.lang.StringUtils.right;
  * @version 1.0
  */
 public final class Utils {
+    private static final Logger logger = LoggerFactory.getLogger(Utils.class);
+
     private Utils() {
         // No-op.
     }
@@ -68,5 +77,29 @@ public final class Utils {
         }
         
         return abbreviatedLocation;
+    }
+
+    public static void close(ResultSet rs) {
+        if (rs == null) {
+            return;
+        }
+
+        try {
+            rs.close();
+        } catch (SQLException e) {
+            logger.error("Error during closing result set", e);
+        }
+    }
+
+    public static void close(Statement st) {
+        if (st == null) {
+            return;
+        }
+
+        try {
+            st.close();
+        } catch (SQLException e) {
+            logger.error("Error during closing statement", e);
+        }
     }
 }

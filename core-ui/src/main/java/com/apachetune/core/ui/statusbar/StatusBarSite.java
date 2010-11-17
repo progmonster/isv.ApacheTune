@@ -7,5 +7,9 @@ import javax.swing.*;
  * FIXDOC
  */
 public interface StatusBarSite {
+    void initialize();
+
     JComponent getSiteComponent();
+
+    void dispose();
 }

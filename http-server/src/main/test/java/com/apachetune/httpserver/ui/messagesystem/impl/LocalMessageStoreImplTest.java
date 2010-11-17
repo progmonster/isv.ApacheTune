@@ -89,12 +89,28 @@ public class LocalMessageStoreImplTest {
 
     @Test
     public void test_get_last_message_timestamp() throws Exception {
-        NewsMessage msg = new NewsMessage(MessageTimestamp.create(11234), "msg", "msg content", true);
+        NewsMessage msg1 = new NewsMessage(MessageTimestamp.create(1), "msg1", "msg content1", true);
+
+        NewsMessage msg2 = new NewsMessage(MessageTimestamp.create(2), "msg2", "msg content2", true);
+
+        NewsMessage msg3 = new NewsMessage(MessageTimestamp.create(3), "msg3", "msg content3", true);
 
         assertThat(testSubj.getLastTimestamp()).isEqualTo(MessageTimestamp.createEmpty());
 
-        testSubj.storeMessages(asList(msg));
+        testSubj.storeMessages(asList(msg1));
 
-        assertThat(testSubj.getLastTimestamp()).isEqualTo(MessageTimestamp.create(11234));
+        assertThat(testSubj.getLastTimestamp()).isEqualTo(MessageTimestamp.create(1));
+
+        testSubj.storeMessages(asList(msg3));
+
+        assertThat(testSubj.getLastTimestamp()).isEqualTo(MessageTimestamp.create(3));
+
+        testSubj.storeMessages(asList(msg2));
+
+        assertThat(testSubj.getLastTimestamp()).isEqualTo(MessageTimestamp.create(3));
+
+        testSubj.deleteAllMessages();
+
+        assertThat(testSubj.getLastTimestamp()).isEqualTo(MessageTimestamp.create(3));
     }
 }

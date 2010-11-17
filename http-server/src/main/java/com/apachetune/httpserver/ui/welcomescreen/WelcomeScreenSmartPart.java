@@ -125,6 +125,11 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, NSmartPa
     }
 
     @Override
+    public final void run() {
+        // No-op.
+    }
+
+    @Override
     public void close() {
         presenter.onCloseView();
 

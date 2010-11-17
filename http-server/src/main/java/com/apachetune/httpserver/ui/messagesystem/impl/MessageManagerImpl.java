@@ -19,7 +19,7 @@ import static java.util.Arrays.asList;
 /**
  * FIXDOC
  */
-public class MessageManagerImpl implements MessageManager {
+public class MessageManagerImpl implements MessageManager, MessageStoreDataChangedListener {
     private static final Logger logger = LoggerFactory.getLogger(MessageManagerImpl.class);
 
     private static final String HAVE_UNREAD_MESSAGES_MSG_TMPL = "There are {0} unread messages";  // todo localize
@@ -50,6 +50,8 @@ public class MessageManagerImpl implements MessageManager {
 
     @Override
     public final void initialize() {
+        messageStatusBarSite.initialize();
+
         statusBarManager.addStatusBarSite(messageStatusBarSite);
 
         try {
@@ -57,6 +59,8 @@ public class MessageManagerImpl implements MessageManager {
         } catch (SQLException e) {
             throw new RuntimeException("internal error", e);
         }
+
+        messageStore.addDataChangedListener(this);
 
         try {
             scheduler = new StdSchedulerFactory().getScheduler();
@@ -71,6 +75,8 @@ public class MessageManagerImpl implements MessageManager {
 
     @Override
     public final void dispose() {
+        messageStore.removeDataChangedListener(this);
+
         if (isSchedulerInitialized) {
             try {
                 scheduler.shutdown();
@@ -88,6 +94,7 @@ public class MessageManagerImpl implements MessageManager {
         }
 
         statusBarManager.removeStatusBarSite(messageStatusBarSite);
+        messageStatusBarSite.dispose();
     }
 
     @Override
@@ -104,40 +111,24 @@ public class MessageManagerImpl implements MessageManager {
 
     @Override
     public final MessageTimestamp getLastLoadedMessageTimestamp() {
-        try {
-            return messageStore.getLastTimestamp();
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        return messageStore.getLastTimestamp();
     }
 
     @Override
     public final List<NewsMessage> getMessages() {
-        try {
-            return messageStore.getMessages();
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        return messageStore.getMessages();
     }
 
     @Override
     public final List<NewsMessage> getUnreadMessages() {
-        try {
-            return messageStore.getUnreadMessages();
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        return messageStore.getUnreadMessages();
     }
 
     @Override
     public final NewsMessage markMessageAsRead(NewsMessage msg) {
         NewsMessage changedMsg = NewsMessage.createBuilder().copyFrom(msg).setUnread(false).build();
 
-        try {
-            messageStore.storeMessages(asList(changedMsg));
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        messageStore.storeMessages(asList(changedMsg));
 
         updateNotificationArea();
 
@@ -148,11 +139,7 @@ public class MessageManagerImpl implements MessageManager {
     public final NewsMessage markMessageAsUnread(NewsMessage msg) {
         NewsMessage changedMsg = NewsMessage.createBuilder().copyFrom(msg).setUnread(true).build();
 
-        try {
-            messageStore.storeMessages(asList(changedMsg));
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        messageStore.storeMessages(asList(changedMsg));
 
         updateNotificationArea();
 
@@ -161,26 +148,23 @@ public class MessageManagerImpl implements MessageManager {
 
     @Override
     public final void deleteMessage(NewsMessage msg) {
-        try {
-            messageStore.deleteMessages(asList(msg));
+        messageStore.deleteMessages(asList(msg));
 
-            if (messageStore.getUnreadMessages().size() == 0) {
-                messageStatusBarSite.setNotificationAreaActive(false);
-                messageStatusBarSite.setNotificationTip(null);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
+        if (messageStore.getUnreadMessages().size() == 0) {
+            messageStatusBarSite.setNotificationAreaActive(false);
+            messageStatusBarSite.setNotificationTip(null);
         }
+    }
+
+    @Override
+    public final void onStoredDataChanged() {
+        updateNotificationArea();        
     }
 
     private void updateNotificationArea() {
         int unreadMsgCount;
 
-        try {
-            unreadMsgCount = messageStore.getUnreadMessages().size();
-        } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        unreadMsgCount = messageStore.getUnreadMessages().size();
 
         if (unreadMsgCount > 0) {
             messageStatusBarSite.setNotificationAreaActive(true);
@@ -188,14 +172,14 @@ public class MessageManagerImpl implements MessageManager {
                     .setNotificationTip(MessageFormat.format(HAVE_UNREAD_MESSAGES_MSG_TMPL, unreadMsgCount));
         } else {
             messageStatusBarSite.setNotificationAreaActive(false);
-            messageStatusBarSite.setNotificationTip(null);
+            messageStatusBarSite.setNotificationTip("There are no unread messages."); // todo localize
         }
     }
 
     private void scheduleLoadNewMessagesTask() {
         if (!isSchedulerInitialized) {
             logger.error("Cannot shedule load new messages task.");
-            
+
             return;
         }
 
@@ -228,14 +212,10 @@ public class MessageManagerImpl implements MessageManager {
             List<NewsMessage> newsMessages = remoteManager.loadNewMessages(getLastLoadedMessageTimestamp());
 
             if (newsMessages.size() > 0) {
-                try {
-                    messageStore.storeMessages(newsMessages);
+                messageStore.storeMessages(newsMessages);
 
-                    updateNotificationArea();
-                    messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
-                } catch (SQLException e) {
-                    logger.error("Internal error", e);
-                }
+                updateNotificationArea();
+                messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
             }
         }
     }
