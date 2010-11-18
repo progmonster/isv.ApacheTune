@@ -1,14 +1,18 @@
 package com.apachetune.httpserver.ui.messagesystem.messagedialog;
 
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.NSmartPart;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
-import com.apachetune.httpserver.ui.messagesystem.MessageStore;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.google.inject.Inject;
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -18,6 +22,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,9 +30,13 @@ import java.util.Set;
 import java.util.prefs.BackingStoreException;
 
 import static java.awt.Dialog.ModalityType.TOOLKIT_MODAL;
+import static javax.swing.SwingUtilities.invokeLater;
+import static javax.swing.SwingUtilities.isEventDispatchThread;
 import static org.apache.commons.lang.Validate.notNull;
 
 public class MessageSmartPart extends JDialog implements NSmartPart, MessageView, ListSelectionListener {
+    private static final Logger logger = LoggerFactory.getLogger(MessageSmartPart.class);
+
     private final MessagePresenter presenter;
 
     private final MessageManager messageManager;
@@ -49,6 +58,8 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
     private JButton deleteButton;
 
     private JTable messageTable;
+
+    private NewsMessage currentShowedMsg;
 
     @Inject
     public MessageSmartPart(final MessagePresenter presenter, MessageManager messageManager,
@@ -194,6 +205,21 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
             }
         });
 
+        webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
+            @Override
+            public final void commandReceived(WebBrowserCommandEvent e) {
+                if (e.getCommand().equals("openWebPage")) {
+                    try {
+                        String url = (String) e.getParameters()[0];
+
+                        Desktop.getDesktop().browse(new URI(url));
+                    } catch (Throwable cause) {
+                        logger.error("Error during parsing openWebPageCommand.", cause);
+                    }
+                }
+            }
+        });
+
         presenter.onViewReady();
     }
 
@@ -275,6 +301,34 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
     }
 
     @Override
+    public final void showMessageContent(NewsMessage msg) {
+        if (ObjectUtils.equals(currentShowedMsg, msg)) {
+            return;
+        }
+
+        currentShowedMsg = msg;
+
+        final String contentToSet;
+
+        if (msg == null) {
+            contentToSet = "";
+        } else {
+            contentToSet = msg.getContent();
+        }
+
+        if (isEventDispatchThread()) {
+            webBrowser.setHTMLContent(contentToSet);
+        } else {
+            invokeLater(new Runnable() {
+                @Override
+                public final void run() {
+                    webBrowser.setHTMLContent(contentToSet);
+                }
+            });
+        }
+    }
+
+    @Override
     public final void valueChanged(ListSelectionEvent e) {
         if (e.getValueIsAdjusting()) {
             return;            
@@ -309,8 +363,8 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
         webBrowser.setStatusBarVisible(false);
         webBrowser.setMenuBarVisible(false);
         webBrowser.setLocationBarVisible(false);
-
-        webBrowser.navigate("http://habrahabr.ru/"); // todo remove
+        webBrowser.setJavascriptEnabled(true);
+        webBrowser.setHTMLContent("");
     }
 
     private void restoreBounds() {

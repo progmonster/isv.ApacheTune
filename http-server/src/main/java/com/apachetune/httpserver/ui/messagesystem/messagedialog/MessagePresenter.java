@@ -99,6 +99,8 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
     public final void onCurrentMessageChanged(NewsMessage msg) {
         safeRemoveMessageFromMarkAsReadSchedule();
 
+        getView().showMessageContent(msg);
+
         if (msg == null) {
             return;
         }
