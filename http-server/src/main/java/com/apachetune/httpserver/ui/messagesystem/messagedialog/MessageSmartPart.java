@@ -5,6 +5,7 @@ import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.NSmartPart;
 import com.apachetune.core.ui.UIWorkItem;
+import com.apachetune.httpserver.ui.messagesystem.MessageManager;
 import com.apachetune.httpserver.ui.messagesystem.MessageStore;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.google.inject.Inject;
@@ -29,7 +30,7 @@ import static org.apache.commons.lang.Validate.notNull;
 public class MessageSmartPart extends JDialog implements NSmartPart, MessageView, ListSelectionListener {
     private final MessagePresenter presenter;
 
-    private final MessageStore messageStore;
+    private final MessageManager messageManager;
 
     private final PreferencesManager preferencesManager;
 
@@ -50,12 +51,12 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
     private JTable messageTable;
 
     @Inject
-    public MessageSmartPart(final MessagePresenter presenter, MessageStore messageStore,
+    public MessageSmartPart(final MessagePresenter presenter, MessageManager messageManager,
                             PreferencesManager preferencesManager, JFrame mainFrame) {
         super(mainFrame);
         
         this.presenter = presenter;
-        this.messageStore = messageStore;
+        this.messageManager = messageManager;
         this.preferencesManager = preferencesManager;
         setContentPane(contentPane);
         setModal(true);
@@ -133,7 +134,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
         messageTable.getTableHeader().setReorderingAllowed(false);
 
 
-        messageTable.setModel(new MessageTableModel(messageStore));
+        messageTable.setModel(new MessageTableModel(messageManager));
 
         TableColumn selectedItemColumn = messageTable.getColumnModel().getColumn(0);
 
@@ -162,7 +163,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
                     return;
                 }
 
-                NewsMessage msg = messageStore.getMessages().get(selRowIdx);
+                NewsMessage msg = messageManager.getMessages().get(selRowIdx);
 
                 if (selectedMessages.contains(msg)) {
                     selectedMessages.remove(msg);
@@ -187,7 +188,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
                     return;
                 }
 
-                NewsMessage msg = messageStore.getMessages().get(selRowIdx);
+                NewsMessage msg = messageManager.getMessages().get(selRowIdx);
 
                 presenter.onMessageDelete(msg);
             }
@@ -226,7 +227,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
 
     @Override
     public final void selectAllMessages() {
-        selectedMessages.addAll(messageStore.getMessages());
+        selectedMessages.addAll(messageManager.getMessages());
 
         fireTableDataChanged();
     }
@@ -239,21 +240,38 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
             return null;
         }
 
-        return messageStore.getMessages().get(selRow);
+        return messageManager.getMessages().get(selRow);
     }
 
     @Override
     public final void notifyDataChanged() {
-        selectedMessages.retainAll(messageStore.getMessages());
+        selectedMessages.retainAll(messageManager.getMessages());
 
         fireTableDataChanged();
     }
 
     @Override
-    public final  void setMessageControlsEnabled(boolean enabled) {
+    public final void setMessageControlsEnabled(boolean enabled) {
         selectButton.setEnabled(enabled);
         markAsUnreadButton.setEnabled(enabled);
         deleteButton.setEnabled(enabled);
+    }
+
+    @Override
+    public final void setCurrentMessage(NewsMessage msg) {
+        if (msg == null) {
+            messageTable.clearSelection();
+        } else {
+            List<NewsMessage> messages = messageManager.getMessages();
+
+            int rowIdx = messages.indexOf(msg);
+
+            if (rowIdx == -1) {
+                messageTable.clearSelection();
+            } else {
+                messageTable.setRowSelectionInterval(rowIdx, rowIdx);
+            }
+        }
     }
 
     @Override
@@ -273,7 +291,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
         } else {
             messageTable.setColumnSelectionInterval(0, 1);
 
-            NewsMessage msg = messageStore.getMessages().get(rowIdx);
+            NewsMessage msg = messageManager.getMessages().get(rowIdx);
 
             presenter.onCurrentMessageChanged(msg);
         }
@@ -336,7 +354,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
         @Override
         public final Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                              boolean hasFocus, int row, int column) {
-            NewsMessage msg = messageStore.getMessages().get(row);
+            NewsMessage msg = messageManager.getMessages().get(row);
 
             if (msg.isUnread()) {
                 setForeground(Color.BLACK);
@@ -359,15 +377,15 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
     }
 
     private class MessageTableModel extends AbstractTableModel {
-        private final MessageStore messageStore;
+        private final MessageManager messageManager;
 
-        public MessageTableModel(MessageStore messageStore) {
-            this.messageStore = messageStore;
+        public MessageTableModel(MessageManager messageManager) {
+            this.messageManager = messageManager;
         }
 
         @Override
         public final int getRowCount() {
-            return messageStore.getMessages().size();
+            return messageManager.getMessages().size();
         }
 
         @Override
@@ -377,7 +395,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
 
         @Override
         public final Object getValueAt(int rowIndex, int columnIndex) {
-            NewsMessage msg = messageStore.getMessages().get(rowIndex);
+            NewsMessage msg = messageManager.getMessages().get(rowIndex);
 
             if (columnIndex == 0) {
                 return selectedMessages.contains(msg);
@@ -408,7 +426,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
 
             Boolean value = (Boolean) aValue;
 
-            NewsMessage msg = messageStore.getMessages().get(rowIndex);
+            NewsMessage msg = messageManager.getMessages().get(rowIndex);
 
             if (value) {
                 selectedMessages.add(msg);

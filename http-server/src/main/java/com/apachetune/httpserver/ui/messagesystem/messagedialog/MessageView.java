@@ -20,4 +20,6 @@ public interface MessageView extends NView {
     void notifyDataChanged();
 
     void setMessageControlsEnabled(boolean enabled);
+
+    void setCurrentMessage(NewsMessage msg);
 }

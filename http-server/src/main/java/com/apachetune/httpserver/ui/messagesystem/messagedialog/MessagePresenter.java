@@ -1,29 +1,54 @@
 package com.apachetune.httpserver.ui.messagesystem.messagedialog;
 
 import com.apachetune.core.ui.NPresenter;
+import com.apachetune.httpserver.ui.messagesystem.MessageManager;
 import com.apachetune.httpserver.ui.messagesystem.MessageStore;
 import com.apachetune.httpserver.ui.messagesystem.MessageStoreDataChangedListener;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
-import com.google.common.base.Function;
 import com.google.inject.Inject;
+import org.quartz.*;
+import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-import static com.google.common.collect.Collections2.transform;
-import static java.util.Arrays.asList;
 import static javax.swing.JOptionPane.*;
 
 /**
  * FIXDOC
  */
 public class MessagePresenter extends NPresenter<MessageView> implements MessageStoreDataChangedListener {
+    private static final Logger logger = LoggerFactory.getLogger(MessagePresenter.class);
+
+    private static final int MARK_MESSAGE_AS_READ_DELAY_IN_MSEC = 10000;
+
     private final MessageStore messageStore;
 
+    private final MessageManager messageManager;
+
+    private final Scheduler scheduler;
+
+    private NewsMessage msgToMarkAsRead;
+
+    private final Object markAsReadMsgLocker = new Object();
+
     @Inject
-    public MessagePresenter(MessageStore messageStore) {
+    public MessagePresenter(MessageStore messageStore, MessageManager messageManager) {
         this.messageStore = messageStore;
+        this.messageManager = messageManager;
+
+        try {
+            scheduler = new StdSchedulerFactory().getScheduler();
+
+            scheduler.start();
+        } catch (SchedulerException e) {
+            throw new RuntimeException("internal error", e);
+        }
     }
 
     @Override
@@ -35,6 +60,12 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
 
     @Override
     public final void onCloseView() {
+        try {
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+            throw new RuntimeException("internal error", e);
+        }
+
         messageStore.removeDataChangedListener(this);
     }
 
@@ -42,11 +73,13 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
     public final void onStoredDataChanged() {
         getView().notifyDataChanged();
 
+        checkDeleteMessageFromMarkAsReadSchedule();
+
         updateMessageControls();
     }
 
     public final void onSelectMessages() {
-        if (getView().getSelectedMessages().size() == messageStore.getMessages().size()) {
+        if (getView().getSelectedMessages().size() == messageManager.getMessages().size()) {
             getView().unselectAllMessages();
         } else {
             getView().selectAllMessages();
@@ -56,24 +89,27 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
     public final void onMarkMessagesAsUnread() {
         Collection<NewsMessage> messages = getSelectedMessages();
 
-        messages = transform(messages, new Function<NewsMessage, NewsMessage>() {
-            @Override
-            public final NewsMessage apply(NewsMessage from) {
-                return NewsMessage.createBuilder().copyFrom(from).setUnread(true).build();
-            }
-        });
-
-        messageStore.storeMessages(messages);
+        for (NewsMessage msg : messages) {
+            messageManager.markMessageAsUnread(msg);
+        }
 
         getView().unselectAllMessages();
     }
 
     public final void onCurrentMessageChanged(NewsMessage msg) {
-        System.out.println(msg != null ? msg.getSubject() : null); // todo
+        safeRemoveMessageFromMarkAsReadSchedule();
+
+        if (msg == null) {
+            return;
+        }
+
+        if (msg.isUnread()) {
+            scheduleMessageToMarkAsRead(msg);
+        }
     }
 
     public final void onMessageDelete(NewsMessage msg) {
-        messageStore.deleteMessages(asList(msg));
+        messageManager.deleteMessage(msg);
 
         updateMessageControls();
     }
@@ -91,7 +127,9 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
             }
         }
 
-        messageStore.deleteMessages(messages);
+        for (NewsMessage msg : messages) {
+            messageManager.deleteMessage(msg);
+        }
 
         updateMessageControls();
     }
@@ -111,6 +149,98 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
     }
 
     private void updateMessageControls() {
-        getView().setMessageControlsEnabled(!messageStore.getMessages().isEmpty());
+        getView().setMessageControlsEnabled(!messageManager.getMessages().isEmpty());
+    }
+
+    private void scheduleMessageToMarkAsRead(NewsMessage msg) {
+        synchronized (markAsReadMsgLocker) {
+            safeRemoveMessageFromMarkAsReadSchedule();
+
+            MarkMessageAsReadTask task = new MarkMessageAsReadTask();
+
+            JobDetail jobDetail = new JobDetail();
+
+            jobDetail.setName("markMessageAsReadTask");
+            jobDetail.setJobClass(MarkMessageAsReadJob.class);
+
+            Map dataMap = jobDetail.getJobDataMap();
+
+            dataMap.put("markMessageAsReadTask", task);
+
+            SimpleTrigger trigger = new SimpleTrigger();
+
+            trigger.setName("markMessageAsReadTrigger");
+            trigger.setStartTime(new Date(System.currentTimeMillis() + MARK_MESSAGE_AS_READ_DELAY_IN_MSEC));
+            trigger.setRepeatCount(0);
+
+            try {
+                scheduler.scheduleJob(jobDetail, trigger);
+            } catch (SchedulerException e) {
+                logger.error("Cannot schedule mark message as read task.", e);
+            }
+
+            msgToMarkAsRead = msg;
+        }
+    }
+
+    private void safeRemoveMessageFromMarkAsReadSchedule() {
+        synchronized (markAsReadMsgLocker) {
+            msgToMarkAsRead = null;
+
+            try {
+                scheduler.deleteJob("markMessageAsReadTask", "DEFAULT");
+            } catch (SchedulerException e) {
+                logger.error("Cannot unschedule mark message as read task.", e);
+            }
+        }
+    }
+
+    private void checkDeleteMessageFromMarkAsReadSchedule() {
+        synchronized (markAsReadMsgLocker) {
+            if (msgToMarkAsRead == null) {
+                return;
+            }
+
+            for (NewsMessage msg : messageManager.getUnreadMessages()) {
+                if (msg.equals(msgToMarkAsRead)) {
+                    return;
+                }
+            }
+
+            safeRemoveMessageFromMarkAsReadSchedule();
+        }
+    }
+
+    private void onMarkMessageAsRead() {
+        synchronized (markAsReadMsgLocker) {
+            if (msgToMarkAsRead == null) {
+                return;
+            }
+
+            NewsMessage markedAsReadMsg = messageManager.markMessageAsRead(msgToMarkAsRead);
+
+            safeRemoveMessageFromMarkAsReadSchedule();
+
+            getView().notifyDataChanged();
+
+            getView().setCurrentMessage(markedAsReadMsg);
+        }
+    }
+
+    private class MarkMessageAsReadTask {
+        public final void execute() {
+            onMarkMessageAsRead();
+        }
+    }
+
+    public static class MarkMessageAsReadJob implements Job {
+        @Override
+        public final void execute(JobExecutionContext ctx) throws JobExecutionException {
+            Map dataMap = ctx.getJobDetail().getJobDataMap();
+
+            MarkMessageAsReadTask task = (MarkMessageAsReadTask) dataMap.get("markMessageAsReadTask");
+
+            task.execute();
+        }
     }
 }

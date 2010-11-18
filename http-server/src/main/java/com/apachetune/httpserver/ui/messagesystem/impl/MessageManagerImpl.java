@@ -203,7 +203,7 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
         try {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            logger.error("Cannot shedule load new messages task.", e);
+            logger.error("Cannot schedule load new messages task.", e);
         }
     }
 
