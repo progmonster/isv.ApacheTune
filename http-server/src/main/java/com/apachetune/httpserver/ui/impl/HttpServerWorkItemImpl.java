@@ -9,6 +9,7 @@ import com.apachetune.core.ui.editors.SaveFilesHelper;
 import com.apachetune.core.ui.editors.SaveFilesHelperCallBackAdapter;
 import com.apachetune.core.utils.StringValue;
 import com.apachetune.core.utils.Utils;
+import com.apachetune.httpserver.Constants;
 import com.apachetune.httpserver.HttpServerManager;
 import com.apachetune.httpserver.RecentOpenedServerListChangedListener;
 import com.apachetune.httpserver.RecentOpenedServersManager;
@@ -20,10 +21,12 @@ import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.RunServerWorkflowWorkItem;
 import com.apachetune.httpserver.ui.about.AboutSmartPart;
 import com.apachetune.httpserver.ui.actions.CheckServerActionSite;
+import com.apachetune.httpserver.ui.actions.NewsMessagesActionSite;
 import com.apachetune.httpserver.ui.actions.RunServerWorkflowActionSite;
 import com.apachetune.httpserver.ui.actions.SelectServerWorkflowActionSite;
 import com.apachetune.httpserver.ui.editors.ConfEditorWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
+import com.apachetune.httpserver.ui.messagesystem.messagedialog.MessageSmartPart;
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.apachetune.httpserver.ui.searchserver.SearchServerSmartPart;
 import com.apachetune.httpserver.ui.selectserver.SelectServerSmartPart;
@@ -60,7 +63,7 @@ import static java.text.MessageFormat.format;
  */
 public class HttpServerWorkItemImpl extends GenericUIWorkItem
         implements SelectServerWorkflowActionSite, AboutActionSite,
-        AppExitActionSite, HttpServerWorkItem {
+        AppExitActionSite, NewsMessagesActionSite, HttpServerWorkItem {
     private static final int TITLE_BAR_SERVER_LOCATION_MAX_LENGTH = 100;
 
     private final Injector injector;
@@ -123,6 +126,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
     private MessageManager messageManager;
 
+    private final Provider<MessageSmartPart> messageSmartPartProvider;
+
     @Inject
     public HttpServerWorkItemImpl(
             Injector injector, JFrame mainFrame,
@@ -141,7 +146,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
             @Named(SAVE_ALL_FILES_SEPARATELY_HELPER) Provider<SaveFilesHelper> saveFilesSeparatelyHelperProvider,
             PreferencesManager preferencesManager,
             @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
-            Provider<WelcomeScreenWorkItem> welcomeScreenWorkItemProvider) {
+            Provider<WelcomeScreenWorkItem> welcomeScreenWorkItemProvider,
+            Provider<MessageSmartPart> messageSmartPartProvider) {
         super(HTTP_SERVER_WORK_ITEM);
 
         this.injector = injector;
@@ -168,6 +174,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         this.preferencesManager = preferencesManager;
         this.toolWindowManager = toolWindowManager;
         this.welcomeScreenWorkItemProvider = welcomeScreenWorkItemProvider;
+        this.messageSmartPartProvider = messageSmartPartProvider;
     }
 
     @Subscriber(eventId = EXIT_EVENT)
@@ -281,7 +288,25 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
     }
 
     @ActionPermission(HELP_ABOUT_ACTION)
-    public boolean isShowAboutDialogEnabled() {
+    public final boolean isShowAboutDialogEnabled() {
+        return true;
+    }
+
+    @Override
+    @ActionHandler(HELP_SHOW_NEWS_MESSAGES_ACTION)
+    public final void onShowNewsMessageDialog() {
+        MessageSmartPart msgDialogSmartPart = this.messageSmartPartProvider.get();
+
+        msgDialogSmartPart.initialize(this);
+
+        msgDialogSmartPart.run();
+
+        msgDialogSmartPart.close();
+    }
+
+    @Override
+    @ActionPermission(HELP_SHOW_NEWS_MESSAGES_ACTION)
+    public final boolean isShownNewsMessageDialogActionEnabled() {
         return true;
     }
 
@@ -454,6 +479,13 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
                                              "Stop HTTP-server", "stop_server_16.png", null, 'p', null, false
         );
 
+        // TODO Localize.
+        coreUIUtils.createAndConfigureAction(Constants.HELP_SHOW_NEWS_MESSAGES_ACTION, NewsMessagesActionSite.class,
+                                            httpServerActionGroup, httpServerResourceLocator, "Show news messages...",
+                                            "Show news messages dialog", "Show news messages dialog",
+                                            null, null, 'm', null, false
+        );
+
         actionManager.registerActionGroup(httpServerActionGroup);
     }
 
@@ -466,29 +498,18 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
         fileMenu.add(new JSeparator(), 0);
 
-        coreUIUtils.addUIActionHint((JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(
-                SERVER_CLOSE_SERVER_ACTION
-        )
-        ), 0
-        )
-        );
+        coreUIUtils.addUIActionHint(
+                (JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(SERVER_CLOSE_SERVER_ACTION)), 0));
 
         initRecentOpenedServersMenu();
+
         fileMenu.add(recentOpenedServersMenu, 0);
 
-        coreUIUtils.addUIActionHint((JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(
-                SERVER_SEARCH_FOR_HTTP_SERVER_ACTION
-        )
-        ), 0
-        )
-        );
+        coreUIUtils.addUIActionHint((JMenuItem) fileMenu
+                .add(new JMenuItem(actionManager.getAction(SERVER_SEARCH_FOR_HTTP_SERVER_ACTION)), 0));
 
-        coreUIUtils.addUIActionHint((JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(
-                SERVER_SELECT_HTTP_SERVER_ACTION
-        )
-        ), 0
-        )
-        );
+        coreUIUtils.addUIActionHint(
+                (JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(SERVER_SELECT_HTTP_SERVER_ACTION)), 0));
 
         JMenu serverMenu = new JMenu("Server"); // TODO Localize. Add accelerators.
 
@@ -503,6 +524,13 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         coreUIUtils.addUIActionHint(serverMenu.add(actionManager.getAction(SERVER_RESTART_HTTP_SERVER_ACTION)));
 
         menuBarManager.addMenuAfter(SERVER_MENU, serverMenu, EDIT_MENU);
+
+        JMenu helpMenu = menuBarManager.getMenu(HELP_MENU);
+
+        helpMenu.add(new JSeparator(), 0);
+
+        coreUIUtils.addUIActionHint(
+                (JMenuItem) helpMenu.add(new JMenuItem(actionManager.getAction(HELP_SHOW_NEWS_MESSAGES_ACTION)), 0));
     }
 
     private void initRecentOpenedServersMenu() {
@@ -766,7 +794,6 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
         splash.update();
     }
-
     private void storeCurrentServerToRecentListIfItWasCleared() {
         if (hasCurrentServer() && !recentOpenedServersManager.hasLastOpenedServer()) {
             HttpServer currentHttpServer = getCurrentServer();
@@ -775,6 +802,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         }
     }
     // TODO refactor and move to core UI
+
     private void saveActiveEditorInfo() {
         Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItemImpl.class);
 
@@ -794,8 +822,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
             e.printStackTrace();  // TODO make it as a service
         }
     }
-
     // TODO refactor and move to core UI
+
     private void activateLastActiveEditor() {
         Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItemImpl.class);
 
@@ -815,8 +843,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
         selectedContentWorkItem.activate();
     }
-
     // TODO refactor and move to core UI
+
     private void saveActiveChildWorkItemInfo() {
         Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItemImpl.class);
 
@@ -836,8 +864,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
             e.printStackTrace();  // TODO Make it as a service.
         }
     }
-
     // TODO refactor and move to core UI
+
     private void activateLastActiveChildWorkItem() {
         Preferences preferences = preferencesManager.userNodeForPackage(HttpServerWorkItemImpl.class);
 

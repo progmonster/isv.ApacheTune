@@ -47,12 +47,7 @@ public class HttpServerModule extends AbstractModule {
 
         bind(MessageStatusBarSite.class).to(MessageStatusBarSiteImpl.class).in(SINGLETON);
 
-/*
-        bind(String.class).annotatedWith(Names.named(REMOTE_MESSAGE_SERVICE_URL_PROP_NAME)) // todo configure via maven
-        profiles
-                .toInstance("http://apachetune.com/services/news");
-*/
         bind(String.class).annotatedWith(Names.named(REMOTE_MESSAGE_SERVICE_URL_PROP_NAME))
-                .toInstance("http://localhost:8080/apachetune-fake-news-message-service/services/news");
+                .toInstance("http://apachetune.com/services/news");
      }
 }

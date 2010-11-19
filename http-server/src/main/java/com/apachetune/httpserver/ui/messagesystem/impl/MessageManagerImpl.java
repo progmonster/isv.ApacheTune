@@ -21,9 +21,12 @@ import static java.util.Arrays.asList;
 public class MessageManagerImpl implements MessageManager, MessageStoreDataChangedListener {
     private static final Logger logger = LoggerFactory.getLogger(MessageManagerImpl.class);
 
+    private static final String NO_UNREAD_MESSAGES_NOTIFICATION_TIP_MSG = "There are no unread messages.";
+            // todo localize
+
     private static final String HAVE_UNREAD_MESSAGES_MSG_TMPL = "There are {0} unread messages";  // todo localize
 
-    private static final int LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC = 10 * 1000; // todo 10 -> 60
+    private static final int LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC = 60 * 1000;
 
     private final StatusBarManager statusBarManager;
 
@@ -131,7 +134,7 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
 
         if (messageStore.getUnreadMessages().size() == 0) {
             messageStatusBarSite.setNotificationAreaActive(false);
-            messageStatusBarSite.setNotificationTip(null);
+            messageStatusBarSite.setNotificationTip(NO_UNREAD_MESSAGES_NOTIFICATION_TIP_MSG);
         }
     }
 
@@ -151,7 +154,7 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
                     .setNotificationTip(MessageFormat.format(HAVE_UNREAD_MESSAGES_MSG_TMPL, unreadMsgCount));
         } else {
             messageStatusBarSite.setNotificationAreaActive(false);
-            messageStatusBarSite.setNotificationTip("There are no unread messages."); // todo localize
+            messageStatusBarSite.setNotificationTip(NO_UNREAD_MESSAGES_NOTIFICATION_TIP_MSG);
         }
     }
 

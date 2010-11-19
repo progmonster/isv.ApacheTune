@@ -33,6 +33,8 @@ public class Constants {
 
     public static final String SERVER_RESTART_HTTP_SERVER_ACTION = "SERVER_RESTART_HTTP_SERVER_ACTION";
 
+    public static final String HELP_SHOW_NEWS_MESSAGES_ACTION = "HELP_SHOW_NEWS_MESSAGES_ACTION";
+
     public static final String CHECK_SYNTAX_WORK_ITEM = "CHECK_SYNTAX_WORK_ITEM";
 
     public static final String RUN_SERVER_WORKFLOW_WORK_ITEM = "RUN_SERVER_WORKFLOW_WORK_ITEM";
@@ -52,30 +54,30 @@ public class Constants {
     public static final String APP_ICON = "app_icon_24.png";
 
     public static final String CONSOLE_WORK_ITEM = "CONSOLE_WORK_ITEM";
-    
+
     public static final String CURRENT_HTTP_SERVER_STATE = "CURRENT_HTTP_SERVER_STATE";
-    
+
     public static final String SERVER_WAS_OPENED_FLAG = "SERVER_WAS_OPENED_FLAG";
 
     public static final String RECENT_OPENED_SERVER = "RECENT_OPENED_SERVER_#{0}";
 
     public static final String HTTP_SERVER_ACTION_GROUP = "HTTP_SERVER_ACTION_GROUP";
-    
+
     public static final String OBJECT_TREE_WORK_ITEM = "OBJECT_TREE_WORK_ITEM";
 
     public static final String ON_HIGHLIGHT_SYNTAX_ERROR_EVENT = "ON_HIGHLIGHT_SYNTAX_ERROR_EVENT";
-    
+
     public static final String ACTIVE_CHILD_WORK_ITEM_PREF = "ACTIVE_CHILD_WORK_ITEM";
-    
+
     public static final String ACTIVE_EDITOR_INFO = "ACTIVE_EDITOR_INFO";
-    
+
     public static final String OUTPUT_WINDOW_ANCHOR_PREF = "OUTPUT_WINDOW_ANCHOR";
 
     public static final String OUTPUT_WINDOW_DOCK_LENGTH_PREF = "OUTPUT_WINDOW_DOCK_LENGTH";
-    
+
     public static final String WELCOME_SCREEN_WORK_ITEM = "WELCOME_SCREEN_WORK_ITEM";
 
     public static final String MESSAGE_STORE_DB_URL_PROP_NAME = "MESSAGE_STORE_DB_URL";
-    
+
     public static final String REMOTE_MESSAGE_SERVICE_URL_PROP_NAME = "REMOTE_MESSAGE_SERVICE_URL";
 }

@@ -11,15 +11,16 @@ import net.java.balloontip.styles.EdgedBalloonStyle;
 import net.java.balloontip.utils.TimingUtils;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static java.awt.Color.BLUE;
 import static java.awt.Color.WHITE;
+import static java.awt.Cursor.HAND_CURSOR;
+import static java.awt.Cursor.getPredefinedCursor;
 import static net.java.balloontip.BalloonTip.AttachLocation.ALIGNED;
-import static net.java.balloontip.BalloonTip.Orientation.RIGHT_BELOW;
+import static net.java.balloontip.BalloonTip.Orientation.RIGHT_ABOVE;
 
 /**
  * FIXDOC
@@ -33,7 +34,11 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
 
     private JPanel panel;
 
-    private JButton button;
+    private JLabel msgIcon;
+
+    private ImageIcon newMessagesIcon;
+
+    private ImageIcon noMessagesIcon;
 
     @Inject
     public MessageStatusBarSiteImpl(Provider<MessageSmartPart> messageSmartPartProvider,
@@ -46,18 +51,24 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
     public final void initialize() {
         panel = new JPanel();
 
-        button = new JButton("M"); // todo replace with images
+        newMessagesIcon = new ImageIcon(getClass().getResource("new-messages.png"));
 
-        button.setEnabled(true);
+        noMessagesIcon = new ImageIcon(getClass().getResource("no-messages.png"));
 
-        button.addActionListener(new ActionListener() {
+        msgIcon = new JLabel(noMessagesIcon);
+        
+        msgIcon.setCursor(getPredefinedCursor(HAND_CURSOR));
+
+        msgIcon.setEnabled(true);
+
+        msgIcon.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public final void mouseClicked(MouseEvent e) {
                 showMessageDialog();
             }
         });
 
-        panel.add(button);
+        panel.add(msgIcon);
     }
 
     @Override
@@ -72,12 +83,16 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
 
     @Override
     public final void setNotificationAreaActive(boolean isActive) {
-        // todo show highlighted icon if active and vice versa
+        if (isActive) {
+            msgIcon.setIcon(newMessagesIcon);
+        } else {
+            msgIcon.setIcon(noMessagesIcon);
+        }
     }
 
     @Override
     public final void setNotificationTip(String tip) {
-        button.setToolTipText(tip);
+        msgIcon.setToolTipText(tip);
     }
 
     @Override
@@ -93,9 +108,7 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
             }
         });
 
-        BalloonTip balloonTip =
-                new BalloonTip(button, tipLabel, edgedLook, RIGHT_BELOW,
-                        ALIGNED, 40, 20, true);
+        BalloonTip balloonTip = new BalloonTip(msgIcon, tipLabel, edgedLook, RIGHT_ABOVE, ALIGNED, 10, 10, true);
 
         TimingUtils.showTimedBalloon(balloonTip, BALLOON_TIP_SHOW_TIME);
     }
