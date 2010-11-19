@@ -4,7 +4,6 @@ import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.httpserver.ui.messagesystem.*;
 import com.google.inject.Inject;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,18 +33,18 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
 
     private final RemoteManager remoteManager;
 
-    private boolean isSchedulerInitialized;
-
     private Scheduler scheduler;
 
     @Inject
     public MessageManagerImpl(StatusBarManager statusBarManager,
                               MessageStatusBarSite messageStatusBarSite,
-                              MessageStore messageStore, RemoteManager remoteManager) {
+                              MessageStore messageStore, RemoteManager remoteManager,
+                              Scheduler scheduler) {
         this.statusBarManager = statusBarManager;
         this.messageStatusBarSite = messageStatusBarSite;
         this.messageStore = messageStore;
         this.remoteManager = remoteManager;
+        this.scheduler = scheduler;
     }
 
     @Override
@@ -61,31 +60,11 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
         }
 
         messageStore.addDataChangedListener(this);
-
-        try {
-            scheduler = new StdSchedulerFactory().getScheduler();
-
-            scheduler.start();
-
-            isSchedulerInitialized = true;
-        } catch (SchedulerException e) {
-            throw new RuntimeException("internal error", e);
-        }
     }
 
     @Override
     public final void dispose() {
         messageStore.removeDataChangedListener(this);
-
-        if (isSchedulerInitialized) {
-            try {
-                scheduler.shutdown();
-
-                isSchedulerInitialized = false;
-            } catch (SchedulerException e) {
-                throw new RuntimeException("internal error", e);
-            }
-        }
 
         try {
             messageStore.dispose();
@@ -177,12 +156,6 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
     }
 
     private void scheduleLoadNewMessagesTask() {
-        if (!isSchedulerInitialized) {
-            logger.error("Cannot shedule load new messages task.");
-
-            return;
-        }
-
         LoadNewsMessagesTask task = new LoadNewsMessagesTask();
 
         JobDetail jobDetail = new JobDetail();

@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.quartz.Scheduler;
 
 import java.util.List;
 
@@ -46,8 +47,10 @@ public class MessageManagerImplTest {
 
         mockRemoteManager = mockCtx.mock(RemoteManager.class);
 
+        Scheduler mockScheduler = mockCtx.mock(Scheduler.class);
+
         testSubj = new MessageManagerImpl(mockStatusBarManager, mockMessageStatusBarSite, mockMessageStore,
-                mockRemoteManager);
+                mockRemoteManager, mockScheduler);
 
         mockCtx.checking(new Expectations() {{
             ignoring(mockStatusBarManager).addStatusBarSite(mockMessageStatusBarSite);

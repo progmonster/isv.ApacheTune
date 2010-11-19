@@ -7,7 +7,6 @@ import com.apachetune.httpserver.ui.messagesystem.MessageStoreDataChangedListene
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.google.inject.Inject;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,17 +37,10 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
     private final Object markAsReadMsgLocker = new Object();
 
     @Inject
-    public MessagePresenter(MessageStore messageStore, MessageManager messageManager) {
+    public MessagePresenter(MessageStore messageStore, MessageManager messageManager, Scheduler scheduler) {
         this.messageStore = messageStore;
         this.messageManager = messageManager;
-
-        try {
-            scheduler = new StdSchedulerFactory().getScheduler();
-
-            scheduler.start();
-        } catch (SchedulerException e) {
-            throw new RuntimeException("internal error", e);
-        }
+        this.scheduler = scheduler;
     }
 
     @Override
@@ -60,12 +52,6 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
 
     @Override
     public final void onCloseView() {
-        try {
-            scheduler.shutdown();
-        } catch (SchedulerException e) {
-            throw new RuntimeException("internal error", e);
-        }
-
         messageStore.removeDataChangedListener(this);
     }
 

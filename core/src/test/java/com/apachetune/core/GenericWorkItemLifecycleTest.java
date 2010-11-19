@@ -1,6 +1,5 @@
 package com.apachetune.core;
 
-import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.utils.BooleanValue;
 import org.junit.Test;
 
@@ -14,14 +13,12 @@ import static org.fest.assertions.Fail.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class GenericWorkItemLifecycleTest {
+public class GenericWorkItemLifecycleTest extends WorkItemAbstractTest {
     @Test
     public void testOnInitializedEvent() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-        
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         final BooleanValue isRaised = new BooleanValue();
 
@@ -42,11 +39,9 @@ public class GenericWorkItemLifecycleTest {
 
     @Test
     public void testOnDisposedEvent() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         final BooleanValue isRaised = new BooleanValue();
 
@@ -68,11 +63,9 @@ public class GenericWorkItemLifecycleTest {
 
     @Test
     public void testRemoveListener() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         WorkItemLifecycleListener listener = new WorkItemLifecycleListener() {
             public void onInitialized(WorkItem workItem) {
@@ -93,11 +86,9 @@ public class GenericWorkItemLifecycleTest {
 
     @Test
     public void testRemoveAllListeners() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         WorkItemLifecycleListener listener = new WorkItemLifecycleListener() {
             public void onInitialized(WorkItem workItem) {
@@ -118,11 +109,9 @@ public class GenericWorkItemLifecycleTest {
 
     @Test(expected = Exception.class)
     public void testFailOnInitializeAfterDispose() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         workItem.initialize();
         workItem.dispose();

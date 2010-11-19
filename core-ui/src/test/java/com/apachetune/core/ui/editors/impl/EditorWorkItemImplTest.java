@@ -20,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.noos.xing.mydoggy.ToolWindowManager;
 import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;
+import org.quartz.Scheduler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -80,9 +81,11 @@ public class EditorWorkItemImplTest {
 
         mockCaretPositionPrefsNode = mockContext.mock(Preferences.class, "mockCaretPositionPrefsNode");
 
+        Scheduler mockScheduler = mockContext.mock(Scheduler.class);
+
         coreUIUtils = new CoreUIUtils(mockStatusBarManager, mockActionManager, toolWindowManager);
 
-        rootWorkItem = new RootWorkItemImpl();
+        rootWorkItem = new RootWorkItemImpl(mockScheduler);
 
         mockEditorInput = new MockEditorInput();
     }

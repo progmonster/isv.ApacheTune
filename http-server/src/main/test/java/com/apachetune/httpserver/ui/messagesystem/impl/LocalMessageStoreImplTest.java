@@ -12,7 +12,7 @@ import static org.fest.assertions.Assertions.assertThat;
 /**
  * FIXDOC
  */
-public class LocalMessageStoreImplTest {
+public class LocalMessageStoreImplTest{
     private static final String TEST_DB_URL = "jdbc:h2:test_message_db";
 
     private LocalMessageStoreImpl testSubj;

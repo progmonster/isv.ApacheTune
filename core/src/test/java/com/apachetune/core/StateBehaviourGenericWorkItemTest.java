@@ -1,6 +1,5 @@
 package com.apachetune.core;
 
-import com.apachetune.core.impl.RootWorkItemImpl;
 import org.junit.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
@@ -11,7 +10,7 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class StateBehaviourGenericWorkItemTest {
+public class StateBehaviourGenericWorkItemTest extends WorkItemAbstractTest {
     @Test
     public void testSetAndGetState() {
         WorkItem workItem = new SimpleWorkItem("TEST_WORKITEM");
@@ -23,11 +22,9 @@ public class StateBehaviourGenericWorkItemTest {
 
     @Test
     public void testGetStateFromParent() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem parentWorkItem = new SimpleWorkItem("PARENT_TEST_WORKITEM");
 
-        parentWorkItem.setRootWorkItem(rootWorkItem);
+        parentWorkItem.setRootWorkItem(getRootWorkItem());
 
         parentWorkItem.setState("FAKE_VALUE", 556);
 
@@ -51,11 +48,9 @@ public class StateBehaviourGenericWorkItemTest {
 
     @Test
     public void testOverrideParentState() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem parentWorkItem = new SimpleWorkItem("PARENT_TEST_WORKITEM");
 
-        parentWorkItem.setRootWorkItem(rootWorkItem);
+        parentWorkItem.setRootWorkItem(getRootWorkItem());
 
         parentWorkItem.setState("FAKE_VALUE", 556);
 
@@ -89,11 +84,9 @@ public class StateBehaviourGenericWorkItemTest {
 
     @Test
     public void testHasParentState() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem parentWorkItem = new SimpleWorkItem("PARENT_TEST_WORKITEM");
 
-        parentWorkItem.setRootWorkItem(rootWorkItem);
+        parentWorkItem.setRootWorkItem(getRootWorkItem());
 
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORKITEM");
 
@@ -126,11 +119,9 @@ public class StateBehaviourGenericWorkItemTest {
 
     @Test
     public void testRemoveStateFromParent() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem parentWorkItem = new SimpleWorkItem("PARENT_TEST_WORKITEM");
 
-        parentWorkItem.setRootWorkItem(rootWorkItem);
+        parentWorkItem.setRootWorkItem(getRootWorkItem());
 
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORKITEM");
 

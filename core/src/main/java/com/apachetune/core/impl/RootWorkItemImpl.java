@@ -4,6 +4,9 @@ import com.apachetune.core.ActivationListener;
 import com.apachetune.core.GenericWorkItem;
 import com.apachetune.core.RootWorkItem;
 import com.apachetune.core.WorkItem;
+import com.google.inject.Inject;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,19 +21,31 @@ import static com.apachetune.core.Constants.ROOT_WORK_ITEM_ID;
  */
 public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
     private final List<ActivationListener> childActivationListeners = new ArrayList<ActivationListener>();
+    private final Scheduler scheduler;
 
-    public RootWorkItemImpl() {
+    @Inject
+    public RootWorkItemImpl(Scheduler scheduler) {
         super(ROOT_WORK_ITEM_ID);
+
+        this.scheduler = scheduler;
 
         setRootWorkItem(this);
     }
 
     protected void doInitialize() {
-        // No-op.
+        try {
+            scheduler.start();
+        } catch (SchedulerException e) {
+            throw new RuntimeException("Internal error.", e);
+        }
     }
 
     protected void doDispose() {
-        // No-op.
+        try {
+            scheduler.shutdown();
+        } catch (SchedulerException e) {
+            throw new RuntimeException("Internal error.", e);
+        }
     }
 
     public void addChildActivationListener(ActivationListener childActivationListener) {

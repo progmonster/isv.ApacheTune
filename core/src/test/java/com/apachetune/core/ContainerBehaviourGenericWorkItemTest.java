@@ -1,6 +1,5 @@
 package com.apachetune.core;
 
-import com.apachetune.core.impl.RootWorkItemImpl;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,12 +12,12 @@ import static org.fest.assertions.Assertions.assertThat;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class ContainerBehaviourGenericWorkItemTest {
+public class ContainerBehaviourGenericWorkItemTest extends WorkItemAbstractTest {
     @Test
     public void testAddChildWorkItem() {
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
-        workItem.setRootWorkItem(new RootWorkItemImpl());
+        workItem.setRootWorkItem(getRootWorkItem());
 
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORK_ITEM");
 
@@ -33,7 +32,7 @@ public class ContainerBehaviourGenericWorkItemTest {
     public void testGetChildWorkItem() {
         WorkItem a = new SimpleWorkItem("A");
 
-        a.setRootWorkItem(new RootWorkItemImpl());
+        a.setRootWorkItem(getRootWorkItem());
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -50,7 +49,7 @@ public class ContainerBehaviourGenericWorkItemTest {
     public void testHasDirectChildWorkItem() {
         WorkItem a = new SimpleWorkItem("A");
 
-        a.setRootWorkItem(new RootWorkItemImpl());
+        a.setRootWorkItem(getRootWorkItem());
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -68,7 +67,7 @@ public class ContainerBehaviourGenericWorkItemTest {
     public void testHasChildWorkItem() {
         WorkItem a = new SimpleWorkItem("A");
 
-        a.setRootWorkItem(new RootWorkItemImpl());
+        a.setRootWorkItem(getRootWorkItem());
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -90,14 +89,14 @@ public class ContainerBehaviourGenericWorkItemTest {
     public void testNullOnNonExistingChildWorkItem() {
         WorkItem a = new SimpleWorkItem("A");
 
-        a.setRootWorkItem(new RootWorkItemImpl());
+        a.setRootWorkItem(getRootWorkItem());
 
         assertThat(a.getChildWorkItem("NON_EXISTING_WORK_ITEM")).isNull();
     }
 
     @Test(expected = Exception.class)
     public void testFailOnDuplicateAddingOfChildWorkItem() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
+        WorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
@@ -112,7 +111,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test
     public void testRemoveDirectChildWorkItemById() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
+        WorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
@@ -127,7 +126,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test
     public void testRemoveDirectChildWorkItemByRef() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
+        WorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
@@ -142,7 +141,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test(expected = Exception.class)
     public void testFailOnRemoveNonAddedDirectChildWorkItem() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
+        WorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
@@ -155,7 +154,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test
     public void testSettingUpContextForChildrenWorkItem() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
+        WorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
@@ -180,7 +179,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testFailOnAddingToContainerEarlyAddedChildWorkItem() {
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
+        RootWorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem childWorkItem = new SimpleWorkItem("CHILD_TEST_WORK_ITEM");
 
@@ -191,7 +190,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test(expected = Exception.class)
     public void testFailOnAddingWorkItemToHimself() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
+        WorkItem rootWorkItem = getRootWorkItem();
 
         WorkItem workItem = new SimpleWorkItem("TEST_WORK_ITEM");
 
@@ -202,7 +201,7 @@ public class ContainerBehaviourGenericWorkItemTest {
 
     @Test
     public void testHasAncestor() {
-        WorkItem root = new RootWorkItemImpl();
+        WorkItem root = getRootWorkItem();
 
         WorkItem a = new SimpleWorkItem("A");
 
@@ -221,7 +220,7 @@ public class ContainerBehaviourGenericWorkItemTest {
     public void testEventRaising() {
         EventHistory eventHistory = new EventHistory();
 
-        final RootWorkItem rootWorkItem = new RootWorkItemImpl();
+        final RootWorkItem rootWorkItem = getRootWorkItem();
 
         final WorkItem childWorkItemA = new FakeEventWorkItem("CHILD_WORK_ITEM_A", eventHistory);
 

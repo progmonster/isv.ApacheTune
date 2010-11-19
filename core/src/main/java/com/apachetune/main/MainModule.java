@@ -9,6 +9,9 @@ import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.preferences.impl.PreferencesManagerImpl;
 import com.google.inject.AbstractModule;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 
 import static com.google.inject.Scopes.SINGLETON;
 
@@ -19,6 +22,16 @@ import static com.google.inject.Scopes.SINGLETON;
  * @version 1.0
  */
 public class MainModule extends AbstractModule {
+    private final Scheduler scheduler;
+
+    public MainModule() {
+        try {
+            scheduler = new StdSchedulerFactory().getScheduler();
+        } catch (SchedulerException e) {
+            throw new RuntimeException("Cannot create scheduler.", e);
+        }
+    }
+
     protected void configure() {
         bind(RootWorkItem.class).to(RootWorkItemImpl.class).in(SINGLETON);
 
@@ -27,5 +40,7 @@ public class MainModule extends AbstractModule {
         bind(LicenseManager.class).to(LicenseManagerImpl.class).in(SINGLETON);
 
         bind(PreferencesManager.class).to(PreferencesManagerImpl.class).in(SINGLETON);
+
+        bind(Scheduler.class).toInstance(scheduler);
     }
 }

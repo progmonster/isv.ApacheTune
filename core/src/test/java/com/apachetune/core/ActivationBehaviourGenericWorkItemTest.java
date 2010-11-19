@@ -1,6 +1,5 @@
 package com.apachetune.core;
 
-import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.utils.BooleanValue;
 import org.junit.Test;
 
@@ -14,25 +13,21 @@ import static org.fest.assertions.Fail.fail;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class ActivationBehaviourGenericWorkItemTest {
+public class ActivationBehaviourGenericWorkItemTest extends WorkItemAbstractTest {
     @Test
     public void testDefaultInactive() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
         
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
         
         assertThat(workItem.isActive()).isFalse();
     }
 
     @Test
     public void testActivate() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         workItem.activate();
 
@@ -41,11 +36,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testDeactivate() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         workItem.activate();
         workItem.deactivate();
@@ -55,11 +48,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testRaiseEventOnActivate() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         final BooleanValue wasRaised = new BooleanValue();
 
@@ -80,11 +71,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testNoEventOnActivateIfAlreadyActivated() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         workItem.activate();
 
@@ -103,11 +92,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testRaiseEventOnDeactivate() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         workItem.activate();
 
@@ -130,11 +117,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testNoEventOnDeactivateIfAlreadyDeActivated() {
-        WorkItem rootWorkItem = new RootWorkItemImpl();
-
         WorkItem workItem = new SimpleWorkItem("SIMPLE_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(workItem);
+        getRootWorkItem().addChildWorkItem(workItem);
 
         workItem.addActivationListener(new ActivationListener() {
             public void onActivate(WorkItem workItem) {
@@ -151,11 +136,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testActivateParents() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -163,22 +146,20 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         aa.activate();
 
         assertThat(a.isActive()).isTrue();
-        assertThat(root.isActive()).isTrue();
+        assertThat(getRootWorkItem().isActive()).isTrue();
         assertThat(b.isActive()).isFalse();
     }
 
     @Test
     public void testDeactivateItselfAndChildren() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -186,23 +167,21 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         a.activate();
-        root.deactivate();
+        getRootWorkItem().deactivate();
 
-        assertThat(root.isActive()).isFalse();
+        assertThat(getRootWorkItem().isActive()).isFalse();
         assertThat(a.isActive()).isFalse();
         assertThat(aa.isActive()).isFalse();
     }
     
     @Test
     public void testDeactivateBranchOnActivationAnother() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -210,11 +189,11 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         aa.activate();
 
-        root.addActivationListener(new ActivationListener() {
+        getRootWorkItem().addActivationListener(new ActivationListener() {
             public void onActivate(WorkItem workItem) {
                 // No-op.
             }
@@ -232,11 +211,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testActivationNonActiveChildOnlyInBranchToActivate() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -244,11 +221,11 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         b.activate();
 
-        root.addActivationListener(new ActivationListener() {
+        getRootWorkItem().addActivationListener(new ActivationListener() {
             public void onActivate(WorkItem workItem) {
                 fail();
             }
@@ -263,11 +240,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testGetActiveChild() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -275,21 +250,19 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         a.activate();
 
-        assertThat(root.getActiveChild()).isEqualTo(a);
+        assertThat(getRootWorkItem().getActiveChild()).isEqualTo(a);
         assertThat(a.getActiveChild()).isEqualTo(a);
     }
 
     @Test
     public void testGetDirectActiveChild() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -297,21 +270,19 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         aa.activate();
 
-        assertThat(root.getDirectActiveChild()).isEqualTo(a);
+        assertThat(getRootWorkItem().getDirectActiveChild()).isEqualTo(a);
         assertThat(aa.getDirectActiveChild()).isNull();
     }
 
     @Test
     public void testNoActiveChildIfNotActivated() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -319,7 +290,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         b.activate();
 
@@ -330,11 +301,9 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testNoDirectActiveChildIfNotActivated() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         WorkItem aa = new SimpleWorkItem("AA");
 
@@ -342,7 +311,7 @@ public class ActivationBehaviourGenericWorkItemTest {
 
         WorkItem b = new SimpleWorkItem("B");
 
-        root.addChildWorkItem(b);
+        getRootWorkItem().addChildWorkItem(b);
 
         b.activate();
 
@@ -352,26 +321,22 @@ public class ActivationBehaviourGenericWorkItemTest {
 
     @Test
     public void testDeactivateOnRemovingFromParentWorkItem() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         a.activate();
 
-        root.removeDirectChildWorkItem(a);
+        getRootWorkItem().removeDirectChildWorkItem(a);
 
         assertThat(a.isActive()).isFalse();
     }
 
     @Test
     public void testDeactivateOnDispose() {
-        RootWorkItem root = new RootWorkItemImpl();
-
         WorkItem a = new SimpleWorkItem("A");
 
-        root.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         a.initialize();
 

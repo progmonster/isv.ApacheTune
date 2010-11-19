@@ -1,11 +1,7 @@
 package com.apachetune.core.impl;
 
-import com.apachetune.core.ActivationListener;
-import com.apachetune.core.RootWorkItem;
-import com.apachetune.core.SimpleWorkItem;
-import com.apachetune.core.WorkItem;
+import com.apachetune.core.*;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.junit.Test;
 
@@ -15,46 +11,38 @@ import org.junit.Test;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class RootWorkItemImplTest {
+public class RootWorkItemImplTest extends WorkItemAbstractTest {
     @Test
     public void testRaiseEventsOnChildActivation() {
-        Mockery mockContext = new Mockery();
-
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         final WorkItem a = new SimpleWorkItem("A_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         final WorkItem aa = new SimpleWorkItem("AA_WORK_ITEM");
 
         a.addChildWorkItem(aa);
 
-        final ActivationListener mockChildActivationListener = mockContext.mock(ActivationListener.class);
+        final ActivationListener mockChildActivationListener = getMockContext().mock(ActivationListener.class);
 
-        rootWorkItem.addChildActivationListener(mockChildActivationListener);
+        getRootWorkItem().addChildActivationListener(mockChildActivationListener);
 
-        final Sequence expSequence = mockContext.sequence("expSequence");
+        final Sequence expSequence = getMockContext().sequence("expSequence");
 
-        mockContext.checking(new Expectations() {{
+        getMockContext().checking(new Expectations() {{
             oneOf(mockChildActivationListener).onActivate(a); inSequence(expSequence);
             oneOf(mockChildActivationListener).onActivate(aa); inSequence(expSequence);
         }});
 
         aa.activate();
 
-        mockContext.assertIsSatisfied();
+        getMockContext().assertIsSatisfied();
     }
 
     @Test
     public void testRaiseEventsOnChildDeactivation() {
-        Mockery mockContext = new Mockery();
-
-        RootWorkItem rootWorkItem = new RootWorkItemImpl();
-
         final WorkItem a = new SimpleWorkItem("A_WORK_ITEM");
 
-        rootWorkItem.addChildWorkItem(a);
+        getRootWorkItem().addChildWorkItem(a);
 
         final WorkItem aa = new SimpleWorkItem("AA_WORK_ITEM");
 
@@ -62,20 +50,20 @@ public class RootWorkItemImplTest {
 
         aa.activate();
 
-        final ActivationListener mockChildActivationListener = mockContext.mock(ActivationListener.class);
+        final ActivationListener mockChildActivationListener = getMockContext().mock(ActivationListener.class);
 
-        rootWorkItem.addChildActivationListener(mockChildActivationListener);
+        getRootWorkItem().addChildActivationListener(mockChildActivationListener);
 
-        final Sequence expSequence = mockContext.sequence("expSequence");
+        final Sequence expSequence = getMockContext().sequence("expSequence");
 
-        mockContext.checking(new Expectations() {{
+        getMockContext().checking(new Expectations() {{
             oneOf(mockChildActivationListener).onDeactivate(aa); inSequence(expSequence);
             oneOf(mockChildActivationListener).onDeactivate(a); inSequence(expSequence);
         }});
 
-        rootWorkItem.deactivate();
+        getRootWorkItem().deactivate();
 
-        mockContext.assertIsSatisfied();
+        getMockContext().assertIsSatisfied();
     }
 }
 
