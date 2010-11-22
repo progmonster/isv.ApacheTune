@@ -77,7 +77,11 @@ public class Constants {
 
     public static final String WELCOME_SCREEN_WORK_ITEM = "WELCOME_SCREEN_WORK_ITEM";
 
-    public static final String MESSAGE_STORE_DB_URL_PROP_NAME = "MESSAGE_STORE_DB_URL";
+    public static final String MESSAGE_STORE_DB_URL_PROP = "MESSAGE_STORE_DB_URL";
 
-    public static final String REMOTE_MESSAGE_SERVICE_URL_PROP_NAME = "REMOTE_MESSAGE_SERVICE_URL";
+    public static final String REMOTE_MESSAGE_SERVICE_URL_PROP = "REMOTE_MESSAGE_SERVICE_URL";
+    
+    public static final String CHECK_UPDATE_DELAY_IN_MSEC_PROP = "CHECK_UPDATE_DELAY_IN_MSEC_PROP";
+
+    public static final long EMPTY_CHECK_UPDATE_DELAY_IN_MSEC = -1;
 }

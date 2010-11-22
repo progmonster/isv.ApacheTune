@@ -27,7 +27,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.apachetune.httpserver.Constants.REMOTE_MESSAGE_SERVICE_URL_PROP_NAME;
+import static com.apachetune.httpserver.Constants.REMOTE_MESSAGE_SERVICE_URL_PROP;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.httpclient.HttpStatus.SC_OK;
@@ -43,7 +43,7 @@ public class RemoteManagerImpl implements RemoteManager {
     private final AppManager appManager;
 
     @Inject
-    public RemoteManagerImpl(@Named(REMOTE_MESSAGE_SERVICE_URL_PROP_NAME) String remoteServiceUrl,
+    public RemoteManagerImpl(@Named(REMOTE_MESSAGE_SERVICE_URL_PROP) String remoteServiceUrl,
                              AppManager appManager) {
         this.remoteServiceUrl = remoteServiceUrl;
         this.appManager = appManager;

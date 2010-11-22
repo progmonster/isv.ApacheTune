@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static com.apachetune.core.utils.Utils.close;
-import static com.apachetune.httpserver.Constants.MESSAGE_STORE_DB_URL_PROP_NAME;
+import static com.apachetune.httpserver.Constants.MESSAGE_STORE_DB_URL_PROP;
 import static java.util.Collections.emptyList;
 
 /**
@@ -66,7 +66,7 @@ public class LocalMessageStoreImpl implements MessageStore {
     private boolean isInitialized;
 
     @Inject
-    public LocalMessageStoreImpl(@Named(MESSAGE_STORE_DB_URL_PROP_NAME) String dbUrl) {
+    public LocalMessageStoreImpl(@Named(MESSAGE_STORE_DB_URL_PROP) String dbUrl) {
         this.dbUrl = dbUrl;
     }
 
