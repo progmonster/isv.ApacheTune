@@ -1,7 +1,10 @@
 package com.apachetune.core.utils;
 
+import com.apachetune.core.ApplicationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -101,5 +104,27 @@ public final class Utils {
         } catch (SQLException e) {
             logger.error("Error during closing statement", e);
         }
+    }
+
+    public static String getChildElementContent(Element element, String childElementName) throws ApplicationException {
+        NodeList childElems = element.getElementsByTagName(childElementName);
+
+        if (childElems.getLength() != 1) {
+            throw new ApplicationException(
+                    "Error during parsing element. Multiple children elements with same name. [child_element_name=" +
+                            childElementName + ']');
+        }
+
+        String result;
+
+        try {
+            Element childElem = (Element) childElems.item(0);
+
+            result = childElem.getTextContent().trim();
+        } catch (Throwable cause) {
+            throw new ApplicationException("Error during parsing element", cause);
+        }
+
+        return result;
     }
 }

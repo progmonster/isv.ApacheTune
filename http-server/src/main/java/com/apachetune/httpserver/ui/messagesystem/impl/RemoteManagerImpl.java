@@ -1,6 +1,8 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
 import com.apachetune.core.AppManager;
+import com.apachetune.core.ApplicationException;
+import com.apachetune.core.utils.Utils;
 import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.apachetune.httpserver.ui.messagesystem.RemoteManager;
@@ -27,6 +29,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.apachetune.core.utils.Utils.getChildElementContent;
 import static com.apachetune.httpserver.Constants.REMOTE_MESSAGE_SERVICE_URL_PROP;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
@@ -113,7 +116,7 @@ public class RemoteManagerImpl implements RemoteManager {
         return resultList;
     }
 
-    private NewsMessage parseMessage(Element msgElem) throws RemoteManagerImplException {
+    private NewsMessage parseMessage(Element msgElem) throws ApplicationException {
         String dataEncoding = msgElem.getAttribute("dataEncoding");
 
         if (!dataEncoding.equals("Base64")) {
@@ -168,27 +171,5 @@ public class RemoteManagerImpl implements RemoteManager {
         NewsMessage msg = new NewsMessage(MessageTimestamp.create(timestamp), subject, content, true);
 
         return msg;
-    }
-
-    private String getChildElementContent(Element element, String childElementName) throws RemoteManagerImplException {
-        NodeList childElems = element.getElementsByTagName(childElementName);
-
-        if (childElems.getLength() != 1) {
-            throw new RemoteManagerImplException(
-                    "Error during parsing message. Multiple children elements with same name. [child_element_name=" +
-                            childElementName + ']');
-        }
-
-        String result;
-
-        try {
-            Element childElem = (Element) childElems.item(0);
-
-            result = childElem.getTextContent().trim();
-        } catch (Throwable cause) {
-            throw new RemoteManagerImplException("Error during parsing message", cause);
-        }
-
-        return result;
     }
 }

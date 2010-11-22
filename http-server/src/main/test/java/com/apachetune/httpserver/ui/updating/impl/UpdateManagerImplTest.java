@@ -101,7 +101,7 @@ public class UpdateManagerImplTest {
 
     @Test
     public void test_has_update_and_user_accepted_update() throws Exception {
-        final UpdateInfo fakeUpdateInfo = UpdateInfo.create(new URL("http://apachetune.com/update"));
+        final UpdateInfo fakeUpdateInfo = UpdateInfo.create("fake-app-full-name", new URL("http://apachetune.com/update"));
 
         mockCtx.checking(new Expectations() {{
             allowing(mockUpdateConfiguration).getCheckUpdateFlag();
@@ -131,7 +131,7 @@ public class UpdateManagerImplTest {
 
     @Test
     public void test_has_update_but_user_rejected_update() throws Exception {
-        final UpdateInfo fakeUpdateInfo = UpdateInfo.create(new URL("http://apachetune.com/update"));
+        final UpdateInfo fakeUpdateInfo = UpdateInfo.create("fake-app-full-name", new URL("http://apachetune.com/update"));
 
         mockCtx.checking(new Expectations() {{
             allowing(mockUpdateConfiguration).getCheckUpdateFlag();

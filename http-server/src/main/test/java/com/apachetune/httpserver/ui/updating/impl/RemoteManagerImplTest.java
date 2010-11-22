@@ -37,7 +37,7 @@ public class RemoteManagerImplTest extends RemoteAbstractTest {
             will(returnValue("apache-tune-test-version"));
         }});
 
-        testSubj = new RemoteManagerImpl(testRemoteServiceUrl, appManager);
+        testSubj = new RemoteManagerImpl(testRemoteServiceUrl, mockAppManager);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class RemoteManagerImplTest extends RemoteAbstractTest {
                 "fake_has_update_response.xml"
         ));
 
-        UpdateInfo expUpdateInfo = UpdateInfo.create(new URL("http://apachetune.com/update"));
+        UpdateInfo expUpdateInfo = UpdateInfo.create("ApacheTune 1.2 Light", new URL("http://apachetune.com/update"));
 
         UpdateInfo updateInfo = testSubj.checkUpdateAvailable();
 
