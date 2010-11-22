@@ -81,7 +81,9 @@ public class Constants {
 
     public static final String REMOTE_MESSAGE_SERVICE_URL_PROP = "REMOTE_MESSAGE_SERVICE_URL";
     
-    public static final String CHECK_UPDATE_DELAY_IN_MSEC_PROP = "CHECK_UPDATE_DELAY_IN_MSEC_PROP";
+    public static final String CHECK_UPDATE_DELAY_IN_MSEC_PROP = "CHECK_UPDATE_DELAY_IN_MSEC";
 
     public static final long EMPTY_CHECK_UPDATE_DELAY_IN_MSEC = -1;
+
+    public static final String REMOTE_UPDATE_SERVICE_URL_PROP = "REMOTE_UPDATE_SERVICE_URL";
 }

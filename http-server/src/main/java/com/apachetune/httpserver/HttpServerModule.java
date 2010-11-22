@@ -16,9 +16,7 @@ import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
-import static com.apachetune.httpserver.Constants.CHECK_UPDATE_DELAY_IN_MSEC_PROP;
-import static com.apachetune.httpserver.Constants.MESSAGE_STORE_DB_URL_PROP;
-import static com.apachetune.httpserver.Constants.REMOTE_MESSAGE_SERVICE_URL_PROP;
+import static com.apachetune.httpserver.Constants.*;
 import static com.google.inject.Scopes.SINGLETON;
 
 /**
@@ -52,5 +50,8 @@ public class HttpServerModule extends AbstractModule {
                 .toInstance("http://apachetune.com/services/news");
 
         bind(Long.class).annotatedWith(Names.named(CHECK_UPDATE_DELAY_IN_MSEC_PROP)).toInstance(120L * 1000);
+
+        bind(String.class).annotatedWith(Names.named(REMOTE_UPDATE_SERVICE_URL_PROP))
+                .toInstance("http://apachetune.com/services/updates");
     }
 }
