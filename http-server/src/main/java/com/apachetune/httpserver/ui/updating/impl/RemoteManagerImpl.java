@@ -58,7 +58,7 @@ public class RemoteManagerImpl implements RemoteManager {
 
         method.getParams().setParameter(RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
-        method.setQueryString(format("action=check-for-updates&app-fullname={1}", appManager.getFullAppName()));
+        method.setQueryString(format("action=check-for-updates&app-fullname={0}", appManager.getFullAppName()));
 
         UpdateInfo updateInfo = UpdateInfo.createNoUpdateInfo();
 
@@ -115,10 +115,10 @@ public class RemoteManagerImpl implements RemoteManager {
 
     private UpdateInfo parseUpdateInfoItem(Element updateElem)
             throws ApplicationException, MalformedURLException, UnsupportedEncodingException {
-        String userFriendlyFullAppName = getChildElementContent(updateElem, "userFriendlyFullAppName");
+        String userFriendlyFullAppName = getChildElementContent(updateElem, "userFriendlyFullAppName").trim();
 
         String userFriendlyUpdateWebPageEncodedUrl =
-                getChildElementContent(updateElem, "userFriendlyUpdateWebPageEncodedUrl");
+                getChildElementContent(updateElem, "userFriendlyUpdateWebPageEncodedUrl").trim();
 
         String userFriendlyUpdateWebPageUrl = URLDecoder.decode(userFriendlyUpdateWebPageEncodedUrl, "UTF-8");
 

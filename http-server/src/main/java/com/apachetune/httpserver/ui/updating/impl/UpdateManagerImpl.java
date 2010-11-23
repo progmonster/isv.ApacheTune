@@ -54,7 +54,7 @@ public class UpdateManagerImpl implements UpdateManager {
         }
 
         if (updateDelayInMSec == EMPTY_CHECK_UPDATE_DELAY_IN_MSEC) {
-            checkForUpdate();
+            doCheckForUpdate(false);
         } else {
             scheduleCheckForUpdate();
         }
@@ -65,9 +65,14 @@ public class UpdateManagerImpl implements UpdateManager {
         // No-op.
     }
 
-    private void checkForUpdate() {
+    @Override
+    public final void checkForUpdate() {
+        doCheckForUpdate(true);
+    }
+
+    private void doCheckForUpdate(boolean forceCheckForUpdate) {
         synchronized (checkForUpdateLock) {
-            if (!updateConfiguration.getCheckUpdateFlag()) {
+            if (!forceCheckForUpdate && !updateConfiguration.getCheckUpdateFlag()) {
                 return;
             }
 
@@ -112,7 +117,7 @@ public class UpdateManagerImpl implements UpdateManager {
 
     public class CheckForUpdateTask {
         public final void execute() {
-            checkForUpdate();
+            doCheckForUpdate(false);
         }
     }
 

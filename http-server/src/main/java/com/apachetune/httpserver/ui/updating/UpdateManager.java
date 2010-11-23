@@ -7,4 +7,6 @@ public interface UpdateManager {
     void initialize();
 
     void dispose();
+
+    void checkForUpdate();
 }

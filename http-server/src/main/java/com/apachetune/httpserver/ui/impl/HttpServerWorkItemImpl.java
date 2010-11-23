@@ -30,6 +30,7 @@ import com.apachetune.httpserver.ui.messagesystem.messagedialog.MessageSmartPart
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.apachetune.httpserver.ui.searchserver.SearchServerSmartPart;
 import com.apachetune.httpserver.ui.selectserver.SelectServerSmartPart;
+import com.apachetune.httpserver.ui.updating.UpdateManager;
 import com.apachetune.httpserver.ui.welcomescreen.WelcomeScreenWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -63,7 +64,7 @@ import static java.text.MessageFormat.format;
  */
 public class HttpServerWorkItemImpl extends GenericUIWorkItem
         implements SelectServerWorkflowActionSite, AboutActionSite,
-        AppExitActionSite, NewsMessagesActionSite, HttpServerWorkItem {
+        AppExitActionSite, NewsMessagesActionSite, UpdateActionSite, HttpServerWorkItem {
     private static final int TITLE_BAR_SERVER_LOCATION_MAX_LENGTH = 100;
 
     private final Injector injector;
@@ -128,6 +129,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
     private final Provider<MessageSmartPart> messageSmartPartProvider;
 
+    private final UpdateManager updateManager;
+
     @Inject
     public HttpServerWorkItemImpl(
             Injector injector, JFrame mainFrame,
@@ -147,7 +150,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
             PreferencesManager preferencesManager,
             @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
             Provider<WelcomeScreenWorkItem> welcomeScreenWorkItemProvider,
-            Provider<MessageSmartPart> messageSmartPartProvider) {
+            Provider<MessageSmartPart> messageSmartPartProvider, UpdateManager updateManager) {
         super(HTTP_SERVER_WORK_ITEM);
 
         this.injector = injector;
@@ -175,6 +178,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         this.toolWindowManager = toolWindowManager;
         this.welcomeScreenWorkItemProvider = welcomeScreenWorkItemProvider;
         this.messageSmartPartProvider = messageSmartPartProvider;
+        this.updateManager = updateManager;
     }
 
     @Subscriber(eventId = EXIT_EVENT)
@@ -310,6 +314,18 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         return true;
     }
 
+    @Override
+    @ActionHandler(HELP_CHECK_FOR_UPDATE_ACTION)
+    public final void onCheckForUpdate() {
+        updateManager.checkForUpdate();
+    }
+
+    @Override
+    @ActionPermission(HELP_CHECK_FOR_UPDATE_ACTION)
+    public final boolean isCheckForUpdateEnabled() {
+        return true;
+    }
+
     public boolean askAndSaveAllConfFiles(final String title, final String message) {
         SaveFilesHelper saveFilesHelper = saveAllFilesAtOnceHelperProvider.get();
 
@@ -364,6 +380,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
             getMessageManager().initialize();
             getMessageManager().start();
+
+            updateManager.initialize();
         } catch (IOException e) {
             throw new RuntimeException("Internal error", e); // TODO Make it with a service.
         }
@@ -380,6 +398,8 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
     }
 
     protected void doUIDispose() {
+        updateManager.dispose();
+
         getMessageManager().stop();
         getMessageManager().dispose();
 

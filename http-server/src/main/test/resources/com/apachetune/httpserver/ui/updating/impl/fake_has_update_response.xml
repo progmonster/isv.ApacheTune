@@ -4,6 +4,6 @@
         <userFriendlyFullAppName>ApacheTune 1.2 Light</userFriendlyFullAppName>
 
         <!-- http://apachetune.com/update -->
-        <userFriendlyUpdateWebPageEncodedUrl>http%3A%2F%2Fapachetune.com%2Fupdate=</userFriendlyUpdateWebPageEncodedUrl>
+        <userFriendlyUpdateWebPageEncodedUrl>http%3A%2F%2Fapachetune.com%2Fupdate</userFriendlyUpdateWebPageEncodedUrl>
     </update>
 </updates>
