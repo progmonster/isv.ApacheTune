@@ -10,9 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 import java.util.Map;
 
-import static com.apachetune.httpserver.Constants.CHECK_UPDATE_DELAY_IN_MSEC_PROP;
-import static com.apachetune.httpserver.Constants.EMPTY_CHECK_UPDATE_DELAY_IN_MSEC;
-import static com.apachetune.httpserver.ui.updating.HasUpdateMessageDialog.UpdateAction.NEED_UPDATE;
+import static com.apachetune.httpserver.Constants.*;
 
 /**
  * FIXDOC
@@ -28,7 +26,7 @@ public class UpdateManagerImpl implements UpdateManager {
 
     private final Scheduler scheduler;
 
-    private final HasUpdateMessageDialog hasUpdateMessageDialog;
+    private final UpdateInfoDialog updateInfoDialog;
 
     private final OpenWebPageHelper openWebPageHelper;
 
@@ -37,24 +35,28 @@ public class UpdateManagerImpl implements UpdateManager {
     @Inject
     public UpdateManagerImpl(@Named(CHECK_UPDATE_DELAY_IN_MSEC_PROP) long updateDelayInMSec,
                              UpdateConfiguration updateConfiguration, RemoteManager remoteManager,
-                             Scheduler scheduler, HasUpdateMessageDialog hasUpdateMessageDialog,
+                             Scheduler scheduler, UpdateInfoDialog updateInfoDialog,
                              OpenWebPageHelper openWebPageHelper) {
         this.updateDelayInMSec = updateDelayInMSec;
         this.updateConfiguration = updateConfiguration;
         this.remoteManager = remoteManager;
         this.scheduler = scheduler;
-        this.hasUpdateMessageDialog = hasUpdateMessageDialog;
+        this.updateInfoDialog = updateInfoDialog;
         this.openWebPageHelper = openWebPageHelper;
     }
 
     @Override
     public final void initialize() {
-        if (!updateConfiguration.getCheckUpdateFlag()) {
+        if ((updateDelayInMSec == NO_CHECK_UPDATE_NEEDS) || !updateConfiguration.getCheckUpdateFlag()) {
             return;
         }
 
         if (updateDelayInMSec == EMPTY_CHECK_UPDATE_DELAY_IN_MSEC) {
-            doCheckForUpdate(false);
+            try {
+                doCheckForUpdate(false);
+            } catch (UpdateException e) {
+                logger.error("Error during checking for update.", e);
+            }
         } else {
             scheduleCheckForUpdate();
         }
@@ -67,26 +69,46 @@ public class UpdateManagerImpl implements UpdateManager {
 
     @Override
     public final void checkForUpdate() {
-        doCheckForUpdate(true);
+        try {
+            boolean hasUpdate = doCheckForUpdate(true);
+
+            if (!hasUpdate) {
+                UpdateInfoDialog.UserActionOnNoUpdate userAction = updateInfoDialog.showHasNoUpdate();
+
+                updateConfiguration.storeCheckUpdateFlag(userAction.isUserEnableCheckForUpdateOnStart());
+            }
+        } catch (UpdateException e) {
+            logger.error("Error during checking for update.", e);
+            
+            UpdateInfoDialog.UserActionOnUpdateError userAction = updateInfoDialog.showUpdateCheckingError(e);
+
+            if (userAction.isUserAgreeSendErrorReport()) {
+                // todo send error report                                
+            }
+        }
     }
 
-    private void doCheckForUpdate(boolean forceCheckForUpdate) {
+    private boolean doCheckForUpdate(boolean forceCheckForUpdate) throws UpdateException {
         synchronized (checkForUpdateLock) {
             if (!forceCheckForUpdate && !updateConfiguration.getCheckUpdateFlag()) {
-                return;
+                return false;
             }
 
             UpdateInfo updateInfo = remoteManager.checkUpdateAvailable();
 
             if (!updateInfo.hasUpdate()) {
-                return;
+                return false;
             }
 
-            if (hasUpdateMessageDialog.show(updateInfo) == NEED_UPDATE) {
+            UpdateInfoDialog.UserActionOnUpdate userAction = updateInfoDialog.showHasUpdate(updateInfo);
+
+            if (userAction.isUserAgreeUpdate()) {
                 openWebPageHelper.openWebPage(updateInfo.getUserFriendlyUpdatePageUrl());
             }
 
-            updateConfiguration.storeCheckUpdateFlag(hasUpdateMessageDialog.isUserEnableCheckForUpdate());
+            updateConfiguration.storeCheckUpdateFlag(userAction.isUserEnableCheckForUpdateOnStart());
+
+            return true;
         }
     }
 
@@ -117,7 +139,11 @@ public class UpdateManagerImpl implements UpdateManager {
 
     public class CheckForUpdateTask {
         public final void execute() {
-            doCheckForUpdate(false);
+            try {
+                doCheckForUpdate(false);
+            } catch (UpdateException e) {
+                logger.error("Error during checking for update.", e);
+            }
         }
     }
 

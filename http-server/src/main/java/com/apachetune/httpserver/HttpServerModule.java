@@ -11,11 +11,11 @@ import com.apachetune.httpserver.ui.messagesystem.impl.LocalMessageStoreImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.MessageManagerImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.MessageStatusBarSiteImpl;
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
-import com.apachetune.httpserver.ui.updating.HasUpdateMessageDialog;
+import com.apachetune.httpserver.ui.updating.UpdateInfoDialog;
 import com.apachetune.httpserver.ui.updating.OpenWebPageHelper;
 import com.apachetune.httpserver.ui.updating.UpdateConfiguration;
 import com.apachetune.httpserver.ui.updating.UpdateManager;
-import com.apachetune.httpserver.ui.updating.impl.HasUpdateMessageDialogImpl;
+import com.apachetune.httpserver.ui.updating.impl.UpdateInfoDialogImpl;
 import com.apachetune.httpserver.ui.updating.impl.OpenWebPageHelperImpl;
 import com.apachetune.httpserver.ui.updating.impl.UpdateConfigurationImpl;
 import com.apachetune.httpserver.ui.updating.impl.UpdateManagerImpl;
@@ -56,17 +56,10 @@ public class HttpServerModule extends AbstractModule {
         bind(String.class).annotatedWith(Names.named(REMOTE_MESSAGE_SERVICE_URL_PROP))
                 .toInstance("http://apachetune.com/services/news");
 
-/*
         bind(Long.class).annotatedWith(Names.named(CHECK_UPDATE_DELAY_IN_MSEC_PROP)).toInstance(120L * 1000);
 
         bind(String.class).annotatedWith(Names.named(REMOTE_UPDATE_SERVICE_URL_PROP))
                 .toInstance("http://apachetune.com/services/updates");
-*/
-
-        bind(Long.class).annotatedWith(Names.named(CHECK_UPDATE_DELAY_IN_MSEC_PROP)).toInstance(10L * 1000);
-
-        bind(String.class).annotatedWith(Names.named(REMOTE_UPDATE_SERVICE_URL_PROP)) // todo remove fake value
-                .toInstance("http://localhost:8080/apachetune-fake-news-message-service/services/update");
 
         bind(UpdateManager.class).to(UpdateManagerImpl.class).in(SINGLETON);
 
@@ -77,6 +70,6 @@ public class HttpServerModule extends AbstractModule {
 
         bind(OpenWebPageHelper.class).to(OpenWebPageHelperImpl.class);
 
-        bind(HasUpdateMessageDialog.class).to(HasUpdateMessageDialogImpl.class);
+        bind(UpdateInfoDialog.class).to(UpdateInfoDialogImpl.class);
     }
 }

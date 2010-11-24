@@ -3,6 +3,7 @@ package com.apachetune.httpserver.ui.updating.impl;
 import com.apachetune.core.AppManager;
 import com.apachetune.core.ApplicationException;
 import com.apachetune.httpserver.ui.updating.RemoteManager;
+import com.apachetune.httpserver.ui.updating.UpdateException;
 import com.apachetune.httpserver.ui.updating.UpdateInfo;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -17,9 +18,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
@@ -51,7 +54,7 @@ public class RemoteManagerImpl implements RemoteManager {
     }
 
     @Override
-    public final UpdateInfo checkUpdateAvailable() {
+    public final UpdateInfo checkUpdateAvailable() throws UpdateException {
         HttpClient client = new HttpClient();
 
         HttpMethod method = new GetMethod(remoteUpdateServiceUrl);
@@ -60,68 +63,82 @@ public class RemoteManagerImpl implements RemoteManager {
 
         method.setQueryString(format("action=check-for-updates&app-fullname={0}", appManager.getFullAppName()));
 
-        UpdateInfo updateInfo = UpdateInfo.createNoUpdateInfo();
-
-        int resultCode;
-
         try {
-            resultCode = client.executeMethod(method);
+            int resultCode = client.executeMethod(method);
 
             if (resultCode == SC_OK) {
                 String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8");
 
-                updateInfo = parseResponse(response);
+                return parseResponse(response);
             } else {
-                logger.error("Remote update service returned error response code [code=" + resultCode + ']');
+                throw new UpdateException(
+                        "Remote update service returned error response code [code=" + resultCode + ']');
             }
         } catch (IOException e) {
-            logger.error("Error getting update info from remote", e);
+            throw new UpdateException("Error getting update info from remote", e);
+        } finally {
+            method.releaseConnection();
         }
-
-        method.releaseConnection();
-
-        return updateInfo;
     }
 
-    private UpdateInfo parseResponse(String response) {
+    private UpdateInfo parseResponse(String response) throws UpdateException {
         UpdateInfo updateInfo = UpdateInfo.createNoUpdateInfo();
 
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        DocumentBuilder db;
+
         try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            db = dbf.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            logger.error("Internal error.", e);
 
-            DocumentBuilder db = dbf.newDocumentBuilder();
+            return updateInfo;
+        }
 
-            InputSource is = new InputSource(new StringReader(response));
+        InputSource is = new InputSource(new StringReader(response));
 
-            Document doc = db.parse(is);
+        Document doc;
+        
+        try {
+            doc = db.parse(is);
+        } catch (SAXException e) {
+            throw new UpdateException("Error during parsing update info.", e);
+        } catch (IOException e) {
+            throw new UpdateException("Error during parsing update info.", e);
+        }
 
-            Element docElem = doc.getDocumentElement();
+        Element docElem = doc.getDocumentElement();
 
-            NodeList updateElems = docElem.getElementsByTagName("update");
+        NodeList updateElems = docElem.getElementsByTagName("update");
 
-            Element updateElem;
+        Element updateElem;
 
-            if (updateElems.getLength() > 0) {
-                updateElem = (Element) updateElems.item(0);
+        if (updateElems.getLength() > 0) {
+            updateElem = (Element) updateElems.item(0);
 
-                updateInfo = parseUpdateInfoItem(updateElem);
-            }
-        } catch (Throwable cause) {
-            logger.error("Error during parsing update info from remote", cause);
+            updateInfo = parseUpdateInfoItem(updateElem);
         }
 
         return updateInfo;
     }
 
-    private UpdateInfo parseUpdateInfoItem(Element updateElem)
-            throws ApplicationException, MalformedURLException, UnsupportedEncodingException {
-        String userFriendlyFullAppName = getChildElementContent(updateElem, "userFriendlyFullAppName").trim();
+    private UpdateInfo parseUpdateInfoItem(Element updateElem) throws UpdateException {
+        try {
+            String userFriendlyFullAppName = getChildElementContent(updateElem, "userFriendlyFullAppName").trim();
 
-        String userFriendlyUpdateWebPageEncodedUrl =
-                getChildElementContent(updateElem, "userFriendlyUpdateWebPageEncodedUrl").trim();
+            String userFriendlyUpdateWebPageEncodedUrl =
+                    getChildElementContent(updateElem, "userFriendlyUpdateWebPageEncodedUrl").trim();
 
-        String userFriendlyUpdateWebPageUrl = URLDecoder.decode(userFriendlyUpdateWebPageEncodedUrl, "UTF-8");
+            String userFriendlyUpdateWebPageUrl = URLDecoder.decode(userFriendlyUpdateWebPageEncodedUrl, "UTF-8");
 
-        return UpdateInfo.create(userFriendlyFullAppName, new URL(userFriendlyUpdateWebPageUrl));
+            return UpdateInfo.create(userFriendlyFullAppName, new URL(userFriendlyUpdateWebPageUrl));
+        } catch (ApplicationException e) {
+            throw new UpdateException("Error during parsing update info.", e);
+        } catch (UnsupportedEncodingException e) {
+            throw new UpdateException("Error during parsing update info.", e);
+        } catch (MalformedURLException e) {
+            throw new UpdateException("Error during parsing update info.", e);
+        }
     }
 }

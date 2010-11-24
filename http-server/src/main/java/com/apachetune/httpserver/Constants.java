@@ -85,6 +85,8 @@ public class Constants {
 
     public static final long EMPTY_CHECK_UPDATE_DELAY_IN_MSEC = -1;
 
+    public static final long NO_CHECK_UPDATE_NEEDS = -2;
+
     public static final String REMOTE_UPDATE_SERVICE_URL_PROP = "REMOTE_UPDATE_SERVICE_URL";
 
     public static final String IS_CHECK_FOR_UPDATE_ON_START_ENABLED_PREF_NAME = "IS_CHECK_FOR_UPDATE_ON_START_ENABLED";

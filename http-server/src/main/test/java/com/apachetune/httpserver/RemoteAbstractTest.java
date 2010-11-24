@@ -54,6 +54,10 @@ public abstract class RemoteAbstractTest {
         httpService.setHandler(handler);
     }
 
+    protected final Connection getTestServiceConnection() {
+        return connection;
+    }
+
     protected final Mockery getMockCtx() {
         return mockCtx;
     }
