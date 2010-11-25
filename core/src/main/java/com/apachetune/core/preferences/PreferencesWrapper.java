@@ -6,6 +6,8 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.NodeChangeListener;
 import java.util.prefs.PreferenceChangeListener;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -16,9 +18,7 @@ public class PreferencesWrapper implements Preferences {
     private final java.util.prefs.Preferences preferences;
 
     public PreferencesWrapper(java.util.prefs.Preferences preferences) {
-        if (preferences == null) {
-            throw new NullPointerException("Argument preferences cannot be a null [this = " + this + "]");
-        }
+        notNull(preferences, "Argument preferences cannot be a null [this = " + this + "]");
 
         this.preferences = preferences;
     }

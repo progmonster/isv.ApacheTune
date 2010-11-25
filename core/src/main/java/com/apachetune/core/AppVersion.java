@@ -3,6 +3,9 @@ package com.apachetune.core;
 import com.apachetune.core.utils.Utils;
 import org.apache.commons.lang.StringUtils;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -42,9 +45,7 @@ public class AppVersion {
      * @param versionLine a version as a single line.
      */
     public AppVersion(String versionLine) {
-        if (versionLine == null) {
-            throw new NullPointerException("Argument versionLine cannot be a null [this = " + this + "]");
-        }
+        notNull(versionLine, "Argument versionLine cannot be a null [this = " + this + "]");
 
         parseVersionLine(versionLine);
     }
@@ -52,15 +53,11 @@ public class AppVersion {
     private void parseVersionLine(String versionLine) {
         int majorSeparatorIndex = versionLine.indexOf('.');
 
-        if (majorSeparatorIndex == -1) {
-            throw new RuntimeException("Invalid versionLine format"); // TODO Make it with a service.
-        }
+        isTrue(majorSeparatorIndex != -1, "Invalid versionLine format");
 
         major = versionLine.substring(0, majorSeparatorIndex);
 
-        if (majorSeparatorIndex + 1 == versionLine.length()) {
-            throw new RuntimeException("Invalid versionLine format"); // TODO Make it with a service.            
-        }
+        isTrue(majorSeparatorIndex + 1 != versionLine.length(), "Invalid versionLine format");
 
         int minorSeparatorIndex = versionLine.indexOf('-', majorSeparatorIndex + 1);
 
@@ -110,13 +107,9 @@ public class AppVersion {
      * @return Version as string formatted by given format string.
      */
     public String format(String format) {
-        if (format == null) {
-            throw new NullPointerException("Argument format cannot be a null [this = " + this + "]");
-        }
+        notNull(format, "Argument format cannot be a null [this = " + this + "]");
 
-        if (EDITION_SUBSTITUTION.length() != UPPER_EDITION_SUBSTITUTION.length()) {
-            throw new RuntimeException("Internal error"); // TODO Make it with a service.
-        }
+        isTrue(EDITION_SUBSTITUTION.length() == UPPER_EDITION_SUBSTITUTION.length());
 
         String result = StringUtils.replace(format, MAJOR_SUBSTITUTION, getMajor());
 

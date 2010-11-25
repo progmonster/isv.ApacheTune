@@ -31,6 +31,8 @@ import static java.awt.Color.RED;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.commons.lang.exception.ExceptionUtils.getStackTrace;
 
 /**
@@ -111,10 +113,7 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
     }
 
     protected void doUIInitialize() {
-        if (!hasState(CURRENT_HTTP_SERVER_STATE)) {
-            throw new IllegalStateException("An http-server must be opened before create RunServerWorkflowWorkItem [" +
-                    "this = " + this + ']');
-        }
+        isTrue(hasState(CURRENT_HTTP_SERVER_STATE), "An http-server must be opened before create RunServerWorkflowWorkItem [" +                    "this = " + this + ']');
 
         httpServer = (HttpServer) getState(CURRENT_HTTP_SERVER_STATE);
 
@@ -163,10 +162,8 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
         private final List<Callable<Boolean>> tasks;
 
         public TaskRunner(List<ExecutionTask> tasks) {
-            if (tasks == null) {
-                throw new NullPointerException("Argument tasks cannot be a null [this = " + this + "]");
-            }
-            
+            notNull(tasks, "Argument tasks cannot be a null [this = " + this + "]");
+
             this.tasks = new ArrayList<Callable<Boolean>>(tasks);
         }
 

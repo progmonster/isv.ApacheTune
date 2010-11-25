@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 
 import java.util.prefs.BackingStoreException;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.IS_CHECK_FOR_UPDATE_ON_START_ENABLED_PREF_NAME;
 
 /**
@@ -29,7 +30,7 @@ public class UpdateConfigurationImpl implements UpdateConfiguration {
         try {
             prefs.flush();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error.", e);
+            throw createRuntimeException(e);
         }
     }
 

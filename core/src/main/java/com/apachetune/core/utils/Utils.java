@@ -12,6 +12,8 @@ import java.sql.Statement;
 
 import static org.apache.commons.lang.StringUtils.left;
 import static org.apache.commons.lang.StringUtils.right;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -26,22 +28,27 @@ public final class Utils {
         // No-op.
     }
 
+    public static RuntimeException createRuntimeException(Throwable cause) {
+        return new RuntimeException("Internal error", cause);
+    }
+
+    public static RuntimeException createRuntimeException(String message) {
+        return new RuntimeException(message);
+    }
+
+    public static RuntimeException createRuntimeException(String message, Throwable cause) {
+        return new RuntimeException(message, cause);
+    }
+
     public static String deleteSubstring(String text, int startIdx, int length) {
-        if (text == null) {
-            throw new NullPointerException("Argument text cannot be a null [text = \"" + text + "\"]");
-        }
+        notNull(text, "Argument text cannot be a null [text = \"" + text + "\"]");
 
-        if (text.length() == 0) {
-            throw new IllegalArgumentException("Argument text cannot be zero length.");
-        }
+        isTrue(text.length() > 0, "Argument text cannot be zero length.");
 
-        if ((startIdx < 0) || (startIdx >= text.length())) {
-            throw new IllegalArgumentException("Invalid argument startIdx value [startIdx = " + startIdx + "]");
-        }
+        isTrue((startIdx >= 0) && (startIdx < text.length()),
+                "Invalid argument startIdx value [startIdx = " + startIdx + "]");
 
-        if ((startIdx + length >= text.length())) {
-            throw new IllegalArgumentException("Invalid argument length value [length = " + startIdx + "]");
-        }
+        isTrue((startIdx + length < text.length()), "Invalid argument length value [length = " + startIdx + "]");
 
         String leftPiece;
 
@@ -63,13 +70,9 @@ public final class Utils {
     }
 
     public static String abbreviateFilePath(String filePath, int maxSize) {
-        if (filePath == null) {
-            throw new NullPointerException("Argument filePath cannot be a null [filePath = \"" + filePath + "\"]");
-        }
+        notNull(filePath, "Argument filePath cannot be a null [filePath = \"" + filePath + "\"]");
 
-        if (maxSize < 1) {
-            throw new IllegalArgumentException("Argument maxSize must be greate than zero [maxSize = " + maxSize + ']');
-        }
+        isTrue(maxSize >= 1, "Argument maxSize must be greate than zero [maxSize = " + maxSize + ']');
 
         String abbreviatedLocation;
 

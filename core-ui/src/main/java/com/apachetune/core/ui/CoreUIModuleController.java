@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.awt.*;
 
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -28,9 +29,7 @@ public class CoreUIModuleController implements ModuleController {
     private WorkItem coreUIWorkItem;
 
     public void initialize(RootWorkItem rootWorkItem) {
-        if (rootWorkItem == null) {
-            throw new NullPointerException("Argument rootWorkItem cannot be a null [this = " + this + "]");
-        }
+        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null [this = " + this + "]");
 
         rootWorkItem.addChildWorkItem(coreUIWorkItem);
 

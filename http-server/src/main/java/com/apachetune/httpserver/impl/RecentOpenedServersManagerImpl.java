@@ -2,6 +2,7 @@ package com.apachetune.httpserver.impl;
 
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.core.utils.Utils;
 import com.apachetune.httpserver.RecentOpenedServerListChangedListener;
 import com.apachetune.httpserver.RecentOpenedServersManager;
 import com.google.inject.Inject;
@@ -14,8 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.BackingStoreException;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.RECENT_OPENED_SERVER;
 import static java.lang.StrictMath.min;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
 public class RecentOpenedServersManagerImpl implements RecentOpenedServersManager {
     static final int RECENT_LIST_SIZE = 5;
@@ -29,18 +33,15 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     @Inject
     public RecentOpenedServersManagerImpl(final PreferencesManager preferencesManager) {
         this.preferencesManager = preferencesManager;
+
         //noinspection ConstantConditions
-        if (RECENT_LIST_SIZE < 0) {
-            throw new RuntimeException("RECENT_LIST_SIZE can not be less than zero."); 
-        }
+        isTrue(RECENT_LIST_SIZE >= 0, "RECENT_LIST_SIZE can not be less than zero.");
 
         truncateListToMaxSize();
     }
 
     public void storeServerUriToRecentList(URI serverUri) {
-        if (serverUri == null) {
-            throw new NullPointerException("Argument serverUri cannot be a null [this = " + this + "]");
-        }
+        notNull(serverUri, "Argument serverUri cannot be a null [this = " + this + "]");
 
         List<URI> serverUriList = getServerUriList();
 
@@ -56,9 +57,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     public URI getLastOpenedServerUri() {
-        if (!hasLastOpenedServer()) {
-            throw new IllegalStateException("It should be at least one previously opened http-server.");
-        }
+        isTrue(hasLastOpenedServer(), "It should be at least one previously opened http-server.");
 
         Preferences node = preferencesManager.userNodeForPackage(getClass());
 
@@ -67,7 +66,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         try {
             return new URI(strServerUri);
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -77,7 +76,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         try {
             return ArrayUtils.contains(node.keys(), getServerItemKey(0));
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -101,25 +100,21 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
                 serverUriList.add(new URI(strServerUri));
             }
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         return serverUriList;
     }
 
     public void addServerListChangedListener(RecentOpenedServerListChangedListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         changeListener.add(listener);
     }
 
     @Override
     public void removeServerListChangedListener(RecentOpenedServerListChangedListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         changeListener.remove(listener);
     }
@@ -130,7 +125,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         try {
             node.removeNode();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -146,7 +141,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         try {
             node.flush();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 

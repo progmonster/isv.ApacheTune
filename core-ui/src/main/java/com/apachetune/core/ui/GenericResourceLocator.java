@@ -5,6 +5,9 @@ import org.apache.commons.io.IOUtils;
 import javax.swing.*;
 import java.io.IOException;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -13,13 +16,9 @@ import java.io.IOException;
  */
 public abstract class GenericResourceLocator implements ResourceLocator {
     public final ImageIcon loadIcon(String name) throws IOException {
-        if (name == null) {
-            throw new NullPointerException("Argument name cannot be a null");
-        }
+        notNull(name, "Argument name cannot be a null");
 
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Argument name cannot be empty");
-        }
+        isTrue(!name.isEmpty(), "Argument name cannot be empty");
 
         return new ImageIcon(IOUtils.toByteArray(getClass().getResourceAsStream(name)));
     }

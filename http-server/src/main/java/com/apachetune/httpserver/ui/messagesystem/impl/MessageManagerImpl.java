@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.util.Arrays.asList;
 
 /**
@@ -59,7 +60,7 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
         try {
             messageStore.initialize();
         } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
+            throw createRuntimeException(e);
         }
 
         messageStore.addDataChangedListener(this);
@@ -72,7 +73,7 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
         try {
             messageStore.dispose();
         } catch (SQLException e) {
-            throw new RuntimeException("internal error", e);
+            throw createRuntimeException(e);
         }
 
         statusBarManager.removeStatusBarSite(messageStatusBarSite);

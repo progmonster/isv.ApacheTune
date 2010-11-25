@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.*;
 import static org.noos.xing.mydoggy.ToolWindowAnchor.BOTTOM;
 import static org.noos.xing.mydoggy.ToolWindowType.DOCKED;
@@ -138,7 +139,7 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
             toolWindowManager.registerToolWindow(OUTPUT_TOOL_WINDOW, "Output view", httpServerResourceLocator
                     .loadIcon("console_view_icon.png"), stdoutPane, anchor);
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         getOutputWindowDocketDescriptor().setMinimumDockLength(MINIMAL_OUTPUT_WINDOW_DOCK_LENGTH);

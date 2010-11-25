@@ -5,6 +5,8 @@ import com.apachetune.core.RootWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -22,10 +24,8 @@ public class MainModuleController implements ModuleController {
     }
 
     public void initialize(RootWorkItem rootWorkItem) {
-        if (rootWorkItem != null) {
-            throw new IllegalArgumentException("Argument rootWorkItem should be a null because main module controller" +
+        notNull(rootWorkItem, "Argument rootWorkItem should be a null because main module controller" +
                     "creates a rootWorkItem oneself [rootWorkItem = " + rootWorkItem + "; this = " + this +"]");
-        }
     }
 
     public RootWorkItem getRootWorkItem() {

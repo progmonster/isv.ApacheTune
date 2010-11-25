@@ -9,6 +9,7 @@ import com.google.inject.Module;
 import com.google.inject.name.Named;
 
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -31,9 +32,7 @@ public class HttpServerModuleController implements ModuleController {
     }
 
     public void initialize(RootWorkItem rootWorkItem) {
-        if (rootWorkItem == null) {
-            throw new NullPointerException("Argument rootWorkItem cannot be a null [this = " + this + "]");
-        }
+        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null [this = " + this + "]");
 
         coreUIWorkItem.addChildWorkItem(httpServerWorkItem);
     }

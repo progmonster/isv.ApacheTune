@@ -20,6 +20,9 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static org.apache.commons.lang.Validate.notNull;
+
 public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
     private JPanel contentPane;
 
@@ -150,9 +153,7 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
     }
 
     public void initialize(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
         setUndecorated(true);
 
@@ -225,9 +226,9 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
         try {
             Desktop.getDesktop().browse(new URI(webSiteLabel.getText()));
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 

@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.prefs.BackingStoreException;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.awt.Dialog.ModalityType.TOOLKIT_MODAL;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
@@ -400,7 +401,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
         try {
             pref.flush();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error.", e);
+            throw createRuntimeException(e);
         }
     }
 

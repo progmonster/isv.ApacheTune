@@ -53,6 +53,7 @@ import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_2;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.*;
 import static java.text.MessageFormat.format;
 
@@ -287,7 +288,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
             aboutSmartPart.run();
         } catch (Exception e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -383,7 +384,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
             updateManager.initialize();
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         actionManager.activateActionSites(this);
@@ -622,7 +623,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         try {
             openHttpServer(new URI(serverUri));
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -787,7 +788,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         try {
             node.flush();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 

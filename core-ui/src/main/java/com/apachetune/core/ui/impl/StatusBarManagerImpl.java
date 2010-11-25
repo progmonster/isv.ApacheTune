@@ -10,6 +10,8 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang.Validate.notEmpty;
+
 /**
  * FIXDOC
  *
@@ -36,21 +38,9 @@ public class StatusBarManagerImpl implements StatusBarManager {
 
     @SuppressWarnings({"unchecked"})
     public void addMainStatus(String messageId, String status) {
-        if (messageId == null) {
-            throw new NullPointerException("Argument messageId cannot be a null [this = " + this + "]");
-        }
+        notEmpty(messageId, "Argument messageId cannot be empty [this = " + this + "]");
 
-        if (messageId.isEmpty()) {
-            throw new IllegalArgumentException("Argument messageId cannot be empty [this = " + this + "]");
-        }
-
-        if (status == null) {
-            throw new NullPointerException("Argument status cannot be a null [this = " + this + "]");
-        }
-
-        if (status.isEmpty()) {
-            throw new IllegalArgumentException("Argument status cannot be empty [this = " + this + "]");
-        }
+        notEmpty(status, "Argument status cannot be empty [this = " + this + "]");
 
         messages.add(new AbstractMap.SimpleImmutableEntry<String, String>(messageId, status));
 
@@ -58,13 +48,7 @@ public class StatusBarManagerImpl implements StatusBarManager {
     }
 
     public void removeMainStatus(String messageId) {
-        if (messageId == null) {
-            throw new NullPointerException("Argument messageId cannot be a null [this = " + this + "]");
-        }
-
-        if (messageId.isEmpty()) {
-            throw new IllegalArgumentException("Argument messageId cannot be empty [this = " + this + "]");
-        }
+        notEmpty(messageId, "Argument messageId cannot be empty [this = " + this + "]");
 
         removeLastById(messageId);
 

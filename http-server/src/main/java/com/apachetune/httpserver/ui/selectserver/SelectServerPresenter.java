@@ -9,6 +9,8 @@ import com.google.inject.Inject;
 
 import java.io.File;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -32,14 +34,10 @@ public class SelectServerPresenter implements Presenter<SelectServerDialog> {
     }
 
     public void initialize(WorkItem workItem, SelectServerDialog view) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
-        if (view == null) {
-            throw new NullPointerException("Argument view cannot be a null [this = " + this + "]");
-        }
-        
+        notNull(view, "Argument view cannot be a null [this = " + this + "]");
+
         this.workItem = workItem;
         this.view = view;
 
@@ -58,9 +56,7 @@ public class SelectServerPresenter implements Presenter<SelectServerDialog> {
     }
 
     public void onCurrentDirectoryChanged(File selectedDirectory) {
-        if (selectedDirectory == null) {
-            throw new NullPointerException("Argument selectedDirectory cannot be a null [this = " + this + "]");
-        }
+        notNull(selectedDirectory, "Argument selectedDirectory cannot be a null [this = " + this + "]");
         
         view.setCurrentDirectorySelectable(httpServerManager.isHttpServerRootDirectory(selectedDirectory));
     }

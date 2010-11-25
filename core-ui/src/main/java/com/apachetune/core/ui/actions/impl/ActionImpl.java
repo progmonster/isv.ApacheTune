@@ -10,7 +10,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -32,13 +35,9 @@ public class ActionImpl extends AbstractAction implements Action {
     private ActionGroup actionGroup;
 
     public ActionImpl(String id, Class<? extends ActionSite> actionSiteClass) {
-        if (id == null) {
-            throw new NullPointerException("Argument id cannot be a null [this = " + this + "]");
-        }
+        notNull(id, "Argument id cannot be a null [this = " + this + "]");
 
-        if (actionSiteClass == null) {
-            throw new NullPointerException("Argument actionSiteClass cannot be a null [this = " + this + "]");
-        }
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null [this = " + this + "]");
 
         setId(id);
 
@@ -71,10 +70,9 @@ public class ActionImpl extends AbstractAction implements Action {
         }                
 
         if (actionSite != null) {
-            if (!actionSiteClass.isInstance(actionSite)) {
-                throw new IllegalArgumentException("Action site should has an actionSiteClass type [actionSite = " +
-                        actionSite + "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-            }
+            isTrue(actionSiteClass.isInstance(actionSite),
+                    "Action site should has an actionSiteClass type [actionSite = " + actionSite +
+                            "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
 
             validateActionSiteClass(actionSite.getClass());
 
@@ -100,9 +98,9 @@ public class ActionImpl extends AbstractAction implements Action {
             try {
                 super.setEnabled((Boolean) permissionMethod.invoke(actionSite));
             } catch (IllegalAccessException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+                throw createRuntimeException(e);
             } catch (InvocationTargetException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+                throw createRuntimeException(e);
             }
         }
     }
@@ -112,13 +110,9 @@ public class ActionImpl extends AbstractAction implements Action {
     }
 
     public void setName(String name) {
-        if (name == null) {
-            throw new NullPointerException("Argument name cannot be a null [this = " + this + "]");
-        }
+        notNull(name, "Argument name cannot be a null [this = " + this + "]");
 
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Argument name cannot be empty [this = " + this + "]");
-        }
+        isTrue(!name.isEmpty(), "Argument name cannot be empty [this = " + this + "]");
 
         putValue(NAME, name);
     }
@@ -181,10 +175,7 @@ public class ActionImpl extends AbstractAction implements Action {
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (!isEnabled()) {
-            throw new IllegalStateException("Cannot perform action while one is disabled [e = " + e + "; this = " +
-                    this + ']');
-        }
+        isTrue(isEnabled(), "Cannot perform action while one is disabled [e = " + e + "; this = " + this + ']');
 
         if (actionSite == null) {
             return;
@@ -195,9 +186,9 @@ public class ActionImpl extends AbstractAction implements Action {
         try {
             actionHandlerMethod.invoke(actionSite);
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException("Internal error", ex); // TODO Make it with a service.
+            throw createRuntimeException(ex);
         } catch (InvocationTargetException ex) {
-            throw new RuntimeException("Internal error", ex); // TODO Make it with a service.
+            throw createRuntimeException(ex);
         }
     }
 
@@ -214,7 +205,7 @@ public class ActionImpl extends AbstractAction implements Action {
         try {
             clonedObject = (ActionImpl) super.clone();
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException("Internal exception.", e); // TODO Make it as a service.
+            throw createRuntimeException(e);
         }
 
         clonedObject.actionSiteClass = actionSiteClass;
@@ -248,10 +239,8 @@ public class ActionImpl extends AbstractAction implements Action {
             ActionHandler actionHandlerAnnt = method.getAnnotation(ActionHandler.class);
 
             if ((actionHandlerAnnt != null) && actionHandlerAnnt.value().equals(getId())) {
-                if (isHandlerFound) {
-                    throw new RuntimeException("Action site class can contains only one handler per action [" +
+                isTrue(!isHandlerFound, "Action site class can contains only one handler per action [" +
                             "actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-                }
 
                 isHandlerFound = true;
 
@@ -261,10 +250,8 @@ public class ActionImpl extends AbstractAction implements Action {
             ActionPermission actionPermissionAnnt = method.getAnnotation(ActionPermission.class);
 
             if ((actionPermissionAnnt != null) && actionPermissionAnnt.value().equals(getId())) {
-                if (isPermitMethodFound) {
-                    throw new RuntimeException("Action site class can contains only one permission method per action" +
+                isTrue(!isPermitMethodFound, "Action site class can contains only one permission method per action" +
                             " [actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-                }
 
                 isPermitMethodFound = true;
 
@@ -272,15 +259,11 @@ public class ActionImpl extends AbstractAction implements Action {
             }
         }
 
-        if (!isHandlerFound) {
-            throw new RuntimeException("Action site class should contains a handler for the action [" +
+        isTrue(isHandlerFound, "Action site class should contains a handler for the action [" +
                     "actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-        }
 
-        if (!isPermitMethodFound) {
-            throw new RuntimeException("Action site class should contains a permission method for the action [" +
+        isTrue(isPermitMethodFound, "Action site class should contains a permission method for the action [" +
                     "actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-        }
     }
 
     private void checkActionHandler(Class<? extends ActionSite> actionSiteClass, Method method) {
@@ -288,10 +271,8 @@ public class ActionImpl extends AbstractAction implements Action {
 
         boolean isValid = returnType.isAssignableFrom(void.class) && (method.getParameterTypes().length == 0);
 
-        if (!isValid) {
-            throw new RuntimeException("Action site class contains invalid handler [method = " + method +
+        isTrue(isValid, "Action site class contains invalid handler [method = " + method +
                     "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-        }
     }
 
     private void checkPermissionMethod(Class<? extends ActionSite> actionSiteClass, Method method) {
@@ -300,10 +281,8 @@ public class ActionImpl extends AbstractAction implements Action {
         boolean isValid = (returnType.isAssignableFrom(Boolean.class) || returnType.isAssignableFrom(boolean.class))
                 && (method.getParameterTypes().length == 0);
 
-        if (!isValid) {
-            throw new RuntimeException("Action site class contains invalid permission method [method = " + method +
+        isTrue(isValid,"Action site class contains invalid permission method [method = " + method +
                     "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
-        }
     }
 
     private Method getDeclaredHandlerMethod() {
@@ -317,7 +296,7 @@ public class ActionImpl extends AbstractAction implements Action {
             }
         }
 
-        throw new InternalError("Action site object should contain an action handler.");
+        throw createRuntimeException("Action site object should contain an action handler.");
     }
 
     private Method getDeclaredPermissionMethod() {
@@ -331,7 +310,7 @@ public class ActionImpl extends AbstractAction implements Action {
             }
         }
 
-        throw new InternalError("Action site object should contain an action permission method.");
+        throw createRuntimeException("Action site object should contain an action permission method.");
     }
 
     private void validateHandlerImplementor(ActionSite actionSite) {
@@ -344,16 +323,14 @@ public class ActionImpl extends AbstractAction implements Action {
         try {
             handlerMethodImplementor = actionSite.getClass().getDeclaredMethod(declaredHandlerMethodName);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         ActionHandler actionHandlerAnnt = handlerMethodImplementor.getAnnotation(ActionHandler.class);
 
-        if ((actionHandlerAnnt == null) || !actionHandlerAnnt.value().equals(getId())) {
-            throw new IllegalArgumentException("Action site should has an annotated handler implementor" +
-                    " [actionSite = " + actionSite + "; actionSiteClass = " + actionSiteClass + "; this = " + this +
-                    ']');
-        }
+        isTrue((actionHandlerAnnt != null) && actionHandlerAnnt.value().equals(getId()),
+                "Action site should has an annotated handler implementor [actionSite = " + actionSite +
+                        "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
     }
 
     private void validatePermissionMethodImplementor(ActionSite actionSite) {
@@ -366,15 +343,13 @@ public class ActionImpl extends AbstractAction implements Action {
         try {
             permissionMethodImplementor = actionSite.getClass().getDeclaredMethod(declaredPermissionMethodName);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         ActionPermission actionPermissionAnnt = permissionMethodImplementor.getAnnotation(ActionPermission.class);
 
-        if ((actionPermissionAnnt == null) || !actionPermissionAnnt.value().equals(getId())) {
-            throw new IllegalArgumentException("Action site should has an annotated permission method implementor" +
-                    " [actionSite = " + actionSite + "; actionSiteClass = " + actionSiteClass + "; this = " + this +
-                    ']');
-        }
+        isTrue((actionPermissionAnnt != null) && actionPermissionAnnt.value().equals(getId()),
+                "Action site should has an annotated permission method implementor [actionSite = " + actionSite +
+                        "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
     }
 }

@@ -2,6 +2,7 @@ package com.apachetune.core.impl;
 
 import com.apachetune.core.AppManager;
 import com.apachetune.core.AppVersion;
+import com.apachetune.core.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -66,7 +67,7 @@ public class AppManagerImpl implements AppManager {
         try {
             return new SimpleDateFormat("dd-MM-yyyy").parse(appProps.getProperty(BUILD_DATE_PROP));
         } catch (ParseException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw Utils.createRuntimeException(e);
         }
     }
 
@@ -74,7 +75,7 @@ public class AppManagerImpl implements AppManager {
         try {
             return new SimpleDateFormat("dd-MM-yyyy").parse(appProps.getProperty(DEVELOPMENT_START_DATE_PROP));
         } catch (ParseException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw Utils.createRuntimeException(e);
         }
     }
 
@@ -86,7 +87,7 @@ public class AppManagerImpl implements AppManager {
         try {
             return new URL(appProps.getProperty(WEBSITE_PROP));
         } catch (MalformedURLException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw Utils.createRuntimeException(e);
         }
     }
 

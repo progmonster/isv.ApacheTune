@@ -15,6 +15,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 public class SelectServerSmartPart extends JDialog implements SmartPart, SelectServerDialog {
     public final SelectServerPresenter presenter;
 
@@ -27,9 +29,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     public SelectServerSmartPart(final SelectServerPresenter presenter, JFrame mainFrame) {
         super(mainFrame);
 
-        if (presenter == null) {
-            throw new NullPointerException("Argument presenter cannot be a null [this = " + this + "]");
-        }
+        notNull(presenter, "Argument presenter cannot be a null [this = " + this + "]");
 
         this.presenter = presenter;
 
@@ -105,9 +105,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     }
 
     public void initialize(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
         presenter.initialize(workItem, this);
     }
@@ -117,9 +115,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     }
 
     public void setCurrentDir(String currentDir) {
-        if (currentDir == null) {
-            throw new NullPointerException("Argument currentDir cannot be a null [this = " + this + "]");
-        }
+        notNull(currentDir, "Argument currentDir cannot be a null [this = " + this + "]");
 
         directoryChooser.setSelectedFile(new File(currentDir));
     }

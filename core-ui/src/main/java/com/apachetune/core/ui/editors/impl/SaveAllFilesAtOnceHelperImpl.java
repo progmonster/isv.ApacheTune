@@ -11,6 +11,7 @@ import java.util.Collection;
 
 import static javax.swing.JOptionPane.*;
 import static org.apache.commons.collections.CollectionUtils.exists;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -31,13 +32,9 @@ public class SaveAllFilesAtOnceHelperImpl implements SaveFilesHelper {
     }
 
     public void initialize(Collection fileIds, SaveFilesHelperCallBack helperCallBack) {
-        if (fileIds == null) {
-            throw new NullPointerException("Argument fileIds cannot be a null [this = " + this + "]");
-        }
+        notNull(fileIds, "Argument fileIds cannot be a null [this = " + this + "]");
 
-        if (helperCallBack == null) {
-            throw new NullPointerException("Argument helperCallBack cannot be a null [this = " + this + "]");
-        }
+        notNull(helperCallBack, "Argument helperCallBack cannot be a null [this = " + this + "]");
 
         this.fileIds = fileIds;
         this.helperCallBack = helperCallBack;

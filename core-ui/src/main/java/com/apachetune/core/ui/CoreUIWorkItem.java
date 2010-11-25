@@ -30,6 +30,7 @@ import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_1;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.awt.Frame.NORMAL;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
@@ -38,6 +39,7 @@ import static java.lang.Math.sqrt;
 import static javax.swing.JFrame.*;
 import static javax.swing.KeyStroke.getKeyStroke;
 import static org.apache.commons.lang.StringUtils.defaultString;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -99,9 +101,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     public void onActivate(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
         if (workItem instanceof UIWorkItem) {
             UIWorkItem uiWorkItem = (UIWorkItem) workItem;
@@ -113,9 +113,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     public void onDeactivate(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
         if (workItem instanceof UIWorkItem) {
             UIWorkItem uiWorkItem = (UIWorkItem) workItem;
@@ -137,9 +135,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     public void switchToWelcomeScreen(final JPanel welcomeScreenPanel) {
-        if (welcomeScreenPanel == null) {
-            throw new NullPointerException("Argument welcomeScreenPanel cannot be a null [this = " + this + "]");
-        }
+        notNull(welcomeScreenPanel, "Argument welcomeScreenPanel cannot be a null [this = " + this + "]");
 
         if (mainPanel.isAncestorOf(welcomeScreenPanel)) {
             return;
@@ -179,7 +175,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         try {
             storeMainFrameBounds();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         getRootWorkItem().removeChildActivationListener(this);

@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -25,9 +27,7 @@ public class ResultListModel extends AbstractListModel {
     }
 
     public void add(File file) {
-        if (file == null) {
-            throw new NullPointerException("Argument file cannot be a null [this = " + this + "]");
-        }
+        notNull(file, "Argument file cannot be a null [this = " + this + "]");
 
         files.add(file);
 
@@ -49,9 +49,7 @@ public class ResultListModel extends AbstractListModel {
     }
 
     public boolean exists(File pathDir) {
-        if (pathDir == null) {
-            throw new NullPointerException("Argument pathDir cannot be a null [this = " + this + "]");
-        }
+        notNull(pathDir, "Argument pathDir cannot be a null [this = " + this + "]");
 
         return files.contains(pathDir);
     }

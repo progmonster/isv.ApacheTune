@@ -14,6 +14,7 @@ import java.awt.*;
 import static com.apachetune.core.ui.Constants.CONF_EDITOR_WORK_ITEM;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_3;
 import static org.apache.commons.lang.StringUtils.removeStart;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -43,9 +44,7 @@ public class ConfEditorWorkItem extends GenericUIWorkItem {
     }
 
     public void setData(ServerObjectInfo serverObjectInfo) {
-        if (serverObjectInfo == null) {
-            throw new NullPointerException("Argument serverObjectInfo cannot be a null [this = " + this + "]");
-        }
+        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null [this = " + this + "]");
 
         this.serverObjectInfo = serverObjectInfo;
 

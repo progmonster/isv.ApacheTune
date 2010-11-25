@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
+
 /**
  * FIXDOC
  */
@@ -22,7 +24,7 @@ public class OpenWebPageHelperImpl implements OpenWebPageHelper {
         } catch (IOException e) {
             logger.error("Error during open a web page.", e);
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Internal error.", e);
+            throw createRuntimeException(e);
         }
     }
 }

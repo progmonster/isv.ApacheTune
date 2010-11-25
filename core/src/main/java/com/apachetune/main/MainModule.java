@@ -13,6 +13,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.google.inject.Scopes.SINGLETON;
 
 /**
@@ -28,7 +29,7 @@ public class MainModule extends AbstractModule {
         try {
             scheduler = new StdSchedulerFactory().getScheduler();
         } catch (SchedulerException e) {
-            throw new RuntimeException("Cannot create scheduler.", e);
+            throw createRuntimeException("Cannot create scheduler.", e);
         }
     }
 

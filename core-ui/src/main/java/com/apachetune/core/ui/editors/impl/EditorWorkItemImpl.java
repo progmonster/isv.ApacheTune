@@ -10,6 +10,7 @@ import com.apachetune.core.ui.actions.*;
 import com.apachetune.core.ui.editors.EditorActionSite;
 import com.apachetune.core.ui.editors.EditorInput;
 import com.apachetune.core.ui.editors.EditorWorkItem;
+import com.apachetune.core.utils.Utils;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import jsyntaxpane.ExtendedSyntaxDocument;
@@ -34,8 +35,11 @@ import java.text.MessageFormat;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.awt.Color.RED;
 import static java.lang.Math.min;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -90,9 +94,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     public void setEditorInput(EditorInput editorInput) {
-        if (editorInput == null) {
-            throw new NullPointerException("Argument editorInput cannot be a null [this = " + this + "]");
-        }
+        notNull(editorInput, "Argument editorInput cannot be a null [this = " + this + "]");
 
         this.editorInput = editorInput;
 
@@ -199,7 +201,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         } catch (PrinterException e) {
             e.printStackTrace(); // TODO: User frendly message.
         } catch (BadLocationException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         } finally {
             statusBarManager.removeMainStatus(PRINT_DOCUMENT_STATUS);
         }
@@ -244,7 +246,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
             storeCaretPosition();
             storeViewPosition();
         } catch (BackingStoreException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         editorPane.requestFocus();
@@ -406,17 +408,16 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
             editorPane.scrollRectToVisible(scrollRect);
         } catch (BadLocationException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
     public int getLineStartPosition(int lineNum) {
         int lineCount = getDocument().getLineCount();
 
-        if ((lineNum < 1) || (lineNum > lineCount)) {
-            throw new IllegalArgumentException("Argument lineNum cannot be less than unity and greater than " +
-                    lineCount + "[lineNum = " + lineNum + "; this = " + this + ']');
-        }
+        isTrue((lineNum >= 1) && (lineNum <= lineCount),
+                "Argument lineNum cannot be less than unity and greater than " + lineCount + "[lineNum = " + lineNum +
+                        "; this = " + this + ']');
 
         return getDocument().getDefaultRootElement().getElement(lineNum - 1).getStartOffset();
     }
@@ -424,10 +425,9 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     public void highlightLine(int lineNum, Color red) {
         int lineCount = getDocument().getLineCount();
 
-        if ((lineNum < 1) || (lineNum > lineCount)) {
-            throw new IllegalArgumentException("Argument lineNum cannot be less than unity and greater than " +
-                    lineCount + "[lineNum = " + lineNum + "; this = " + this + ']');
-        }
+        isTrue((lineNum >= 1) && (lineNum <= lineCount),
+                "Argument lineNum cannot be less than unity and greater than " + lineCount + "[lineNum = " + lineNum +
+                        "; this = " + this + ']');
 
         Element lineElement = getDocument().getDefaultRootElement().getElement(lineNum - 1);
 
@@ -474,9 +474,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     private void checkEditorInput() {
-        if (editorInput == null) {
-            throw new NullPointerException("Argument editorInput cannot be a null [this = " + this + "]");
-        }
+        notNull(editorInput, "Argument editorInput cannot be a null [this = " + this + "]");
     }
 
     private String getContent() {
@@ -557,7 +555,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
             try {
                 highlight = editorPane.getHighlighter().addHighlight(startOffset, endOffset, this);
             } catch (BadLocationException e) {
-                throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+                throw createRuntimeException(e);
             }
 
             editorPane.addCaretListener(this);

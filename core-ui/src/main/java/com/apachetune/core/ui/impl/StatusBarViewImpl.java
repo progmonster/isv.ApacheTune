@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 import javax.swing.*;
 import java.awt.*;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -52,9 +54,7 @@ public class StatusBarViewImpl implements StatusBarView {
     }
 
     public void setMainMessage(String message) {
-        if (message == null) {
-            throw new NullPointerException("Argument message cannot be a null [this = " + this + "]");
-        }
+        notNull(message, "Argument message cannot be a null [this = " + this + "]");
 
         mainMessageLabel.setText(message);
     }

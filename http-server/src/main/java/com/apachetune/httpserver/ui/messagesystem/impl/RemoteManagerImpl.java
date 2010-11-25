@@ -2,7 +2,6 @@ package com.apachetune.httpserver.ui.messagesystem.impl;
 
 import com.apachetune.core.AppManager;
 import com.apachetune.core.ApplicationException;
-import com.apachetune.core.utils.Utils;
 import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.apachetune.httpserver.ui.messagesystem.RemoteManager;
@@ -29,11 +28,13 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.core.utils.Utils.getChildElementContent;
 import static com.apachetune.httpserver.Constants.REMOTE_MESSAGE_SERVICE_URL_PROP;
 import static java.text.MessageFormat.format;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.httpclient.HttpStatus.SC_OK;
+import static org.apache.commons.lang.Validate.isTrue;
 
 /**
  * FIXDOC
@@ -119,17 +120,13 @@ public class RemoteManagerImpl implements RemoteManager {
     private NewsMessage parseMessage(Element msgElem) throws ApplicationException {
         String dataEncoding = msgElem.getAttribute("dataEncoding");
 
-        if (!dataEncoding.equals("Base64")) {
-            throw new RemoteManagerImplException(
-                    "Message should be encoded in Base64 encoding [dataEncoding=" + dataEncoding + ']');
-        }
+        isTrue(dataEncoding.equals("Base64"),
+                "Message should be encoded in Base64 encoding [dataEncoding=" + dataEncoding + ']');
 
         String dataMimeType = msgElem.getAttribute("dataMimeType");
 
-        if (!dataMimeType.equals("text/html")) {
-            throw new RemoteManagerImplException(
-                    "Message mime/type should be text/html [dataMimeType=" + dataMimeType + ']');
-        }
+        isTrue(dataMimeType.equals("text/html"),
+                "Message mime/type should be text/html [dataMimeType=" + dataMimeType + ']');
 
         String strTimestamp = msgElem.getAttribute("tstmp");
 
@@ -138,13 +135,10 @@ public class RemoteManagerImpl implements RemoteManager {
         try {
             timestamp = Long.parseLong(strTimestamp);
         } catch (NumberFormatException e) {
-            throw new RemoteManagerImplException("Message timestamp should be a number [tstmp=" + strTimestamp + ']');
+            throw createRuntimeException("Message timestamp should be a number [tstmp=" + strTimestamp + ']', e);
         }
 
-        if (timestamp <= 0) {
-            throw new RemoteManagerImplException(
-                    "Message timestamp should be a non null positive value [tstmp=" + timestamp + ']');
-        }
+        isTrue(timestamp > 0, "Message timestamp should be a non null positive value [tstmp=" + timestamp + ']');
 
         String base64Subject = getChildElementContent(msgElem, "subject");
 
@@ -153,7 +147,7 @@ public class RemoteManagerImpl implements RemoteManager {
         try {
             subject = new String(Base64.decodeBase64(base64Subject), "UTF-8");
         } catch (Throwable cause) {
-            throw new RemoteManagerImplException(
+            throw createRuntimeException(
                     "Error during parsing message subject [unparsed_subject=" + base64Subject + ']', cause);
         }
 
@@ -164,7 +158,7 @@ public class RemoteManagerImpl implements RemoteManager {
         try {
             content = new String(Base64.decodeBase64(base64Content), "UTF-8");
         } catch (Throwable cause) {
-            throw new RemoteManagerImplException(
+            throw createRuntimeException(
                     "Error during parsing message content [unparsed_content=" + base64Content + ']', cause);
         }
 

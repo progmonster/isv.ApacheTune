@@ -18,6 +18,9 @@ import java.util.List;
 
 import static com.google.common.collect.Collections2.filter;
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notEmpty;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -50,31 +53,20 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public void addMenuAfter(String menuId, JMenu menu, String afterMenuId) {
-        if (menuId == null) {
-            throw new NullPointerException("Argument menuId cannot be a null [this = " + this + "]");
-        }
+        notNull(menuId, "Argument menuId cannot be a null [this = " + this + "]");
 
-        if (menuId.isEmpty()) {
-            throw new IllegalArgumentException("Argument menuId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!menuId.isEmpty(), "Argument menuId cannot be empty [this = " + this + "]");
 
-        if (menus.containsKey(menuId)) {
-            throw new IllegalArgumentException("Menu already has been added to the menu bar manager [menuId = " +
+        isTrue(!menus.containsKey(menuId), "Menu already has been added to the menu bar manager [menuId = " +
                     menuId + "; this = " + this + "]");
-        }
 
-        if (menu == null) {
-            throw new NullPointerException("Argument menu cannot be a null [this = " + this + "]");
-        }
+        notNull(menu, "Argument menu cannot be a null [this = " + this + "]");
 
-        if ((afterMenuId != null) && afterMenuId.isEmpty()) {
-            throw new IllegalArgumentException("Argument afterMenuId cannot be empty [this = " + this + "]");
-        }
+        notEmpty(afterMenuId, "Argument afterMenuId cannot be empty [this = " + this + "]");
 
-        if ((afterMenuId != null) && !menus.containsKey(afterMenuId)) {
-            throw new IllegalArgumentException("The menu not contains in the menu bar manager [afterMenuId = " +
-                    afterMenuId + "; this = " + this + "]");
-        }
+        isTrue((afterMenuId == null) || menus.containsKey(afterMenuId),
+                "The menu not contains in the menu bar manager [afterMenuId = " + afterMenuId + "; this = " + this +
+                        "]");
 
         menus.put(menuId, menu);
 
@@ -90,7 +82,7 @@ public class MenuBarManagerImpl implements MenuBarManager {
             menuBar.add(menu);
         }
 
-        // TODO Workaround. Need to repaint menu.
+        // NOTICE: Workaround. Need to repaint menu.
         mainFrame.setJMenuBar(null);
         mainFrame.setJMenuBar(menuBar);
     }
@@ -101,30 +93,18 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public JMenu getMenu(String menuId) {
-        if (menuId == null) {
-            throw new NullPointerException("Argument menuId cannot be a null [this = " + this + "]");
-        }
+        notEmpty(menuId, "Argument menuId cannot be empty [this = " + this + "]");
 
-        if (menuId.isEmpty()) {
-            throw new IllegalArgumentException("Argument menuId cannot be empty [this = " + this + "]");
-        }
-
-        if (!menus.containsKey(menuId)) {
-            throw new IllegalArgumentException("The menu not contains in the menu bar manager [menuId = " +
+        isTrue(menus.containsKey(menuId), "The menu not contains in the menu bar manager [menuId = " +
                     menuId + "; this = " + this + "]");
-        }
 
         return menus.get(menuId);
     }
 
     public void createAndBindContextMenu(Component component, ActionSite actionSite) {
-        if (component == null) {
-            throw new NullPointerException("Argument component cannot be a null [this = " + this + "]");
-        }
+        notNull(component, "Argument component cannot be a null [this = " + this + "]");
 
-        if (actionSite == null) {
-            throw new NullPointerException("Argument actionSite cannot be a null [this = " + this + "]");
-        }
+        notNull(actionSite, "Argument actionSite cannot be a null [this = " + this + "]");
 
         final ContextMenu ctxMenu = createContextMenu(actionSite);
 
@@ -238,19 +218,15 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     private void ensureActionHasGroup(Action action) {
-        if (action.getActionGroup() == null) {
-            throw new IllegalStateException("Action does not contained inside a group [action = " + action +
-                    "; this = " + this + ']');
-        }
+        notNull(action.getActionGroup(),
+                "Action does not contained inside a group [action = " + action + "; this = " + this + ']');
     }
 
     private class ContextMenu extends JPopupMenu {
         private final Set<Action> actions = new HashSet<Action>();
 
         public JMenuItem add(Action action) {
-            if (action == null) {
-                throw new NullPointerException("Argument action cannot be a null [this = " + this + "]");
-            }
+            notNull(action, "Argument action cannot be a null [this = " + this + "]");
 
             actions.add(action);
 

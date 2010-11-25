@@ -24,11 +24,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.*;
 import static java.awt.Color.BLACK;
 import static java.awt.Color.RED;
 import static java.util.regex.Pattern.*;
 import static org.apache.commons.collections.CollectionUtils.find;
+import static org.apache.commons.lang.Validate.isTrue;
 
 /**
  * FIXDOC
@@ -74,10 +76,8 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
     }
 
     protected void doInitialize() {
-        if (!hasState(CURRENT_HTTP_SERVER_STATE)) {
-            throw new IllegalStateException("An http-server must be opened before create RunServerWorkflowWorkItem [" +
-                    "this = " + this + ']');
-        }
+        isTrue(hasState(CURRENT_HTTP_SERVER_STATE),
+                "An http-server must be opened before create RunServerWorkflowWorkItem [" + "this = " + this + ']');
 
         httpServer = (HttpServer) getState(CURRENT_HTTP_SERVER_STATE);
 
@@ -114,9 +114,9 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
                 highlightError(message);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         } catch (InterruptedException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 

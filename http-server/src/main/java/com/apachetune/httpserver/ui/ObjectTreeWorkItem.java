@@ -14,6 +14,7 @@ import java.io.IOException;
 
 import static com.apachetune.core.ui.Constants.OBJECT_TREE_TOOL_WINDOW;
 import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.OBJECT_TREE_WORK_ITEM;
 import static org.noos.xing.mydoggy.ToolWindowAnchor.LEFT;
 
@@ -48,7 +49,7 @@ public class ObjectTreeWorkItem extends GenericUIWorkItem implements FocusListen
             toolWindowManager.registerToolWindow(OBJECT_TREE_TOOL_WINDOW, "Object tree", httpServerResourceLocator
                     .loadIcon("console_view_icon.png"), objectTree, LEFT);
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
 
         ToolWindow window = toolWindowManager.getToolWindow(OBJECT_TREE_TOOL_WINDOW);

@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notEmpty;
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -43,58 +47,32 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addActionGroup(String groupId, com.apachetune.core.ui.actions.Action... actions) {
-        if (groupId == null) {
-            throw new NullPointerException("Argument groupId cannot be a null [this = " + this + "]");
-        }
+        notEmpty(groupId, "Argument groupId cannot be empty [this = " + this + "]");
 
-        if (groupId.isEmpty()) {
-            throw new IllegalArgumentException("Argument groupId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!actionGroups.containsKey(groupId),
+                "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]");
 
-        if (actionGroups.containsKey(groupId)) {
-            throw new IllegalArgumentException("The group already added [groupId = \"" + groupId + "\"; this = " + this
-                    + "]");
-        }
-
-        if (actions.length == 0) {
-            throw new IllegalArgumentException("Argument actions must contains at least one action [actions = " +
+        isTrue(actions.length != 0, "Argument actions must contains at least one action [actions = " +
                     Arrays.toString(actions) + "; this = " + this + "]");
-        }
 
         addActionGroupInternal(groupId, -1, actions);
     }
 
     public void addActionGroupAfter(String groupId, String afterGroupId, com.apachetune.core.ui.actions.Action... actions) {
-        if (groupId == null) {
-            throw new NullPointerException("Argument groupId cannot be a null [this = " + this + "]");
-        }
+        notEmpty(groupId, "Argument groupId cannot be empty [this = " + this + "]");
 
-        if (groupId.isEmpty()) {
-            throw new IllegalArgumentException("Argument groupId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!actionGroups.containsKey(groupId),
+                "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]");
 
-        if (actionGroups.containsKey(groupId)) {
-            throw new IllegalArgumentException("The group already added [groupId = \"" + groupId + "\"; this = " + this
-                    + "]");
-        }
+        isTrue(actions.length != 0, "Argument actions must contains at least one action [this = " + this + "]");
 
-        if (actions.length == 0) {
-            throw new IllegalArgumentException("Argument actions must contains at least one action [this = " + this +
-                    "]");
-        }
+        notNull(afterGroupId, "Argument afterGroupId cannot be a null [this = " + this + "]");
 
-        if (afterGroupId == null) {
-            throw new NullPointerException("Argument afterGroupId cannot be a null [this = " + this + "]");
-        }
+        isTrue(!afterGroupId.isEmpty(), "Argument afterGroupId cannot be empty [this = " + this + "]");
 
-        if (afterGroupId.isEmpty()) {
-            throw new IllegalArgumentException("Argument afterGroupId cannot be empty [this = " + this + "]");
-        }
-
-        if (!actionGroups.containsKey(afterGroupId)) {
-            throw new IllegalArgumentException("The group after that it will be added not found [afterGroupId = " +
-                    afterGroupId + ";" + " this = " + this + "]");
-        }
+        isTrue(actionGroups.containsKey(afterGroupId),
+                "The group after that it will be added not found [afterGroupId = " + afterGroupId + ";" + " this = " +
+                        this + "]");
 
         Component afterComponent = actionGroups.get(afterGroupId);
 
@@ -104,23 +82,12 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addToActionGroup(String actionGroupId, com.apachetune.core.ui.actions.Action... actions) {
-        if (actionGroupId == null) {
-            throw new NullPointerException("Argument actionGroupId cannot be a null [this = " + this + "]");
-        }
+        notEmpty(actionGroupId, "Argument actionGroupId cannot be empty [this = " + this + "]");
 
-        if (actionGroupId.isEmpty()) {
-            throw new IllegalArgumentException("Argument actionGroupId cannot be empty [this = " + this + "]");
-        }
+        isTrue(actionGroups.containsKey(actionGroupId),
+                "The group not exists [actionGroupId = \"" + actionGroupId + "\"; this" + " = " + this + "]");
 
-        if (!actionGroups.containsKey(actionGroupId)) {
-            throw new IllegalArgumentException("The group not exists [actionGroupId = \"" + actionGroupId + "\"; this" +
-                    " = " + this + "]");
-        }
-
-        if (actions.length == 0) {
-            throw new IllegalArgumentException("Argument actions must contains at least one action [this = " + this +
-                    "]");
-        }
+        isTrue(actions.length != 0, "Argument actions must contains at least one action [this = " + this + "]");
 
         Component lastComponentInGroup = actionGroups.get(actionGroupId);
 

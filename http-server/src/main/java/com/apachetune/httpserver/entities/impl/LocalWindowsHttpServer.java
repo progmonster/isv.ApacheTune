@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.apachetune.httpserver.entities.ServerObjectInfo.ServerObjectType.CONFIG_FILE;
 import static java.io.File.separatorChar;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -52,9 +53,7 @@ public class LocalWindowsHttpServer implements HttpServer {
     private File serverRoot;
 
     public LocalWindowsHttpServer(File serverRoot) {
-        if (serverRoot == null) {
-            throw new NullPointerException("Argument serverRoot cannot be a null [this = " + this + "]");
-        }
+        notNull(serverRoot, "Argument serverRoot cannot be a null [this = " + this + "]");
 
         this.serverRoot = serverRoot;                        
     }
@@ -64,9 +63,7 @@ public class LocalWindowsHttpServer implements HttpServer {
     }
 
     public Process executeServerApp(String commandLineArguments) throws IOException {
-        if (commandLineArguments == null) {
-            throw new NullPointerException("Argument commandLineArguments cannot be a null [this = " + this + "]");
-        }
+        notNull(commandLineArguments, "Argument commandLineArguments cannot be a null [this = " + this + "]");
 
         return Runtime.getRuntime().exec(serverRoot.getAbsolutePath() + separatorChar + SERVER_APP_PATH + ' ' +
                 commandLineArguments);

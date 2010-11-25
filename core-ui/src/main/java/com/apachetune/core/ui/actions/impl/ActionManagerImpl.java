@@ -6,6 +6,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.*;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -22,30 +25,21 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     private final List<Object> actionSiteObjects = new ArrayList<Object>();
 
     public ActionGroup createActionGroup(String actionGroupId) {
+        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null [this = " + this + "]");
 
-        if (actionGroupId == null) {
-            throw new NullPointerException("Argument actionGroupId cannot be a null [this = " + this + "]");
-        }
-        
         return new ActionGroupImpl(actionGroupId);
     }
 
     public Action createAction(String actionId, Class<? extends ActionSite> actionSiteClass) {
-        if (actionId == null) {
-            throw new NullPointerException("Argument actionId cannot be a null [this = " + this + "]");
-        }
+        notNull(actionId, "Argument actionId cannot be a null [this = " + this + "]");
 
-        if (actionSiteClass == null) {
-            throw new NullPointerException("Argument actionSiteClass cannot be a null [this = " + this + "]");
-        }
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null [this = " + this + "]");
 
         return new ActionImpl(actionId, actionSiteClass);
     }
 
     public void registerActionGroup(ActionGroup actionGroup) {
-        if (actionGroup == null) {
-            throw new NullPointerException("Argument actionGroup cannot be a null [this = " + this + "]");
-        }
+        notNull(actionGroup, "Argument actionGroup cannot be a null [this = " + this + "]");
 
         ensureActionGroupNotYetWasAdded(actionGroup);
 
@@ -57,14 +51,11 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void unregisterActionGroup(ActionGroup actionGroup) {
-        if (actionGroup == null) {
-            throw new NullPointerException("Argument actionGroup cannot be a null [this = " + this + ']');
-        }
+        notNull(actionGroup, "Argument actionGroup cannot be a null [this = " + this + "]");
 
-        if (!actionGroups.containsKey(actionGroup.getId())) {
-            throw new IllegalArgumentException("Action group not contains in the action manager [actionGroup = " +
-                    actionGroup + "; this = " + this + ']');
-        }
+        isTrue(actionGroups.containsKey(actionGroup.getId()),
+                "Action group not contains in the action manager [actionGroup = " + actionGroup + "; this = " + this +
+                        ']');
 
         unregisterActionsInGroup(actionGroup);
 
@@ -74,9 +65,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void unregisterActionGroup(String actionGroupId) {
-        if (actionGroupId == null) {
-            throw new NullPointerException("Argument actionGroupId cannot be a null [this = " + this + "]");
-        }
+        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null [this = " + this + "]");
 
         ensureActionGroupWasAdded(actionGroupId);
 
@@ -88,29 +77,23 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public ActionGroup getActionGroup(String actionGroupId) {
-        if (actionGroupId == null) {
-            throw new NullPointerException("Argument actionGroupId cannot be a null [this = " + this + "]");
-        }
-        
+        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null [this = " + this + "]");
+
         ensureActionGroupWasAdded(actionGroupId);
 
         return actionGroups.get(actionGroupId);
     }
 
     public Action getAction(String actionId) {
-        if (actionId == null) {
-            throw new NullPointerException("Argument actionId cannot be a null [this = " + this + "]");
-        }
+        notNull(actionId, "Argument actionId cannot be a null [this = " + this + "]");
 
-        enusureActionRegistered(actionId);
+        ensureActionRegistered(actionId);
 
         return actions.get(actionId);
     }
 
     public void activateActionSites(Object actionSiteObject) {
-        if (actionSiteObject == null) {
-            throw new NullPointerException("Argument actionSiteObject cannot be a null [this = " + this + "]");
-        }
+        notNull(actionSiteObject, "Argument actionSiteObject cannot be a null [this = " + this + "]");
 
         if (!actionSiteObjects.contains(actionSiteObject)) {
             actionSiteObjects.add(actionSiteObject);
@@ -124,9 +107,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void deactivateActionSites(Object actionSiteObject) {
-        if (actionSiteObject == null) {
-            throw new NullPointerException("Argument actionSiteObject cannot be a null [this = " + this + "]");
-        }
+        notNull(actionSiteObject, "Argument actionSiteObject cannot be a null [this = " + this + "]");
 
         if (!actionSiteObjects.contains(actionSiteObject)) {
             return;
@@ -158,19 +139,15 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void onActionAdded(ActionGroup actionGroup, Action action) {
-        enusureActionNotRegisteredYet(action);
+        ensureActionNotRegisteredYet(action);
 
-        if (action == null) {
-            throw new NullPointerException("Argument action cannot be a null [this = " + this + "]");
-        }
+        notNull(action, "Argument action cannot be a null [this = " + this + "]");
 
         registerAction(action);
     }
 
     public void onActionRemoved(ActionGroup actionGroup, Action action) {
-        if (action == null) {
-            throw new NullPointerException("Argument action cannot be a null [this = " + this + "]");
-        }
+        notNull(action, "Argument action cannot be a null [this = " + this + "]");
 
         unregisterAction(action);
     }
@@ -179,26 +156,21 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
         if (evt.getSource() instanceof Action) {
             Action action = (Action) evt.getSource();
 
-            if (evt.getPropertyName().equals("actionSite") && !actionsToBeChangedByManager.contains(action)) {
-                throw new IllegalStateException("Action should has no change action site property while one" +
-                        " registered in action manager [action = " + evt.getSource() + "; oldValue = " + evt
-                        .getOldValue() + "; newValue = " + evt.getNewValue() + "; this = " + this + "]");
-            }
+            isTrue(!evt.getPropertyName().equals("actionSite") || actionsToBeChangedByManager.contains(action),
+                    "Action should has no change action site property while one" +
+                            " registered in action manager [action = " + evt.getSource() + "; oldValue = " +
+                            evt.getOldValue() + "; newValue = " + evt.getNewValue() + "; this = " + this + "]");
         }
     }
 
-    private void enusureActionNotRegisteredYet(Action action) {
-        if (actions.containsKey(action.getId())) {
-            throw new IllegalStateException("Action already contains in action manager [action = " + action +
-                    "; this = " + this + "]");
-        }
+    private void ensureActionNotRegisteredYet(Action action) {
+        isTrue(!actions.containsKey(action.getId()),
+                "Action already contains in action manager [action = " + action + "; this = " + this + "]");
     }
 
-    private void enusureActionRegistered(String actionId) {
-        if (!actions.containsKey(actionId)) {
-            throw new IllegalStateException("Action not contains in action manager [actionId = " + actionId +
-                    "; this = " + this + "]");
-        }
+    private void ensureActionRegistered(String actionId) {
+        isTrue(actions.containsKey(actionId),
+                "Action not contains in action manager [actionId = " + actionId + "; this = " + this + "]");
     }
 
     private void registerActionsInGroup(ActionGroup actionGroup) {
@@ -208,12 +180,10 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     private void registerAction(Action action) {
-        enusureActionNotRegisteredYet(action);
+        ensureActionNotRegisteredYet(action);
 
-        if (action.getActionSite() != null) {
-            throw new IllegalStateException("Action should has a null active site property [action = " + action +
+        isTrue(action.getActionSite() == null, "Action should has a null active site property [action = " + action +
                     "this = " + this + "]");
-        }
 
         actions.put(action.getId(), action);
 
@@ -255,21 +225,18 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     private void ensureActionGroupNotYetWasAdded(ActionGroup actionGroup) {
-        if (actionGroups.containsKey(actionGroup.getId())) {
-            throw new IllegalArgumentException("Action group already contains in the action manager [actionGroup = " +
-                    actionGroup + "; this = " + this + ']');
-        }
+        isTrue(!actionGroups.containsKey(actionGroup.getId()),
+                "Action group already contains in the action manager [actionGroup = " + actionGroup + "; this = " +
+                        this + ']');
     }
 
     private void ensureActionGroupWasAdded(String actionGroupId) {
-        if (!actionGroups.containsKey(actionGroupId)) {
-            throw new IllegalArgumentException("Action group not contains in the action manager [actionGroupId = " +
-                    actionGroupId + "; this = " + this + ']');
-        }
+        isTrue(actionGroups.containsKey(actionGroupId),
+                "Action group not contains in the action manager [actionGroupId = " + actionGroupId + "; this = " +
+                        this + ']');
     }
 
     private abstract class ActionChangeEnableSection {
-
         public final void execute(Action action) {
             actionsToBeChangedByManager.add(action);
 

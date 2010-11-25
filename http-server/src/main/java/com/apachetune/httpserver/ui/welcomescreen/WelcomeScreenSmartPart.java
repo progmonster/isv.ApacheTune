@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
@@ -110,8 +111,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, NSmartPa
                         e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                     }
                 } else {
-                    // TODO Make it as a service.
-                    throw new RuntimeException("Unknown command [command = '" + cmd + "']");
+                    throw createRuntimeException("Unknown command [cmd=" + cmd + ']');
                 }
             }
         }
@@ -217,7 +217,7 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
                 return contentIS;
             }
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -241,7 +241,7 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
 
             return writer.toString();
         } catch (Exception e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.            
+            throw createRuntimeException(e);
         }
     }
 

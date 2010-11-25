@@ -22,6 +22,7 @@ import java.util.List;
 import static com.apachetune.core.utils.Utils.abbreviateFilePath;
 import static com.apachetune.httpserver.ui.searchserver.SourceTableModel.LOCATION_NAME_COLUMN_IDX;
 import static com.apachetune.httpserver.ui.searchserver.SourceTableModel.SELECT_LOCATION_COLUMN_IDX;
+import static org.apache.commons.lang.Validate.notNull;
 
 public class SearchServerSmartPart extends JDialog implements SearchServerDialog {
     private static final int MAX_LOCATION_TEXT_SIZE = 60;
@@ -48,9 +49,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     public SearchServerSmartPart(final SearchServerPresenter presenter, JFrame mainFrame) {
         super(mainFrame);
 
-        if (presenter == null) {
-            throw new NullPointerException("Argument presenter cannot be a null [this = " + this + "]");
-        }
+        notNull(presenter, "Argument presenter cannot be a null [this = " + this + "]");
 
         this.mainFrame = mainFrame;
         this.presenter = presenter;
@@ -122,9 +121,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setDrivesAvailableToSearch(Collection<File> drives) {
-        if (drives == null) {
-            throw new NullPointerException("Argument drives cannot be a null [this = " + this + "]");
-        }
+        notNull(drives, "Argument drives cannot be a null [this = " + this + "]");
 
         drivesAvailableToSearch.clear();
 
@@ -167,9 +164,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setResultListModel(ResultListModel model) {
-        if (model == null) {
-            throw new NullPointerException("Argument model cannot be a null [this = " + this + "]");
-        }
+        notNull(model, "Argument model cannot be a null [this = " + this + "]");
 
         resultList.setModel(model);
     }
@@ -185,9 +180,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setCurrentSearchLocationText(String location) {
-        if (location == null) {
-            throw new NullPointerException("Argument location cannot be a null [this = " + this + "]");
-        }
+        notNull(location, "Argument location cannot be a null [this = " + this + "]");
 
         String abbreviatedLocation = abbreviateFilePath(location, MAX_LOCATION_TEXT_SIZE);
 
@@ -201,9 +194,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void initialize(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
         presenter.initialize(workItem, this);
 

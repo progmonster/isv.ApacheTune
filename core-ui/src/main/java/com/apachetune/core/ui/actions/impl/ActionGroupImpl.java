@@ -6,6 +6,9 @@ import com.apachetune.core.ui.actions.ActionGroupListener;
 
 import java.util.*;
 
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -20,9 +23,7 @@ public class ActionGroupImpl implements ActionGroup {
     private final List<ActionGroupListener> actionGroupListeners = new ArrayList<ActionGroupListener>();
 
     public ActionGroupImpl(String id) {
-        if (id == null) {
-            throw new NullPointerException("Argument id cannot be a null [this = " + this + "]");
-        }       
+        notNull(id, "Argument id cannot be a null [this = " + this + "]");
 
         this.id = id;
     }
@@ -32,14 +33,10 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void addAction(Action action) {
-        if (action == null) {
-            throw new NullPointerException("Argument action cannot be a null [this = " + this + "]");
-        }
+        notNull(action, "Argument action cannot be a null [this = " + this + "]");
 
-        if (actions.containsKey(action.getId())) {
-            throw new IllegalArgumentException("Action group already contains an action this same id [action = " +
+        isTrue(!actions.containsKey(action.getId()), "Action group already contains an action this same id [action = " +
                     action + ";this = " + this + "]");
-        }
 
         setActionGroupForAction(action, this);
 
@@ -49,14 +46,10 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void removeAction(Action action) {
-        if (action == null) {
-            throw new NullPointerException("Argument action cannot be a null [this = " + this + "]");
-        }
+        notNull(action, "Argument action cannot be a null [this = " + this + "]");
 
-        if (!actions.containsKey(action.getId())) {
-            throw new IllegalArgumentException("Action not contains in this action group [action = " + action +
+        isTrue(actions.containsKey(action.getId()), "Action not contains in this action group [action = " + action +
                     ";this = " + this + "]");
-        }
 
         actions.remove(action.getId());
         setActionGroupForAction(action, null);
@@ -69,17 +62,13 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void addListener(ActionGroupListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         actionGroupListeners.add(listener);
     }
 
     public void removeListener(ActionGroupListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         actionGroupListeners.remove(listener);
     }

@@ -1,6 +1,7 @@
 package com.apachetune.core.ui.impl;
 
 import com.apachetune.core.ui.OutputPaneDocument;
+import com.apachetune.core.utils.Utils;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
@@ -8,9 +9,11 @@ import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import java.awt.*;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.awt.Color.BLACK;
 import static javax.swing.text.StyleConstants.setForeground;
 import static org.apache.commons.lang.StringUtils.defaultString;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -30,9 +33,7 @@ public class OutputPaneDocumentImpl extends DefaultStyledDocument implements Out
     }
 
     public void setColoredText(String text, Color color) {
-        if (color == null) {
-            throw new NullPointerException("Argument color cannot be a null [this = " + this + "]");
-        }
+        notNull(color, "Argument color cannot be a null [this = " + this + "]");
 
         MutableAttributeSet attr = new SimpleAttributeSet();
 
@@ -41,7 +42,7 @@ public class OutputPaneDocumentImpl extends DefaultStyledDocument implements Out
         try {
             replace(0, getLength(), defaultString(text), attr);
         } catch (BadLocationException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 }

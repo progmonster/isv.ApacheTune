@@ -1,17 +1,22 @@
 package com.apachetune.core;
 
 import com.apachetune.core.impl.RootWorkItemImpl;
+import com.apachetune.core.utils.Utils;
 import org.apache.commons.collections.Predicate;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.*;
 
 import static com.apachetune.core.Constants.EMPTY_EVENT;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static org.apache.commons.collections.CollectionUtils.find;
+import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notEmpty;
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -73,27 +78,18 @@ public abstract class GenericWorkItem implements WorkItem {
             return;
         }
 
-        if (wasInitialized) {
-            throw new IllegalStateException("Work item cannot be initialized repeatedly [this = " + this + ']');
-        }
+        isTrue(!wasInitialized, "Work item cannot be initialized repeatedly [this = " + this + ']');
 
-        if (rootWorkItem == null) {
-            throw new NullPointerException("It should setting up a root work item before initializing.");
-        }
+        notNull(rootWorkItem, "It should setting up a root work item before initializing.");
 
-        if ((parent == null) && !rootWorkItem.equals(this)) {
-            throw new NullPointerException("It should setting up a parent work item before initializing.");
-        }
+        isTrue((parent != null) || rootWorkItem.equals(this), "It should setting up a parent work item before initializing.");
 
-        // TODO catch an exception and log it (maybe send to support, maybe deffered if no UI accesible).
         doInitialize();
 
         isInitialized = true;
         wasInitialized = true;
 
         fireOnInitializedEvent();
-
-        // TODO catch child exceptions and log it (maybe send to support, maybe deffered if no UI accesible).
 
         List<WorkItem> childWorkItemListCopy = new ArrayList<WorkItem>(childWorkItems.values());
 
@@ -150,30 +146,21 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final WorkItem getDirectChildWorkItem(String workItemId) {
-        if (workItemId == null) {
-            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
-        }
+        notNull(workItemId, "Argument workItemId cannot be a null [this = " + this + "]");
 
-        if (workItemId.isEmpty()) {
-            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty [this = " + this + "]");
 
-        if (!childWorkItems.containsKey(workItemId)) {
-            throw new IllegalArgumentException("Work item is not contained in a children list [workItemId = \"" +
-                    workItemId + "\"; this = " + this + "]");
-        }
+        isTrue(childWorkItems.containsKey(workItemId),
+                "Work item is not contained in a children list [workItemId = \"" + workItemId + "\"; this = " + this +
+                        "]");
 
         return childWorkItems.get(workItemId);
     }
 
     public WorkItem getChildWorkItem(final String workItemId) {
-        if (workItemId == null) {
-            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
-        }
+        notNull(workItemId, "Argument workItemId cannot be a null [this = " + this + "]");
 
-        if (workItemId.isEmpty()) {
-            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty [this = " + this + "]");
 
         if (hasDirectChildWorkItem(workItemId)) {
             return getDirectChildWorkItem(workItemId);
@@ -189,33 +176,21 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void addChildWorkItem(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
-        if (workItem.equals(this)) {
-            throw new IllegalArgumentException("Cannot add work item to himself [workItem = " + workItem + "]");
-        }
+        isTrue(!workItem.equals(this), "Cannot add work item to himself [workItem = " + workItem + "]");
 
-        if (workItem.getParent() != null) {
-            throw new IllegalArgumentException("Work item already has a parent [workItem = " + workItem + "; this = " +
+        notNull(workItem.getParent(), "Work item already has a parent [workItem = " + workItem + "; this = " +
                     this + "]");
-        }
 
-        if (workItem.getId() == null) {
-            throw new IllegalArgumentException("Work item to add should has a not null id [workItem = " + workItem +
+        notNull(workItem.getId(), "Work item to add should has a not null id [workItem = " + workItem +
                     "; this = " + this + "]");
-        }
 
-        if (childWorkItems.containsValue(workItem)) {
-            throw new IllegalArgumentException("Work item already was added [workItem = " + workItem + "; this = " +
-                    this + "]");
-        }
+        isTrue(!childWorkItems.containsValue(workItem),
+                "Work item already was added [workItem = " + workItem + "; this = " + this + "]");
 
-        if (rootWorkItem == null) {
-            throw new IllegalArgumentException("It should set up a parent and a root work items to the container" +
+        notNull(rootWorkItem, "It should set up a parent and a root work items to the container" +
                     " before adding a child workItem to him [workItem = " + workItem + "; this = " + this + "]");
-        }
 
         childWorkItems.put(workItem.getId(), workItem);
 
@@ -224,25 +199,17 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public boolean hasDirectChildWorkItem(final String workItemId) {
-        if (workItemId == null) {
-            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
-        }
+        notNull(workItemId, "Argument workItemId cannot be a null [this = " + this + "]");
 
-        if (workItemId.isEmpty()) {
-            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty [this = " + this + "]");
 
         return childWorkItems.containsKey(workItemId);
     }
 
     public boolean hasChildWorkItem(final String workItemId) {
-        if (workItemId == null) {
-            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
-        }
+        notNull(workItemId, "Argument workItemId cannot be a null [this = " + this + "]");
 
-        if (workItemId.isEmpty()) {
-            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty [this = " + this + "]");
 
         return hasDirectChildWorkItem(workItemId) || (find(childWorkItems.values(), new Predicate() {
             public boolean evaluate(final Object object) {
@@ -254,18 +221,12 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void removeDirectChildWorkItem(String workItemId) {
-        if (workItemId == null) {
-            throw new NullPointerException("Argument workItemId cannot be a null [this = " + this + "]");
-        }
+        notNull(workItemId, "Argument workItemId cannot be a null [this = " + this + "]");
 
-        if (workItemId.isEmpty()) {
-            throw new IllegalArgumentException("Argument workItemId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty [this = " + this + "]");
 
-        if (!childWorkItems.containsKey(workItemId)) {
-            throw new IllegalArgumentException("Work item is not contains in a children list [workItemId = " +
+        isTrue(childWorkItems.containsKey(workItemId), "Work item is not contains in a children list [workItemId = " +
                     workItemId + "; this = " + this + "]");
-        }
 
         WorkItem workItemToRemove = childWorkItems.get(workItemId);
 
@@ -278,30 +239,23 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void removeDirectChildWorkItem(WorkItem workItem) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
         removeDirectChildWorkItem(workItem.getId());
     }
 
     public final void raiseEvent(String eventId, Object data, WorkItem caller) {
-        if (eventId == null) {
-            throw new NullPointerException("Argument eventId cannot be a null [this = " + this + "]");
-        }
+        notNull(eventId, "Argument eventId cannot be a null [this = " + this + "]");
 
-        if (eventId.isEmpty()) {
-            throw new IllegalArgumentException("Argument eventId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!eventId.isEmpty(), "Argument eventId cannot be empty [this = " + this + "]");
 
         if (eventId.equals(EMPTY_EVENT)) {
             return;
         }
 
-        if ((parent == null) && !rootWorkItem.equals(this)) {
-            throw new IllegalArgumentException("Work item must have a parent or should be a root work item before" +
-                    " raising an event [this = " + this + "]");
-        }
+        isTrue((parent != null) || rootWorkItem.equals(this),
+                "Work item must have a parent or should be a root work item before raising an event [this = " + this +
+                        "]");
 
         if (caller == null) {
             caller = this;
@@ -333,13 +287,9 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void setState(String name, Object state) {
-        if (name == null) {
-            throw new NullPointerException("Argument name cannot be a null [this = " + this + "]");
-        }
+        notNull(name, "Argument name cannot be a null [this = " + this + "]");
 
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Argument name cannot be empty [this = " + this + "]");
-        }
+        isTrue(!name.isEmpty(), "Argument name cannot be empty [this = " + this + "]");
 
         if ((getParent() != null) && getParent().hasState(name)) {
             getParent().setState(name, state);
@@ -349,25 +299,17 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final boolean hasState(String name) {
-        if (name == null) {
-            throw new NullPointerException("Argument name cannot be a null [this = " + this + "]");
-        }
+        notNull(name, "Argument name cannot be a null [this = " + this + "]");
 
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Argument name cannot be empty [this = " + this + "]");
-        }
+        isTrue(!name.isEmpty(), "Argument name cannot be empty [this = " + this + "]");
 
         return states.containsKey(name) || ((getParent() != null) && getParent().hasState(name));
     }
 
     public final Object getState(String name) {
-        if (name == null) {
-            throw new NullPointerException("Argument name cannot be a null [this = " + this + "]");
-        }
+        notNull(name, "Argument name cannot be a null [this = " + this + "]");
 
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Argument name cannot be empty [this = " + this + "]");
-        }
+        isTrue(!name.isEmpty(), "Argument name cannot be empty [this = " + this + "]");
 
         Object state;
 
@@ -376,7 +318,7 @@ public abstract class GenericWorkItem implements WorkItem {
         } else if ((getParent() != null) && getParent().hasState(name)) {
             state = getParent().getState(name);
         } else {
-            throw new IllegalArgumentException("Work item or its parent not contain specified state [name = \"" +
+            throw new IllegalArgumentException("Work item or its parent not contains specified state [name = \"" +
                     name + "\";" + " this = " + this + "]");
         }
 
@@ -384,18 +326,12 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final Object removeState(String name) {
-        if (name == null) {
-            throw new NullPointerException("Argument name cannot be a null [this = " + this + "]");
-        }
+        notNull(name, "Argument name cannot be a null [this = " + this + "]");
 
-        if (name.isEmpty()) {
-            throw new IllegalArgumentException("Argument name cannot be empty [this = " + this + "]");
-        }
+        isTrue(!name.isEmpty(), "Argument name cannot be empty [this = " + this + "]");
 
-        if (!hasState(name)) {
-            throw new IllegalArgumentException("Required state not found in workItem or its parents [name = \"" + name +
+        isTrue(hasState(name), "Required state not found in workItem or its parents [name = \"" + name +
                     "\"; this = " + this + "]");
-        }
 
         if (states.containsKey(name)) {
             return states.remove(name);
@@ -405,14 +341,11 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public boolean hasAncestor(WorkItem testAncestor) {
-        if (testAncestor == null) {
-            throw new NullPointerException("Argument testAncestor cannot be a null [this = " + this + "]");
-        }
+        notNull(testAncestor, "Argument testAncestor cannot be a null [this = " + this + "]");
 
-        if ((parent == null) && !rootWorkItem.equals(this)) {
-            throw new IllegalArgumentException("Work item must have a parent or should be a root work item before" +
-                    " call this method [this = " + this + "]");
-        }
+        isTrue((parent != null) || rootWorkItem.equals(this),
+                "Work item must have a parent or should be a root work item before call this method [this = " + this +
+                        "]");
 
         WorkItem parent = getParent();
 
@@ -514,17 +447,13 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void addActivationListener(ActivationListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         activationListeners.add(listener);
     }
 
     public void removeActivationListener(ActivationListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         activationListeners.remove(listener);
     }
@@ -534,9 +463,7 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void addLifecycleListener(WorkItemLifecycleListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         lifecycleListeners.add(listener);
     }
@@ -546,17 +473,13 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void removeLifecycleListener(WorkItemLifecycleListener listener) {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
 
         lifecycleListeners.remove(listener);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        if (propertyChangeSupport == null) {
-            throw new NullPointerException("Argument propertyChangeSupport cannot be a null [this = " + this + "]");
-        }
+        notNull(propertyChangeSupport, "Argument propertyChangeSupport cannot be a null [this = " + this + "]");
 
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -570,9 +493,7 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        if (propertyChangeSupport == null) {
-            throw new NullPointerException("Argument propertyChangeSupport cannot be a null [this = " + this + "]");
-        }
+        notNull(propertyChangeSupport, "Argument propertyChangeSupport cannot be a null [this = " + this + "]");
 
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
@@ -633,9 +554,9 @@ public abstract class GenericWorkItem implements WorkItem {
                             method.invoke(obj, data);
                         }
                     } catch (IllegalAccessException e) {
-                        throw new RuntimeException(e);
+                        throw createRuntimeException(format("Error occurred during handling work item event [eventId={0}; obj={1}; data={2}]", eventId, obj, data), e);
                     } catch (InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                        throw createRuntimeException(format("Error occurred during handling work item event [eventId={0}; obj={1}; data={2}]", eventId, obj, data), e);
                     }
                 }
             }
@@ -643,19 +564,13 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     private GenericWorkItem getCommonAncestor(GenericWorkItem workItem) {
-        if (equals(workItem)) {
-            throw new IllegalArgumentException("Argument cannot be this work item [this = " + this + "]");
-        }
+        isTrue(!equals(workItem), "Argument cannot be this work item [this = " + this + "]");
 
-        if (hasAncestor(workItem)) {
-            throw new IllegalArgumentException("Argument cannot be an ancestor of this work item [workItem = " +
+        isTrue(!hasAncestor(workItem), "Argument cannot be an ancestor of this work item [workItem = " +
                     workItem + "; this = " + this + "]");
-        }
 
-        if (workItem.hasAncestor(this)) {
-            throw new IllegalArgumentException("Argument cannot be an descendant of this work item [workItem = " +
+        isTrue(!workItem.hasAncestor(this), "Argument cannot be an descendant of this work item [workItem = " +
                     workItem + "; this = " + this + "]");
-        }
 
         GenericWorkItem thisParent = getParent();
 
@@ -691,16 +606,12 @@ public abstract class GenericWorkItem implements WorkItem {
     private void checkParentWorkItemExists() {
         checkRootWorkItemExists();
 
-        if ((parent == null) && !rootWorkItem.equals(this)) {
-            throw new IllegalStateException("Work item must have a parent or should be a root work item [this = " +
-                    this + "]");
-        }
+        isTrue((parent != null) || rootWorkItem.equals(this),
+                "Work item must have a parent or should be a root work item [this = " + this + "]");
     }
 
     private void checkRootWorkItemExists() {
-        if (rootWorkItem == null) {
-            throw new IllegalStateException("Work item must have a root work item [this = " + this + "]");
-        }
+        notNull(rootWorkItem, "Work item must have a root work item [this = " + this + "]");
     }
 
     private boolean isRootWorkItem() {

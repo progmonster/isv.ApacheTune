@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.apachetune.core.ui.Constants.*;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -50,9 +51,7 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
     }
 
     public EditorWorkItem createEditorWorkItem(EditorInput editorInput) {
-        if (editorInput == null) {
-            throw new NullPointerException("Argument editorInput cannot be a null [this = " + this + "]");
-        }
+        notNull(editorInput, "Argument editorInput cannot be a null [this = " + this + "]");
         
         EditorWorkItem editorWorkItem = editorWorkItemProvider.get();
 

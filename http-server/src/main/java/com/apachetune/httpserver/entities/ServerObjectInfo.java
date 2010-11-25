@@ -2,6 +2,8 @@ package com.apachetune.httpserver.entities;
 
 import java.io.File;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * Contains server object info.
  *
@@ -25,21 +27,13 @@ public class ServerObjectInfo {
     private final String title;
 
     public ServerObjectInfo(HttpServer httpServer, File location, ServerObjectType serverObjectType, String title) {
-        if (httpServer == null) {
-            throw new NullPointerException("Argument httpServer cannot be a null [this = " + this + "]");
-        }
+        notNull(httpServer, "Argument httpServer cannot be a null [this = " + this + "]");
 
-        if (location == null) {
-            throw new NullPointerException("Argument location cannot be a null [this = " + this + "]");
-        }
+        notNull(location, "Argument location cannot be a null [this = " + this + "]");
 
-        if (serverObjectType == null) {
-            throw new NullPointerException("Argument serverObjectType cannot be a null [this = " + this + "]");
-        }
+        notNull(serverObjectType, "Argument serverObjectType cannot be a null [this = " + this + "]");
 
-        if (title == null) {
-            throw new NullPointerException("Argument title cannot be a null [this = " + this + "]");
-        }
+        notNull(title, "Argument title cannot be a null [this = " + this + "]");
         
         this.httpServer = httpServer;
         this.location = location;

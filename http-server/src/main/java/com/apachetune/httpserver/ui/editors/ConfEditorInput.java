@@ -12,12 +12,14 @@ import javax.swing.*;
 import java.io.*;
 import java.net.URI;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.EDITOR_WORK_ITEM;
 import static com.apachetune.httpserver.Constants.TEXT_HTTPDCONF_CONTENT_TYPE;
 import static java.io.File.separatorChar;
 import static jsyntaxpane.DefaultSyntaxKit.getContentTypes;
 import static jsyntaxpane.DefaultSyntaxKit.registerContentType;
 import static org.apache.commons.lang.ArrayUtils.contains;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -36,9 +38,7 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public void setData(ServerObjectInfo serverObjectInfo) {
-        if (serverObjectInfo == null) {
-            throw new NullPointerException("Argument serverObjectInfo cannot be a null [this = " + this + "]");
-        }
+        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null [this = " + this + "]");
 
         this.serverObjectInfo = serverObjectInfo;
     }
@@ -94,9 +94,7 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public void saveContent(String content) {
-        if (content == null) {
-            throw new NullPointerException("Argument content cannot be a null [this = " + this + "]");
-        }
+        notNull(content, "Argument content cannot be a null [this = " + this + "]");
 
         try {
             // TODO Hardcoded block. Remove it.
@@ -124,7 +122,7 @@ public class ConfEditorInput implements EditorInput {
         try {
             return httpServerResourceLocator.loadIcon("config_file_icon.png");
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 

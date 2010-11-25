@@ -5,6 +5,7 @@ import com.apachetune.core.ui.actions.ActionGroup;
 import com.apachetune.core.ui.actions.ActionManager;
 import com.apachetune.core.ui.actions.ActionSite;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
+import com.apachetune.core.utils.Utils;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.noos.xing.mydoggy.Content;
@@ -19,9 +20,12 @@ import java.io.IOException;
 import java.util.List;
 
 import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.util.Arrays.asList;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 import static org.noos.xing.mydoggy.AggregationPosition.BOTTOM;
 
 /**
@@ -48,26 +52,16 @@ public class CoreUIUtils {
     public Action createAndConfigureAction(String actionId, Class<? extends ActionSite> actionSiteClass,
             ActionGroup actionGroup, ResourceLocator resourceLocator, String name, String shortDescription,
             String longDescription, String smallIconName, String largeIconName, char mnemonicKey,
-            KeyStroke accelertorKey, boolean showInCtxMenu) {
-        if (actionId == null) {
-            throw new NullPointerException("Argument actionId cannot be a null [this = " + this + "]");
-        }
+            KeyStroke acceleratorKey, boolean showInCtxMenu) throws RuntimeException {
+        notNull(actionId, "Argument actionId cannot be a null [this = " + this + "]");
 
-        if (actionId.isEmpty()) {
-            throw new IllegalArgumentException("Argument actionId cannot be empty [this = " + this + "]");
-        }
+        isTrue(!actionId.isEmpty(), "Argument actionId cannot be empty [this = " + this + "]");
 
-        if (actionSiteClass == null) {
-            throw new NullPointerException("Argument actionSiteClass cannot be a null [this = " + this + "]");
-        }
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null [this = " + this + "]");
 
-        if (actionGroup == null) {
-            throw new NullPointerException("Argument actionGroup cannot be a null [this = " + this + "]");
-        }
-        
-        if (resourceLocator == null) {
-            throw new NullPointerException("Argument resourceLocator cannot be a null [this = " + this + "]");
-        }
+        notNull(actionGroup, "Argument actionGroup cannot be a null [this = " + this + "]");
+
+        notNull(resourceLocator, "Argument resourceLocator cannot be a null [this = " + this + "]");
 
         Action action = actionManager.createAction(actionId, actionSiteClass);
 
@@ -79,11 +73,11 @@ public class CoreUIUtils {
             action.setSmallIcon(smallIconName != null ? resourceLocator.loadIcon(smallIconName) : null);
             action.setLargeIcon(largeIconName != null ? resourceLocator.loadIcon(largeIconName) : null);
         } catch (IOException e) {
-            throw new RuntimeException("Internal error.", e); // TODO Make it as a service.
+            throw createRuntimeException(e);
         }
 
         action.setMnemonicKey(mnemonicKey);
-        action.setAcceleratorKey(accelertorKey);
+        action.setAcceleratorKey(acceleratorKey);
         action.setShowInContextMenu(showInCtxMenu);
 
         actionGroup.addAction(action);
@@ -92,16 +86,11 @@ public class CoreUIUtils {
     }
 
     public void addUIActionHint(AbstractButton component) {
-        if (component == null) {
-            throw new NullPointerException("Argument component cannot be a null [this = " + this + "]");
-        }
+        notNull(component, "Argument component cannot be a null [this = " + this + "]");
 
         final Action action = (Action) component.getAction();
 
-        if (action == null) {
-            throw new NullPointerException("The component shoudl have an ui-action [component = " + component +
-                    "; this = " + this + "]");
-        }
+        notNull(action, "The component should have an ui-action [component = " + component + "; this = " + this + "]");
 
         component.addMouseListener(new MouseAdapter() {
             private boolean needReleaseStatus = false;
@@ -151,9 +140,7 @@ public class CoreUIUtils {
     }
 
     public void safeEDTCall(Runnable runnable) {
-        if (runnable == null) {
-            throw new NullPointerException("Argument runnable cannot be a null [this = " + this + "]");
-        }
+        notNull(runnable, "Argument runnable cannot be a null [this = " + this + "]");
 
         if (isEventDispatchThread()) {
             runnable.run();

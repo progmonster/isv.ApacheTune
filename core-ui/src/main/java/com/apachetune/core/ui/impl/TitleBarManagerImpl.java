@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static java.util.Collections.sort;
 import static org.apache.commons.lang.StringUtils.defaultString;
+import static org.apache.commons.lang.Validate.isTrue;
 
 /**
  * FIXDOC
@@ -31,10 +32,8 @@ public class TitleBarManagerImpl implements TitleBarManager {
     }
 
     public void setTitle(int level, String title) {
-        if (level < LEVEL_1) {
-            throw new IllegalArgumentException("Argument level cannot be less than LEVEL_1 [level = " + level +
-                    "; this = " + this + "]");
-        }
+        isTrue(level >= LEVEL_1,
+                "Argument level cannot be less than LEVEL_1 [level = " + level + "; this = " + this + "]");
 
         if (defaultString(title).isEmpty()) {
             removeTitle(level);
@@ -45,10 +44,8 @@ public class TitleBarManagerImpl implements TitleBarManager {
     }
 
     public void removeTitle(int level) {
-        if (level < LEVEL_1) {
-            throw new IllegalArgumentException("Argument level cannot be less than LEVEL_1 [level = " + level +
-                    "; this = " + this + "]");
-        }
+        isTrue(level >= LEVEL_1,
+                "Argument level cannot be less than LEVEL_1 [level = " + level + "; this = " + this + "]");
 
         titles.remove(level);
         updateTitles();

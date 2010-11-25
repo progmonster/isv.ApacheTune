@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang.Validate.notNull;
+
 /**
  * FIXDOC
  *
@@ -29,9 +31,7 @@ class SourceTableModel extends AbstractTableModel {
     }};
 
     public SourceTableModel(List<File> drivesAvailableToSearch) {
-        if (drivesAvailableToSearch == null) {
-            throw new NullPointerException("Argument drivesAvailableToSearch cannot be a null [this = " + this + "]");
-        }
+        notNull(drivesAvailableToSearch, "Argument drivesAvailableToSearch cannot be a null [this = " + this + "]");
 
         for (File file : drivesAvailableToSearch) {
             data.add(new Object[] {true, file});

@@ -4,6 +4,7 @@ import com.apachetune.core.ActivationListener;
 import com.apachetune.core.GenericWorkItem;
 import com.apachetune.core.RootWorkItem;
 import com.apachetune.core.WorkItem;
+import com.apachetune.core.utils.Utils;
 import com.google.inject.Inject;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.apachetune.core.Constants.ROOT_WORK_ITEM_ID;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -36,7 +39,7 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
         try {
             scheduler.start();
         } catch (SchedulerException e) {
-            throw new RuntimeException("Internal error.", e);
+            throw createRuntimeException(e);
         }
     }
 
@@ -44,22 +47,18 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
         try {
             scheduler.shutdown();
         } catch (SchedulerException e) {
-            throw new RuntimeException("Internal error.", e);
+            throw createRuntimeException(e);
         }
     }
 
     public void addChildActivationListener(ActivationListener childActivationListener) {
-        if (childActivationListener == null) {
-            throw new NullPointerException("Argument activationListener cannot be a null [this = " + this + "]");
-        }
+        notNull(childActivationListener, "Argument activationListener cannot be a null [this = " + this + "]");
 
         childActivationListeners.add(childActivationListener);
     }
 
     public void removeChildActivationListener(ActivationListener childActivationListener) {
-        if (childActivationListener == null) {
-            throw new NullPointerException("Argument activationListener cannot be a null [this = " + this + "]");
-        }
+        notNull(childActivationListener, "Argument activationListener cannot be a null [this = " + this + "]");
 
         childActivationListeners.remove(childActivationListener);
     }

@@ -29,6 +29,7 @@ import java.net.URISyntaxException;
 
 import static com.apachetune.core.ui.Constants.CARET_POSITION_PREFS_NODE_NAME;
 import static com.apachetune.core.ui.Constants.VIEW_POSITION_PREFS_NODE_NAME;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static org.fest.assertions.Assertions.assertThat;
 
 
@@ -278,7 +279,7 @@ class MockEditorInput implements EditorInput {
         try {
             return new URI("WORK_ITEM");
         } catch (URISyntaxException e) {
-            throw new RuntimeException("Internal error.", e);
+            throw createRuntimeException(e);
         }
     }
 }

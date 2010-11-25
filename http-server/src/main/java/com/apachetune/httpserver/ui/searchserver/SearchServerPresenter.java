@@ -16,9 +16,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.SERVER_PATH_SELECTED_EVENT;
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang.StringUtils.defaultString;
+import static org.apache.commons.lang.Validate.isTrue;
+import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -50,13 +53,9 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
     }
 
     public void initialize(WorkItem workItem, SearchServerDialog view) {
-        if (workItem == null) {
-            throw new NullPointerException("Argument workItem cannot be a null [this = " + this + "]");
-        }
+        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
 
-        if (view == null) {
-            throw new NullPointerException("Argument view cannot be a null [this = " + this + "]");
-        }
+        notNull(view, "Argument view cannot be a null [this = " + this + "]");
 
         this.workItem = workItem;
         this.view = view;
@@ -182,9 +181,9 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
         try {
             searchWorker.get();
         } catch (InterruptedException e) {
-            throw new RuntimeException("Internal error.", e); // TODO Make it with service.
+            throw createRuntimeException(e);
         } catch (ExecutionException e) {
-            throw new RuntimeException("Internal error.", e); // TODO Make it with service.
+            throw createRuntimeException(e);
         }
 
         searchWorker = null;
@@ -261,9 +260,7 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
         }
 
         public boolean currentFile(File file) {
-            if (file == null) {
-                throw new NullPointerException("Argument file cannot be a null [this = " + this + "]");
-            }
+            notNull(file, "Argument file cannot be a null [this = " + this + "]");
 
             if (file.getName().equals("httpd.exe")) {
                 final File serverRoot = getServerRootByHttpdFile(file);
@@ -312,9 +309,9 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
                     showServersNotFoundMessage();
                 }
             } catch (InterruptedException e) {
-                throw new RuntimeException("Internal error.", e); // TODO Make it with service.
+                throw createRuntimeException(e);
             } catch (ExecutionException e) {
-                throw new RuntimeException("Internal error.", e); // TODO Make it with service.
+                throw createRuntimeException(e);
             }
         }
 
@@ -343,14 +340,9 @@ class FileScanner {
     private final FileScannerListener listener;
 
     public FileScanner(File root, FileScannerListener listener, FileFilter fileFilter) {
-        if (root == null) {
-            throw new NullPointerException("Argument root cannot be a null [this = " + this + "]");
-        }
+        notNull(root, "Argument root cannot be a null [this = " + this + "]");
 
-        if (!root.isDirectory()) {
-            throw new IllegalArgumentException("Argument root should be a directory [root = " + root + "; this = " +
-                    this + "]");
-        }
+        isTrue(root.isDirectory(), "Argument root should be a directory [root = " + root + "; this = " + this + "]");
 
         this.root = root;
         this.fileFilter = fileFilter;
@@ -358,9 +350,7 @@ class FileScanner {
     }
 
     public boolean execute() {
-        if (listener == null) {
-            throw new NullPointerException("Argument listener cannot be a null [this = " + this + "]");
-        }
+        notNull(listener == null, "Argument listener cannot be a null [this = " + this + "]");
 
         return scanDirectory(root);
     }
