@@ -1,8 +1,5 @@
 package com.apachetune.httpserver.ui.messagesystem;
 
-import com.sun.xml.internal.fastinfoset.util.KeyIntMap;
-import com.sun.xml.internal.ws.api.message.Header;
-
 import java.util.List;
 
 /**
