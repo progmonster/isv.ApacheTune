@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.updating.impl;
 
+import com.apachetune.events.SendErrorReportEvent;
 import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.updating.*;
 import com.google.inject.Inject;
@@ -8,9 +9,11 @@ import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.util.Date;
 import java.util.Map;
 
+import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.httpserver.Constants.*;
 
 /**
@@ -33,6 +36,8 @@ public class UpdateManagerImpl implements UpdateManager {
 
     private final HttpServerWorkItem httpServerWorkItem;
 
+    private final JFrame mainFrame;
+
     private final Object checkForUpdateLock = new Object();
 
     @Inject
@@ -40,7 +45,7 @@ public class UpdateManagerImpl implements UpdateManager {
                              UpdateConfiguration updateConfiguration, RemoteManager remoteManager,
                              Scheduler scheduler, UpdateInfoDialog updateInfoDialog,
                              OpenWebPageHelper openWebPageHelper,
-                             HttpServerWorkItem httpServerWorkItem) {
+                             HttpServerWorkItem httpServerWorkItem, JFrame mainFrame) {
         this.updateDelayInMSec = updateDelayInMSec;
         this.updateConfiguration = updateConfiguration;
         this.remoteManager = remoteManager;
@@ -48,6 +53,7 @@ public class UpdateManagerImpl implements UpdateManager {
         this.updateInfoDialog = updateInfoDialog;
         this.openWebPageHelper = openWebPageHelper;
         this.httpServerWorkItem = httpServerWorkItem;
+        this.mainFrame = mainFrame;
     }
 
     @Override
@@ -88,7 +94,7 @@ public class UpdateManagerImpl implements UpdateManager {
             UpdateInfoDialog.UserActionOnUpdateError userAction = updateInfoDialog.showUpdateCheckingError(e);
 
             if (userAction.isUserAgreeSendErrorReport()) {
-                httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, e);
+                httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
             }
         }
     }

@@ -90,6 +90,4 @@ public class Constants {
     public static final String REMOTE_UPDATE_SERVICE_URL_PROP = "REMOTE_UPDATE_SERVICE_URL";
 
     public static final String IS_CHECK_FOR_UPDATE_ON_START_ENABLED_PREF_NAME = "IS_CHECK_FOR_UPDATE_ON_START_ENABLED";
-
-    public static final String ON_SEND_ERROR_REPORT_EVENT = "ON_SEND_ERROR_REPORT_EVENT";
 }

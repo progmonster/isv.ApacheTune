@@ -1,10 +1,7 @@
 package com.apachetune.core.impl;
 
-import com.apachetune.core.ActivationListener;
-import com.apachetune.core.GenericWorkItem;
-import com.apachetune.core.RootWorkItem;
-import com.apachetune.core.WorkItem;
-import com.apachetune.core.utils.Utils;
+import com.apachetune.core.*;
+import com.apachetune.events.SendErrorReportEvent;
 import com.google.inject.Inject;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -12,6 +9,7 @@ import org.quartz.SchedulerException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.Constants.ROOT_WORK_ITEM_ID;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static org.apache.commons.lang.Validate.notNull;
@@ -81,5 +79,10 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
         for (ActivationListener listener : listeners) {
             listener.onDeactivate(childWorkItem);
         }
+    }
+
+    @Subscriber(eventId = ON_SEND_ERROR_REPORT_EVENT)
+    private void onSendErrorReportEvent(SendErrorReportEvent event) {
+        // todo send report
     }
 }

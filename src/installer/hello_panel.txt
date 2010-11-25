@@ -1,0 +1,1 @@
+Please, close all currently run ApacheTune instances before you continue installation!
