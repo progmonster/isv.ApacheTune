@@ -179,7 +179,7 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
         try {
             pref.flush();
         } catch (BackingStoreException e) {
-            e.printStackTrace();  // TODO Make it as a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -191,7 +191,7 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
         try {
             pref.flush();
         } catch (BackingStoreException e) {
-            e.printStackTrace();  // TODO Make it as a service.
+            throw createRuntimeException(e);
         }
     }
 

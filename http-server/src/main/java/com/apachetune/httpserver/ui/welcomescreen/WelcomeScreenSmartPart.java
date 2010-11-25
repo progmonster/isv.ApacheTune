@@ -13,6 +13,8 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,6 +25,8 @@ import java.util.List;
 
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
@@ -34,11 +38,14 @@ import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM
  *         Created Date: 18.03.2010
  */
 public class WelcomeScreenSmartPart implements VelocityContextProvider, NSmartPart, WelcomeScreenView {
+    private static final Logger logger = LoggerFactory.getLogger(WelcomeScreenSmartPart.class);
+
     private static final String START_PAGE_RELATIVE_URL = "index.html.vm";
 
     private final WelcomeScreenPresenter presenter;
 
     private final AppManager appManager;
+    private final JFrame mainFrame;
 
     private final CoreUIWorkItem coreUIWorkItem;
 
@@ -51,9 +58,10 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, NSmartPa
     @Inject
     public WelcomeScreenSmartPart(final WelcomeScreenPresenter presenter,
                                   final @Named(CORE_UI_WORK_ITEM) WorkItem coreUIWorkItem,
-                                  final AppManager appManager) {
+                                  final AppManager appManager, final JFrame mainFrame) {
         this.presenter = presenter;
         this.appManager = appManager;
+        this.mainFrame = mainFrame;
         this.coreUIWorkItem = (CoreUIWorkItem) coreUIWorkItem;
 
         WebServer.getDefaultWebServer().addContentProvider(new WebServer.WebServerContentProvider() {
@@ -106,9 +114,11 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, NSmartPa
                     try {
                         Desktop.getDesktop().browse(new URI(appManager.getProductWebPortalUri()));
                     } catch (IOException e1) {
-                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        logger.error("Error opening a web page", e1);
+
+                        showMessageDialog(mainFrame, "Error open web page", "Error", ERROR_MESSAGE);
                     } catch (URISyntaxException e1) {
-                        e1.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                        throw createRuntimeException(e1);
                     }
                 } else {
                     throw createRuntimeException("Unknown command [cmd=" + cmd + ']');

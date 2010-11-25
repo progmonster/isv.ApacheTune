@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
 
+import static com.apachetune.core.utils.Utils.createRuntimeException;
+
 /**
  * FIXDOC
  *
@@ -51,7 +53,7 @@ public class AppManagerImpl implements AppManager {
             appProps.load(new InputStreamReader(getClass().getResourceAsStream(APP_PROPERTIES_PATH),
                     APP_PROPERTIES_ENCODING));
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 

@@ -840,7 +840,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         try {
             preferences.flush();
         } catch (BackingStoreException e) {
-            e.printStackTrace();  // TODO make it as a service
+            throw createRuntimeException(e);
         }
     }
     // TODO refactor and move to core UI
@@ -882,7 +882,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         try {
             preferences.flush();
         } catch (BackingStoreException e) {
-            e.printStackTrace();  // TODO Make it as a service.
+            throw createRuntimeException(e);
         }
     }
     // TODO refactor and move to core UI

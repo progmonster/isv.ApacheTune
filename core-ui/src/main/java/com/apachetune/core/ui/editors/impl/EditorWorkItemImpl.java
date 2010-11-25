@@ -16,6 +16,8 @@ import com.google.inject.name.Named;
 import jsyntaxpane.ExtendedSyntaxDocument;
 import org.noos.xing.mydoggy.Content;
 import org.noos.xing.mydoggy.ToolWindowManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -38,6 +40,8 @@ import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.awt.Color.RED;
 import static java.lang.Math.min;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -49,6 +53,8 @@ import static org.apache.commons.lang.Validate.notNull;
  */
 public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkItem, EditorActionSite,
         SaveFileActionSite, UndoWorkflowActionSite, PrintDocumentActionSite  {
+    private static final Logger logger = LoggerFactory.getLogger(EditorWorkItemImpl.class);    
+
     private static final char EDITOR_DIRTY_FLAG = '*';
 
     private static final Color HIGHLIGHT_ERROR_LINE_COLOR = RED;
@@ -64,6 +70,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     private final PreferencesManager preferencesManager;
 
     private final CoreUIUtils coreUIUtils;
+
+    private final JFrame mainFrame;
 
     private EditorInput editorInput;
 
@@ -84,13 +92,14 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     @Inject
     public EditorWorkItemImpl(@Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
             ActionManager actionManager, StatusBarManager statusBarManager, MenuBarManager menuBarManager,
-            PreferencesManager preferencesManager, CoreUIUtils coreUIUtils) {
+            PreferencesManager preferencesManager, CoreUIUtils coreUIUtils, JFrame mainFrame) {
         this.toolWindowManager = toolWindowManager;
         this.actionManager = actionManager;
         this.statusBarManager = statusBarManager;
         this.menuBarManager = menuBarManager;
         this.preferencesManager = preferencesManager;
         this.coreUIUtils = coreUIUtils;
+        this.mainFrame = mainFrame;
     }
 
     public void setEditorInput(EditorInput editorInput) {
@@ -199,7 +208,9 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
             textPane.print(new MessageFormat(header), new MessageFormat("Page {0}"), true, null, null, true);
         } catch (PrinterException e) {
-            e.printStackTrace(); // TODO: User frendly message.
+            logger.error("Error printing file", e);
+
+            showMessageDialog(mainFrame, "Error printing file", "Print error", ERROR_MESSAGE); // todo localize
         } catch (BadLocationException e) {
             throw createRuntimeException(e);
         } finally {
@@ -349,9 +360,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
                 editorPane.scrollRectToVisible(new Rectangle(restoredFirstVisiblePoint, editorScrollPane.
                         getViewport().getSize()));
             } catch (BadLocationException e) {
-                e.printStackTrace();  // TODO Make it as a service.
+                throw createRuntimeException(e);
             }
-
     }
 
     private int getStoredViewPosition() {

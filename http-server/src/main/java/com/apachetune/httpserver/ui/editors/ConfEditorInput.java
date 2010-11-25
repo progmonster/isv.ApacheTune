@@ -7,6 +7,8 @@ import com.google.inject.Inject;
 import jsyntaxpane.jsyntaxkits.HttpdConfSyntaxKit;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.io.*;
@@ -16,6 +18,8 @@ import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.EDITOR_WORK_ITEM;
 import static com.apachetune.httpserver.Constants.TEXT_HTTPDCONF_CONTENT_TYPE;
 import static java.io.File.separatorChar;
+import static javax.swing.JOptionPane.ERROR_MESSAGE;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static jsyntaxpane.DefaultSyntaxKit.getContentTypes;
 import static jsyntaxpane.DefaultSyntaxKit.registerContentType;
 import static org.apache.commons.lang.ArrayUtils.contains;
@@ -28,13 +32,18 @@ import static org.apache.commons.lang.Validate.notNull;
  * @version 1.0
  */
 public class ConfEditorInput implements EditorInput {
+    Logger logger = LoggerFactory.getLogger(ConfEditorInput.class);    
+
     private final HttpServerResourceLocator httpServerResourceLocator;
+
+    private final JFrame mainFrame;
 
     private ServerObjectInfo serverObjectInfo;
 
     @Inject
-    public ConfEditorInput(HttpServerResourceLocator httpServerResourceLocator) {
+    public ConfEditorInput(HttpServerResourceLocator httpServerResourceLocator, JFrame mainFrame) {
         this.httpServerResourceLocator = httpServerResourceLocator;
+        this.mainFrame = mainFrame;
     }
 
     public void setData(ServerObjectInfo serverObjectInfo) {
@@ -85,11 +94,14 @@ public class ConfEditorInput implements EditorInput {
                 return "";
             }
         } catch (FileNotFoundException e) {
-            // TODO Generate user-frendly message if errors have occured.
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            logger.error("File not found.", e);
+
+            // todo localize
+            showMessageDialog(mainFrame, "Cannot load file " + getLocation().getAbsolutePath(), "Error", ERROR_MESSAGE);
+
+            return "";
         } catch (IOException e) {
-            // TODO Generate user-frendly message if errors have occured.
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
@@ -109,12 +121,13 @@ public class ConfEditorInput implements EditorInput {
             IOUtils.write(content, os, "UTF-8");
 
             os.close();
-
-            // TODO Generate user-frendly message if errors have occured.
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            logger.error("File not found.", e);
+
+            // todo localize
+            showMessageDialog(mainFrame, "Cannot save file " + getLocation().getAbsolutePath(), "Error", ERROR_MESSAGE);
         } catch (IOException e) {
-            throw new RuntimeException("Internal error", e); // TODO Make it with a service.
+            throw createRuntimeException(e);
         }
     }
 
