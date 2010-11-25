@@ -5,6 +5,8 @@ import com.apachetune.core.RootWorkItem;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -17,13 +19,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.apachetune.core.utils.Utils.showSendErrorReportDialog;
+
 // TODO FIX Maximizing persist MainFrame logic.
-// TODO Add a status bar.
-// TODO Add an initial page into mainframe when no page was opened.
 // TODO Remove method run and runOrShow from controllers. Replace it to specific action methods!
 // TODO Change the author's email to progmonster@gmail.com
 // TODO Configure a continue integration.
-// TODO Create update system
 // TODO Create donate offer (pay now small and have unbounded license for all versions)
 // TODO Create feedback system
 // TODO Create "before release" indicator with any pomps.
@@ -40,10 +41,18 @@ import java.util.List;
  * @version 1.0
  */
 public class App {
+    private static final Logger logger = LoggerFactory.getLogger(App.class);
+
     private static final String CONFIG_FILE_NAME = "config.xml";
 
-    public static void main(String[] args) throws Exception {
-        new App();
+    public static void main(String[] args) {
+        try {
+            new App();
+        } catch (Throwable cause) {
+            logger.error("Error in app", cause);
+
+            showSendErrorReportDialog(null, cause);
+        }
     }
 
     // TODO Show an error dialog when errors.

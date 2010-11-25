@@ -49,7 +49,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     public SearchServerSmartPart(final SearchServerPresenter presenter, JFrame mainFrame) {
         super(mainFrame);
 
-        notNull(presenter, "Argument presenter cannot be a null [this = " + this + "]");
+        notNull(presenter, "Argument presenter cannot be a null");
 
         this.mainFrame = mainFrame;
         this.presenter = presenter;
@@ -121,7 +121,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setDrivesAvailableToSearch(Collection<File> drives) {
-        notNull(drives, "Argument drives cannot be a null [this = " + this + "]");
+        notNull(drives, "Argument drives cannot be a null");
 
         drivesAvailableToSearch.clear();
 
@@ -164,7 +164,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setResultListModel(ResultListModel model) {
-        notNull(model, "Argument model cannot be a null [this = " + this + "]");
+        notNull(model, "Argument model cannot be a null");
 
         resultList.setModel(model);
     }
@@ -180,7 +180,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setCurrentSearchLocationText(String location) {
-        notNull(location, "Argument location cannot be a null [this = " + this + "]");
+        notNull(location, "Argument location cannot be a null");
 
         String abbreviatedLocation = abbreviateFilePath(location, MAX_LOCATION_TEXT_SIZE);
 
@@ -194,7 +194,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void initialize(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
+        notNull(workItem, "Argument workItem cannot be a null");
 
         presenter.initialize(workItem, this);
 

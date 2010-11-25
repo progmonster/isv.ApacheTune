@@ -33,7 +33,7 @@ public class OutputPaneDocumentImpl extends DefaultStyledDocument implements Out
     }
 
     public void setColoredText(String text, Color color) {
-        notNull(color, "Argument color cannot be a null [this = " + this + "]");
+        notNull(color, "Argument color cannot be a null");
 
         MutableAttributeSet attr = new SimpleAttributeSet();
 

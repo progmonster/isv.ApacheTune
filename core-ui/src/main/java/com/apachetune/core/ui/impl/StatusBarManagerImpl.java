@@ -38,9 +38,9 @@ public class StatusBarManagerImpl implements StatusBarManager {
 
     @SuppressWarnings({"unchecked"})
     public void addMainStatus(String messageId, String status) {
-        notEmpty(messageId, "Argument messageId cannot be empty [this = " + this + "]");
+        notEmpty(messageId, "Argument messageId cannot be empty");
 
-        notEmpty(status, "Argument status cannot be empty [this = " + this + "]");
+        notEmpty(status, "Argument status cannot be empty");
 
         messages.add(new AbstractMap.SimpleImmutableEntry<String, String>(messageId, status));
 
@@ -48,7 +48,7 @@ public class StatusBarManagerImpl implements StatusBarManager {
     }
 
     public void removeMainStatus(String messageId) {
-        notEmpty(messageId, "Argument messageId cannot be empty [this = " + this + "]");
+        notEmpty(messageId, "Argument messageId cannot be empty");
 
         removeLastById(messageId);
 

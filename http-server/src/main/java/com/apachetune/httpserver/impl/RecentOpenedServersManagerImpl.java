@@ -41,7 +41,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     public void storeServerUriToRecentList(URI serverUri) {
-        notNull(serverUri, "Argument serverUri cannot be a null [this = " + this + "]");
+        notNull(serverUri, "Argument serverUri cannot be a null");
 
         List<URI> serverUriList = getServerUriList();
 
@@ -107,14 +107,14 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     public void addServerListChangedListener(RecentOpenedServerListChangedListener listener) {
-        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
+        notNull(listener, "Argument listener cannot be a null");
 
         changeListener.add(listener);
     }
 
     @Override
     public void removeServerListChangedListener(RecentOpenedServerListChangedListener listener) {
-        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
+        notNull(listener, "Argument listener cannot be a null");
 
         changeListener.remove(listener);
     }

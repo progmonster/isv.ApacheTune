@@ -162,7 +162,7 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
         private final List<Callable<Boolean>> tasks;
 
         public TaskRunner(List<ExecutionTask> tasks) {
-            notNull(tasks, "Argument tasks cannot be a null [this = " + this + "]");
+            notNull(tasks, "Argument tasks cannot be a null");
 
             this.tasks = new ArrayList<Callable<Boolean>>(tasks);
         }

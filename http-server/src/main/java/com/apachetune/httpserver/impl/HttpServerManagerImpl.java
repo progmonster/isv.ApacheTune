@@ -23,7 +23,7 @@ public class HttpServerManagerImpl implements HttpServerManager {
     public HttpServer getServer(URI httpServerUri) {
         // TODO Now this implementation returns a local windows server objects only.
 
-        notNull(httpServerUri, "Argument httpServerUri cannot be a null [this = " + this + "]");
+        notNull(httpServerUri, "Argument httpServerUri cannot be a null");
 
         return new LocalWindowsHttpServer(new File(httpServerUri));
     }
@@ -31,7 +31,7 @@ public class HttpServerManagerImpl implements HttpServerManager {
     public boolean isHttpServerRootDirectory(File directory) {
         // TODO Now this implementation returns a local windows server objects only.
 
-        notNull(directory, "Argument directory cannot be a null [this = " + this + "]");
+        notNull(directory, "Argument directory cannot be a null");
 
         return new File(directory, "bin" + File.separatorChar + "httpd.exe").exists() && new File(directory, "conf" +
                 File.separatorChar + "httpd.conf").exists();

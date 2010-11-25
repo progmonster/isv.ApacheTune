@@ -51,7 +51,7 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
     }
 
     public EditorWorkItem createEditorWorkItem(EditorInput editorInput) {
-        notNull(editorInput, "Argument editorInput cannot be a null [this = " + this + "]");
+        notNull(editorInput, "Argument editorInput cannot be a null");
         
         EditorWorkItem editorWorkItem = editorWorkItemProvider.get();
 

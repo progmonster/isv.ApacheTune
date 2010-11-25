@@ -53,9 +53,9 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
     }
 
     public void initialize(WorkItem workItem, SearchServerDialog view) {
-        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
+        notNull(workItem, "Argument workItem cannot be a null");
 
-        notNull(view, "Argument view cannot be a null [this = " + this + "]");
+        notNull(view, "Argument view cannot be a null");
 
         this.workItem = workItem;
         this.view = view;
@@ -260,7 +260,7 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
         }
 
         public boolean currentFile(File file) {
-            notNull(file, "Argument file cannot be a null [this = " + this + "]");
+            notNull(file, "Argument file cannot be a null");
 
             if (file.getName().equals("httpd.exe")) {
                 final File serverRoot = getServerRootByHttpdFile(file);
@@ -340,7 +340,7 @@ class FileScanner {
     private final FileScannerListener listener;
 
     public FileScanner(File root, FileScannerListener listener, FileFilter fileFilter) {
-        notNull(root, "Argument root cannot be a null [this = " + this + "]");
+        notNull(root, "Argument root cannot be a null");
 
         isTrue(root.isDirectory(), "Argument root should be a directory [root = " + root + "; this = " + this + "]");
 
@@ -350,7 +350,7 @@ class FileScanner {
     }
 
     public boolean execute() {
-        notNull(listener == null, "Argument listener cannot be a null [this = " + this + "]");
+        notNull(listener == null, "Argument listener cannot be a null");
 
         return scanDirectory(root);
     }

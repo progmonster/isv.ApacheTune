@@ -25,21 +25,21 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     private final List<Object> actionSiteObjects = new ArrayList<Object>();
 
     public ActionGroup createActionGroup(String actionGroupId) {
-        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null [this = " + this + "]");
+        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null");
 
         return new ActionGroupImpl(actionGroupId);
     }
 
     public Action createAction(String actionId, Class<? extends ActionSite> actionSiteClass) {
-        notNull(actionId, "Argument actionId cannot be a null [this = " + this + "]");
+        notNull(actionId, "Argument actionId cannot be a null");
 
-        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null [this = " + this + "]");
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null");
 
         return new ActionImpl(actionId, actionSiteClass);
     }
 
     public void registerActionGroup(ActionGroup actionGroup) {
-        notNull(actionGroup, "Argument actionGroup cannot be a null [this = " + this + "]");
+        notNull(actionGroup, "Argument actionGroup cannot be a null");
 
         ensureActionGroupNotYetWasAdded(actionGroup);
 
@@ -51,7 +51,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void unregisterActionGroup(ActionGroup actionGroup) {
-        notNull(actionGroup, "Argument actionGroup cannot be a null [this = " + this + "]");
+        notNull(actionGroup, "Argument actionGroup cannot be a null");
 
         isTrue(actionGroups.containsKey(actionGroup.getId()),
                 "Action group not contains in the action manager [actionGroup = " + actionGroup + "; this = " + this +
@@ -65,7 +65,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void unregisterActionGroup(String actionGroupId) {
-        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null [this = " + this + "]");
+        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null");
 
         ensureActionGroupWasAdded(actionGroupId);
 
@@ -77,7 +77,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public ActionGroup getActionGroup(String actionGroupId) {
-        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null [this = " + this + "]");
+        notNull(actionGroupId == null, "Argument actionGroupId cannot be a null");
 
         ensureActionGroupWasAdded(actionGroupId);
 
@@ -85,7 +85,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public Action getAction(String actionId) {
-        notNull(actionId, "Argument actionId cannot be a null [this = " + this + "]");
+        notNull(actionId, "Argument actionId cannot be a null");
 
         ensureActionRegistered(actionId);
 
@@ -93,7 +93,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void activateActionSites(Object actionSiteObject) {
-        notNull(actionSiteObject, "Argument actionSiteObject cannot be a null [this = " + this + "]");
+        notNull(actionSiteObject, "Argument actionSiteObject cannot be a null");
 
         if (!actionSiteObjects.contains(actionSiteObject)) {
             actionSiteObjects.add(actionSiteObject);
@@ -107,7 +107,7 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     }
 
     public void deactivateActionSites(Object actionSiteObject) {
-        notNull(actionSiteObject, "Argument actionSiteObject cannot be a null [this = " + this + "]");
+        notNull(actionSiteObject, "Argument actionSiteObject cannot be a null");
 
         if (!actionSiteObjects.contains(actionSiteObject)) {
             return;
@@ -141,13 +141,13 @@ public class ActionManagerImpl implements ActionManager, ActionGroupListener, Pr
     public void onActionAdded(ActionGroup actionGroup, Action action) {
         ensureActionNotRegisteredYet(action);
 
-        notNull(action, "Argument action cannot be a null [this = " + this + "]");
+        notNull(action, "Argument action cannot be a null");
 
         registerAction(action);
     }
 
     public void onActionRemoved(ActionGroup actionGroup, Action action) {
-        notNull(action, "Argument action cannot be a null [this = " + this + "]");
+        notNull(action, "Argument action cannot be a null");
 
         unregisterAction(action);
     }

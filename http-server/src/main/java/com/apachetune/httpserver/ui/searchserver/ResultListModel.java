@@ -27,7 +27,7 @@ public class ResultListModel extends AbstractListModel {
     }
 
     public void add(File file) {
-        notNull(file, "Argument file cannot be a null [this = " + this + "]");
+        notNull(file, "Argument file cannot be a null");
 
         files.add(file);
 
@@ -49,7 +49,7 @@ public class ResultListModel extends AbstractListModel {
     }
 
     public boolean exists(File pathDir) {
-        notNull(pathDir, "Argument pathDir cannot be a null [this = " + this + "]");
+        notNull(pathDir, "Argument pathDir cannot be a null");
 
         return files.contains(pathDir);
     }

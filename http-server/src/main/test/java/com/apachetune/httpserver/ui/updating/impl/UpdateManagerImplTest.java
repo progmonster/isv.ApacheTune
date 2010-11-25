@@ -52,7 +52,7 @@ public class UpdateManagerImplTest {
     public void test_no_scheduling_check_for_update_on_initialize() {
         UpdateManager testSubj =
                 new UpdateManagerImpl(NO_CHECK_UPDATE_NEEDS, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -67,7 +67,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(EMPTY_CHECK_UPDATE_DELAY_IN_MSEC, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -84,7 +84,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(60 * 1000, mockUpdateConfiguration, mockRemoteManager, mockScheduler,
-                        mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -102,7 +102,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(EMPTY_CHECK_UPDATE_DELAY_IN_MSEC, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -132,7 +132,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(EMPTY_CHECK_UPDATE_DELAY_IN_MSEC, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -161,7 +161,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(EMPTY_CHECK_UPDATE_DELAY_IN_MSEC, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -180,7 +180,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(EMPTY_CHECK_UPDATE_DELAY_IN_MSEC, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
         testSubj.dispose();
@@ -208,7 +208,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(NO_CHECK_UPDATE_NEEDS, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
 
@@ -236,7 +236,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(NO_CHECK_UPDATE_NEEDS, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
 
@@ -265,7 +265,7 @@ public class UpdateManagerImplTest {
 
         UpdateManager testSubj =
                 new UpdateManagerImpl(NO_CHECK_UPDATE_NEEDS, mockUpdateConfiguration, mockRemoteManager,
-                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper);
+                        mockScheduler, mockUpdateInfoDialog, mockOpenWebPageHelper, null);
 
         testSubj.initialize();
 

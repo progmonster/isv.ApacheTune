@@ -100,8 +100,12 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         this.preferencesManager = preferencesManager;
     }
 
+    public final JFrame getMainFrame() {
+        return mainFrame;
+    }
+
     public void onActivate(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
+        notNull(workItem, "Argument workItem cannot be a null");
 
         if (workItem instanceof UIWorkItem) {
             UIWorkItem uiWorkItem = (UIWorkItem) workItem;
@@ -113,7 +117,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     public void onDeactivate(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
+        notNull(workItem, "Argument workItem cannot be a null");
 
         if (workItem instanceof UIWorkItem) {
             UIWorkItem uiWorkItem = (UIWorkItem) workItem;
@@ -135,7 +139,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     }
 
     public void switchToWelcomeScreen(final JPanel welcomeScreenPanel) {
-        notNull(welcomeScreenPanel, "Argument welcomeScreenPanel cannot be a null [this = " + this + "]");
+        notNull(welcomeScreenPanel, "Argument welcomeScreenPanel cannot be a null");
 
         if (mainPanel.isAncestorOf(welcomeScreenPanel)) {
             return;

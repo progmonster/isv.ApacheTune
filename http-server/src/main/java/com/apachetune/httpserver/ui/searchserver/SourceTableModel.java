@@ -31,7 +31,7 @@ class SourceTableModel extends AbstractTableModel {
     }};
 
     public SourceTableModel(List<File> drivesAvailableToSearch) {
-        notNull(drivesAvailableToSearch, "Argument drivesAvailableToSearch cannot be a null [this = " + this + "]");
+        notNull(drivesAvailableToSearch, "Argument drivesAvailableToSearch cannot be a null");
 
         for (File file : drivesAvailableToSearch) {
             data.add(new Object[] {true, file});

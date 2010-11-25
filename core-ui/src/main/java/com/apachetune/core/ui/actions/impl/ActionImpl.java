@@ -35,9 +35,9 @@ public class ActionImpl extends AbstractAction implements Action {
     private ActionGroup actionGroup;
 
     public ActionImpl(String id, Class<? extends ActionSite> actionSiteClass) {
-        notNull(id, "Argument id cannot be a null [this = " + this + "]");
+        notNull(id, "Argument id cannot be a null");
 
-        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null [this = " + this + "]");
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null");
 
         setId(id);
 
@@ -110,9 +110,9 @@ public class ActionImpl extends AbstractAction implements Action {
     }
 
     public void setName(String name) {
-        notNull(name, "Argument name cannot be a null [this = " + this + "]");
+        notNull(name, "Argument name cannot be a null");
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty [this = " + this + "]");
+        isTrue(!name.isEmpty(), "Argument name cannot be empty");
 
         putValue(NAME, name);
     }

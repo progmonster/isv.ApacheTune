@@ -47,7 +47,7 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public void setData(ServerObjectInfo serverObjectInfo) {
-        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null [this = " + this + "]");
+        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null");
 
         this.serverObjectInfo = serverObjectInfo;
     }
@@ -106,7 +106,7 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public void saveContent(String content) {
-        notNull(content, "Argument content cannot be a null [this = " + this + "]");
+        notNull(content, "Argument content cannot be a null");
 
         try {
             // TODO Hardcoded block. Remove it.

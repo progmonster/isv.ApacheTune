@@ -53,15 +53,15 @@ public class CoreUIUtils {
             ActionGroup actionGroup, ResourceLocator resourceLocator, String name, String shortDescription,
             String longDescription, String smallIconName, String largeIconName, char mnemonicKey,
             KeyStroke acceleratorKey, boolean showInCtxMenu) throws RuntimeException {
-        notNull(actionId, "Argument actionId cannot be a null [this = " + this + "]");
+        notNull(actionId, "Argument actionId cannot be a null");
 
-        isTrue(!actionId.isEmpty(), "Argument actionId cannot be empty [this = " + this + "]");
+        isTrue(!actionId.isEmpty(), "Argument actionId cannot be empty");
 
-        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null [this = " + this + "]");
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null");
 
-        notNull(actionGroup, "Argument actionGroup cannot be a null [this = " + this + "]");
+        notNull(actionGroup, "Argument actionGroup cannot be a null");
 
-        notNull(resourceLocator, "Argument resourceLocator cannot be a null [this = " + this + "]");
+        notNull(resourceLocator, "Argument resourceLocator cannot be a null");
 
         Action action = actionManager.createAction(actionId, actionSiteClass);
 
@@ -86,7 +86,7 @@ public class CoreUIUtils {
     }
 
     public void addUIActionHint(AbstractButton component) {
-        notNull(component, "Argument component cannot be a null [this = " + this + "]");
+        notNull(component, "Argument component cannot be a null");
 
         final Action action = (Action) component.getAction();
 
@@ -140,7 +140,7 @@ public class CoreUIUtils {
     }
 
     public void safeEDTCall(Runnable runnable) {
-        notNull(runnable, "Argument runnable cannot be a null [this = " + this + "]");
+        notNull(runnable, "Argument runnable cannot be a null");
 
         if (isEventDispatchThread()) {
             runnable.run();

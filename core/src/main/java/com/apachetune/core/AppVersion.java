@@ -45,7 +45,7 @@ public class AppVersion {
      * @param versionLine a version as a single line.
      */
     public AppVersion(String versionLine) {
-        notNull(versionLine, "Argument versionLine cannot be a null [this = " + this + "]");
+        notNull(versionLine, "Argument versionLine cannot be a null");
 
         parseVersionLine(versionLine);
     }
@@ -107,7 +107,7 @@ public class AppVersion {
      * @return Version as string formatted by given format string.
      */
     public String format(String format) {
-        notNull(format, "Argument format cannot be a null [this = " + this + "]");
+        notNull(format, "Argument format cannot be a null");
 
         isTrue(EDITION_SUBSTITUTION.length() == UPPER_EDITION_SUBSTITUTION.length());
 

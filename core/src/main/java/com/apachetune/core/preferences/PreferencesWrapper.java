@@ -18,7 +18,7 @@ public class PreferencesWrapper implements Preferences {
     private final java.util.prefs.Preferences preferences;
 
     public PreferencesWrapper(java.util.prefs.Preferences preferences) {
-        notNull(preferences, "Argument preferences cannot be a null [this = " + this + "]");
+        notNull(preferences, "Argument preferences cannot be a null");
 
         this.preferences = preferences;
     }

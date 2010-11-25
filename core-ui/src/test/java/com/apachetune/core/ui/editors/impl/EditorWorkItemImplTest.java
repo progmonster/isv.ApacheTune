@@ -115,7 +115,7 @@ public class EditorWorkItemImplTest {
         }});
 
         EditorWorkItem editorWorkItem = new EditorWorkItemImpl(toolWindowManager, mockActionManager,
-                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils);
+                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils, null);
 
         editorWorkItem.setEditorInput(mockEditorInput);
 
@@ -150,7 +150,7 @@ public class EditorWorkItemImplTest {
         }});
         
         EditorWorkItem editorWorkItem = new EditorWorkItemImpl(toolWindowManager, mockActionManager,
-                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils);
+                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils, null);
 
         editorWorkItem.setEditorInput(mockEditorInput);
 
@@ -186,7 +186,7 @@ public class EditorWorkItemImplTest {
         }});
 
         EditorWorkItem editorWorkItem = new EditorWorkItemImpl(toolWindowManager, mockActionManager,
-                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils);
+                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils, null);
 
         editorWorkItem.setEditorInput(mockEditorInput);
 
@@ -224,7 +224,7 @@ public class EditorWorkItemImplTest {
         }});
 
         EditorWorkItem editorWorkItem = new EditorWorkItemImpl(toolWindowManager, mockActionManager,
-                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils);
+                mockStatusBarManager, mockMenuBarManager, mockPreferencesManager, coreUIUtils, null);
 
         editorWorkItem.setEditorInput(mockEditorInput);
 

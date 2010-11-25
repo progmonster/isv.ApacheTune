@@ -103,7 +103,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     public void setEditorInput(EditorInput editorInput) {
-        notNull(editorInput, "Argument editorInput cannot be a null [this = " + this + "]");
+        notNull(editorInput, "Argument editorInput cannot be a null");
 
         this.editorInput = editorInput;
 
@@ -484,7 +484,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     private void checkEditorInput() {
-        notNull(editorInput, "Argument editorInput cannot be a null [this = " + this + "]");
+        notNull(editorInput, "Argument editorInput cannot be a null");
     }
 
     private String getContent() {

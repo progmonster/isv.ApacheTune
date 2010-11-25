@@ -27,13 +27,13 @@ public class ServerObjectInfo {
     private final String title;
 
     public ServerObjectInfo(HttpServer httpServer, File location, ServerObjectType serverObjectType, String title) {
-        notNull(httpServer, "Argument httpServer cannot be a null [this = " + this + "]");
+        notNull(httpServer, "Argument httpServer cannot be a null");
 
-        notNull(location, "Argument location cannot be a null [this = " + this + "]");
+        notNull(location, "Argument location cannot be a null");
 
-        notNull(serverObjectType, "Argument serverObjectType cannot be a null [this = " + this + "]");
+        notNull(serverObjectType, "Argument serverObjectType cannot be a null");
 
-        notNull(title, "Argument title cannot be a null [this = " + this + "]");
+        notNull(title, "Argument title cannot be a null");
         
         this.httpServer = httpServer;
         this.location = location;

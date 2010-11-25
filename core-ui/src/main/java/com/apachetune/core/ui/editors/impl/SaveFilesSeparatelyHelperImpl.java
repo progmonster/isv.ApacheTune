@@ -32,9 +32,9 @@ public class SaveFilesSeparatelyHelperImpl implements SaveFilesHelper {
     }
 
     public void initialize(Collection fileIds, SaveFilesHelperCallBack helperCallBack) {
-        notNull(fileIds, "Argument fileIds cannot be a null [this = " + this + "]");
+        notNull(fileIds, "Argument fileIds cannot be a null");
 
-        notNull(helperCallBack, "Argument helperCallBack cannot be a null [this = " + this + "]");
+        notNull(helperCallBack, "Argument helperCallBack cannot be a null");
 
         this.fileIds = fileIds;
         this.helperCallBack = helperCallBack;

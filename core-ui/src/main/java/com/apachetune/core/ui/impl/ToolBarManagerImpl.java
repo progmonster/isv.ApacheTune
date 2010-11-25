@@ -47,7 +47,7 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addActionGroup(String groupId, com.apachetune.core.ui.actions.Action... actions) {
-        notEmpty(groupId, "Argument groupId cannot be empty [this = " + this + "]");
+        notEmpty(groupId, "Argument groupId cannot be empty");
 
         isTrue(!actionGroups.containsKey(groupId),
                 "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]");
@@ -59,16 +59,16 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addActionGroupAfter(String groupId, String afterGroupId, com.apachetune.core.ui.actions.Action... actions) {
-        notEmpty(groupId, "Argument groupId cannot be empty [this = " + this + "]");
+        notEmpty(groupId, "Argument groupId cannot be empty");
 
         isTrue(!actionGroups.containsKey(groupId),
                 "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]");
 
-        isTrue(actions.length != 0, "Argument actions must contains at least one action [this = " + this + "]");
+        isTrue(actions.length != 0, "Argument actions must contains at least one action");
 
-        notNull(afterGroupId, "Argument afterGroupId cannot be a null [this = " + this + "]");
+        notNull(afterGroupId, "Argument afterGroupId cannot be a null");
 
-        isTrue(!afterGroupId.isEmpty(), "Argument afterGroupId cannot be empty [this = " + this + "]");
+        isTrue(!afterGroupId.isEmpty(), "Argument afterGroupId cannot be empty");
 
         isTrue(actionGroups.containsKey(afterGroupId),
                 "The group after that it will be added not found [afterGroupId = " + afterGroupId + ";" + " this = " +
@@ -82,12 +82,12 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addToActionGroup(String actionGroupId, com.apachetune.core.ui.actions.Action... actions) {
-        notEmpty(actionGroupId, "Argument actionGroupId cannot be empty [this = " + this + "]");
+        notEmpty(actionGroupId, "Argument actionGroupId cannot be empty");
 
         isTrue(actionGroups.containsKey(actionGroupId),
                 "The group not exists [actionGroupId = \"" + actionGroupId + "\"; this" + " = " + this + "]");
 
-        isTrue(actions.length != 0, "Argument actions must contains at least one action [this = " + this + "]");
+        isTrue(actions.length != 0, "Argument actions must contains at least one action");
 
         Component lastComponentInGroup = actionGroups.get(actionGroupId);
 

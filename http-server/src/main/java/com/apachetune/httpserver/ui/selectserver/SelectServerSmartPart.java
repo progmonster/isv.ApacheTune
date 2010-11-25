@@ -29,7 +29,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     public SelectServerSmartPart(final SelectServerPresenter presenter, JFrame mainFrame) {
         super(mainFrame);
 
-        notNull(presenter, "Argument presenter cannot be a null [this = " + this + "]");
+        notNull(presenter, "Argument presenter cannot be a null");
 
         this.presenter = presenter;
 
@@ -105,7 +105,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     }
 
     public void initialize(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
+        notNull(workItem, "Argument workItem cannot be a null");
 
         presenter.initialize(workItem, this);
     }
@@ -115,7 +115,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     }
 
     public void setCurrentDir(String currentDir) {
-        notNull(currentDir, "Argument currentDir cannot be a null [this = " + this + "]");
+        notNull(currentDir, "Argument currentDir cannot be a null");
 
         directoryChooser.setSelectedFile(new File(currentDir));
     }

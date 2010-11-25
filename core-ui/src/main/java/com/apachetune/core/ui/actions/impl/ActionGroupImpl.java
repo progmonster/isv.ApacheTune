@@ -23,7 +23,7 @@ public class ActionGroupImpl implements ActionGroup {
     private final List<ActionGroupListener> actionGroupListeners = new ArrayList<ActionGroupListener>();
 
     public ActionGroupImpl(String id) {
-        notNull(id, "Argument id cannot be a null [this = " + this + "]");
+        notNull(id, "Argument id cannot be a null");
 
         this.id = id;
     }
@@ -33,7 +33,7 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void addAction(Action action) {
-        notNull(action, "Argument action cannot be a null [this = " + this + "]");
+        notNull(action, "Argument action cannot be a null");
 
         isTrue(!actions.containsKey(action.getId()), "Action group already contains an action this same id [action = " +
                     action + ";this = " + this + "]");
@@ -46,7 +46,7 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void removeAction(Action action) {
-        notNull(action, "Argument action cannot be a null [this = " + this + "]");
+        notNull(action, "Argument action cannot be a null");
 
         isTrue(actions.containsKey(action.getId()), "Action not contains in this action group [action = " + action +
                     ";this = " + this + "]");
@@ -62,13 +62,13 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void addListener(ActionGroupListener listener) {
-        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
+        notNull(listener, "Argument listener cannot be a null");
 
         actionGroupListeners.add(listener);
     }
 
     public void removeListener(ActionGroupListener listener) {
-        notNull(listener, "Argument listener cannot be a null [this = " + this + "]");
+        notNull(listener, "Argument listener cannot be a null");
 
         actionGroupListeners.remove(listener);
     }

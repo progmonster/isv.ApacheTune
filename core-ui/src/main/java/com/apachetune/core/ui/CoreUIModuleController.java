@@ -9,9 +9,11 @@ import com.google.inject.name.Named;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
 import java.awt.*;
 
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
+import static com.apachetune.core.utils.Utils.showSendErrorReportDialog;
 import static org.apache.commons.lang.Validate.notNull;
 
 /**
@@ -29,7 +31,7 @@ public class CoreUIModuleController implements ModuleController {
     private WorkItem coreUIWorkItem;
 
     public void initialize(RootWorkItem rootWorkItem) {
-        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null [this = " + this + "]");
+        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null");
 
         rootWorkItem.addChildWorkItem(coreUIWorkItem);
 
@@ -49,7 +51,15 @@ public class CoreUIModuleController implements ModuleController {
                 try {
                     super.dispatchEvent(event);
                 } catch (Throwable cause) {
-                    logger.error("Internal error", cause);                   
+                    logger.error("Error in app", cause);
+
+                    JFrame mainFrame = null;
+
+                    if (coreUIWorkItem != null) {
+                        mainFrame = ((CoreUIWorkItem) coreUIWorkItem).getMainFrame();
+                    }
+                    
+                    showSendErrorReportDialog(mainFrame, cause);
                 }
             }
         });

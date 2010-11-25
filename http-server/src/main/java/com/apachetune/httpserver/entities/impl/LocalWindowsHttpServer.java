@@ -53,7 +53,7 @@ public class LocalWindowsHttpServer implements HttpServer {
     private File serverRoot;
 
     public LocalWindowsHttpServer(File serverRoot) {
-        notNull(serverRoot, "Argument serverRoot cannot be a null [this = " + this + "]");
+        notNull(serverRoot, "Argument serverRoot cannot be a null");
 
         this.serverRoot = serverRoot;                        
     }
@@ -63,7 +63,7 @@ public class LocalWindowsHttpServer implements HttpServer {
     }
 
     public Process executeServerApp(String commandLineArguments) throws IOException {
-        notNull(commandLineArguments, "Argument commandLineArguments cannot be a null [this = " + this + "]");
+        notNull(commandLineArguments, "Argument commandLineArguments cannot be a null");
 
         return Runtime.getRuntime().exec(serverRoot.getAbsolutePath() + separatorChar + SERVER_APP_PATH + ' ' +
                 commandLineArguments);

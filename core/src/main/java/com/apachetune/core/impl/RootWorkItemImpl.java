@@ -52,13 +52,13 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
     }
 
     public void addChildActivationListener(ActivationListener childActivationListener) {
-        notNull(childActivationListener, "Argument activationListener cannot be a null [this = " + this + "]");
+        notNull(childActivationListener, "Argument activationListener cannot be a null");
 
         childActivationListeners.add(childActivationListener);
     }
 
     public void removeChildActivationListener(ActivationListener childActivationListener) {
-        notNull(childActivationListener, "Argument activationListener cannot be a null [this = " + this + "]");
+        notNull(childActivationListener, "Argument activationListener cannot be a null");
 
         childActivationListeners.remove(childActivationListener);
     }

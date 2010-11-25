@@ -153,7 +153,7 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
     }
 
     public void initialize(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null [this = " + this + "]");
+        notNull(workItem, "Argument workItem cannot be a null");
 
         setUndecorated(true);
 

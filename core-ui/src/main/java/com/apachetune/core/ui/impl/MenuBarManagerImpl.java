@@ -53,16 +53,16 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public void addMenuAfter(String menuId, JMenu menu, String afterMenuId) {
-        notNull(menuId, "Argument menuId cannot be a null [this = " + this + "]");
+        notNull(menuId, "Argument menuId cannot be a null");
 
-        isTrue(!menuId.isEmpty(), "Argument menuId cannot be empty [this = " + this + "]");
+        isTrue(!menuId.isEmpty(), "Argument menuId cannot be empty");
 
         isTrue(!menus.containsKey(menuId), "Menu already has been added to the menu bar manager [menuId = " +
                     menuId + "; this = " + this + "]");
 
-        notNull(menu, "Argument menu cannot be a null [this = " + this + "]");
+        notNull(menu, "Argument menu cannot be a null");
 
-        notEmpty(afterMenuId, "Argument afterMenuId cannot be empty [this = " + this + "]");
+        isTrue((afterMenuId == null) || (afterMenuId.length() > 0), "Argument afterMenuId cannot be empty");
 
         isTrue((afterMenuId == null) || menus.containsKey(afterMenuId),
                 "The menu not contains in the menu bar manager [afterMenuId = " + afterMenuId + "; this = " + this +
@@ -93,7 +93,7 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public JMenu getMenu(String menuId) {
-        notEmpty(menuId, "Argument menuId cannot be empty [this = " + this + "]");
+        notEmpty(menuId, "Argument menuId cannot be empty");
 
         isTrue(menus.containsKey(menuId), "The menu not contains in the menu bar manager [menuId = " +
                     menuId + "; this = " + this + "]");
@@ -102,9 +102,9 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public void createAndBindContextMenu(Component component, ActionSite actionSite) {
-        notNull(component, "Argument component cannot be a null [this = " + this + "]");
+        notNull(component, "Argument component cannot be a null");
 
-        notNull(actionSite, "Argument actionSite cannot be a null [this = " + this + "]");
+        notNull(actionSite, "Argument actionSite cannot be a null");
 
         final ContextMenu ctxMenu = createContextMenu(actionSite);
 
@@ -226,7 +226,7 @@ public class MenuBarManagerImpl implements MenuBarManager {
         private final Set<Action> actions = new HashSet<Action>();
 
         public JMenuItem add(Action action) {
-            notNull(action, "Argument action cannot be a null [this = " + this + "]");
+            notNull(action, "Argument action cannot be a null");
 
             actions.add(action);
 

@@ -32,7 +32,7 @@ public class HttpServerModuleController implements ModuleController {
     }
 
     public void initialize(RootWorkItem rootWorkItem) {
-        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null [this = " + this + "]");
+        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null");
 
         coreUIWorkItem.addChildWorkItem(httpServerWorkItem);
     }
