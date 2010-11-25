@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.updating.impl;
 
+import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.updating.*;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -30,19 +31,23 @@ public class UpdateManagerImpl implements UpdateManager {
 
     private final OpenWebPageHelper openWebPageHelper;
 
+    private final HttpServerWorkItem httpServerWorkItem;
+
     private final Object checkForUpdateLock = new Object();
 
     @Inject
     public UpdateManagerImpl(@Named(CHECK_UPDATE_DELAY_IN_MSEC_PROP) long updateDelayInMSec,
                              UpdateConfiguration updateConfiguration, RemoteManager remoteManager,
                              Scheduler scheduler, UpdateInfoDialog updateInfoDialog,
-                             OpenWebPageHelper openWebPageHelper) {
+                             OpenWebPageHelper openWebPageHelper,
+                             HttpServerWorkItem httpServerWorkItem) {
         this.updateDelayInMSec = updateDelayInMSec;
         this.updateConfiguration = updateConfiguration;
         this.remoteManager = remoteManager;
         this.scheduler = scheduler;
         this.updateInfoDialog = updateInfoDialog;
         this.openWebPageHelper = openWebPageHelper;
+        this.httpServerWorkItem = httpServerWorkItem;
     }
 
     @Override
@@ -83,7 +88,7 @@ public class UpdateManagerImpl implements UpdateManager {
             UpdateInfoDialog.UserActionOnUpdateError userAction = updateInfoDialog.showUpdateCheckingError(e);
 
             if (userAction.isUserAgreeSendErrorReport()) {
-                // todo send error report                                
+                httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, e);
             }
         }
     }
