@@ -258,7 +258,7 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
         imageLabel = new JLabel();
         imageLabel.setHorizontalAlignment(0);
         imageLabel.setIcon(new ImageIcon(getClass().getResource(
-                "/com/apachetune/httpserver/ui/smartparts/about/light_version_about_dialog_image.png"
+                "/com/apachetune/httpserver/ui/about/light_version_about_dialog_image.png"
         )
         )
         );
@@ -390,7 +390,7 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
         );
         productNameImageLabel = new JLabel();
         productNameImageLabel.setIcon(new ImageIcon(
-                getClass().getResource("/com/apachetune/httpserver/ui/smartparts/about/product_name_as_mini_image.png")
+                getClass().getResource("/com/apachetune/httpserver/ui/about/product_name_as_mini_image.png")
         )
         );
         productNameImageLabel.setText("");
