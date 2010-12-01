@@ -11,7 +11,6 @@ import net.java.balloontip.styles.EdgedBalloonStyle;
 import net.java.balloontip.utils.TimingUtils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -120,6 +119,6 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
 
         msgDialogSmartPart.run();
 
-        msgDialogSmartPart.close();
+        msgDialogSmartPart.dispose();
     }
 }

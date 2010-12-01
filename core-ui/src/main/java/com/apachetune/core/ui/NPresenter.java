@@ -32,7 +32,7 @@ public abstract class NPresenter<TView extends NView> {
 
         disposed = true;
 
-        view.close();
+        view.dispose();
 
         workItem.removePresenter(this);
     }

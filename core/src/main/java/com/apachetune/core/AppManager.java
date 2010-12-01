@@ -2,6 +2,7 @@ package com.apachetune.core;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * FIXDOC
@@ -10,6 +11,8 @@ import java.util.Date;
  * @version 1.0
  */
 public interface AppManager {
+    UUID getAppInstallationUid();
+
     String getName();
 
     AppVersion getVersion();

@@ -5,7 +5,6 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
-import com.apachetune.core.ui.NSmartPart;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
@@ -38,7 +37,7 @@ import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 import static org.apache.commons.lang.Validate.notNull;
 
-public class MessageSmartPart extends JDialog implements NSmartPart, MessageView, ListSelectionListener {
+public class MessageSmartPart extends JDialog implements MessageView, ListSelectionListener {
     private static final Logger logger = LoggerFactory.getLogger(MessageSmartPart.class);
 
     private final MessagePresenter presenter;
@@ -229,7 +228,7 @@ public class MessageSmartPart extends JDialog implements NSmartPart, MessageView
     }
 
     @Override
-    public final void close() {
+    public final void dispose() {
         messageTable.getSelectionModel().removeListSelectionListener(this);
 
         storeBounds();

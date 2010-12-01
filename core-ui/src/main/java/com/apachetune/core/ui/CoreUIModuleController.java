@@ -3,6 +3,7 @@ package com.apachetune.core.ui;
 import com.apachetune.core.ModuleController;
 import com.apachetune.core.RootWorkItem;
 import com.apachetune.core.WorkItem;
+import com.apachetune.core.preferences.PreferencesManager;
 import com.google.inject.Inject;
 import com.google.inject.Module;
 import com.google.inject.name.Named;
@@ -29,6 +30,9 @@ public class CoreUIModuleController implements ModuleController {
 
     @Inject @Named(CORE_UI_WORK_ITEM)
     private WorkItem coreUIWorkItem;
+
+    @Inject 
+    private PreferencesManager preferencesManager;
 
     public void initialize(RootWorkItem rootWorkItem) {
         notNull(rootWorkItem, "Argument rootWorkItem cannot be a null");
@@ -59,7 +63,7 @@ public class CoreUIModuleController implements ModuleController {
                         mainFrame = ((CoreUIWorkItem) coreUIWorkItem).getMainFrame();
                     }
                     
-                    showSendErrorReportDialog(mainFrame, cause);
+                    showSendErrorReportDialog(mainFrame, cause, preferencesManager);
                 }
             }
         });

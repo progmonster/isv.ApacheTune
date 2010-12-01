@@ -310,7 +310,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
         msgDialogSmartPart.run();
 
-        msgDialogSmartPart.close();
+        msgDialogSmartPart.dispose();
     }
 
     @Override

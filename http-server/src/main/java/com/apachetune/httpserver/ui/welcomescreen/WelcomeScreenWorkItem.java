@@ -32,6 +32,6 @@ public class WelcomeScreenWorkItem extends GenericUIWorkItem {
 
     @Override
     protected void doUIDispose() {
-        welcomeScreenSmartPart.close();
+        welcomeScreenSmartPart.dispose();
     }
 }

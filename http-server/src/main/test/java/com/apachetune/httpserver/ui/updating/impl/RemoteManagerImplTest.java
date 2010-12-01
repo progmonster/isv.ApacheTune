@@ -1,7 +1,7 @@
 package com.apachetune.httpserver.ui.updating.impl;
 
 import com.apachetune.core.AppManager;
-import com.apachetune.httpserver.RemoteAbstractTest;
+import com.apachetune.core.RemoteAbstractTest;
 import com.apachetune.httpserver.ui.updating.RemoteManager;
 import com.apachetune.httpserver.ui.updating.UpdateException;
 import com.apachetune.httpserver.ui.updating.UpdateInfo;

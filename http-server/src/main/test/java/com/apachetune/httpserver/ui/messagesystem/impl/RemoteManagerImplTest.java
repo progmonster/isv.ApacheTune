@@ -1,7 +1,7 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
 import com.apachetune.core.AppManager;
-import com.apachetune.httpserver.RemoteAbstractTest;
+import com.apachetune.core.RemoteAbstractTest;
 import com.apachetune.httpserver.ui.messagesystem.MessageTimestamp;
 import com.apachetune.httpserver.ui.messagesystem.NewsMessage;
 import com.apachetune.httpserver.ui.messagesystem.RemoteManager;

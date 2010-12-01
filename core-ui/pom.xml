@@ -23,6 +23,17 @@
         </dependency>
 
         <dependency>
+            <groupId>com.apachetune</groupId>
+            <artifactId>core</artifactId>
+
+            <!-- TODO version is actual? -->
+            <version>1.0-lite-alpha-SNAPSHOT</version>
+            
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -37,6 +48,12 @@
         <dependency>
             <groupId>org.jmock</groupId>
             <artifactId>jmock-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.simpleframework</groupId>
+            <artifactId>simple</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -104,6 +121,11 @@
             <groupId>swt</groupId>
             <artifactId>swt-win32</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+        </dependency>        
     </dependencies>
 
     <build>

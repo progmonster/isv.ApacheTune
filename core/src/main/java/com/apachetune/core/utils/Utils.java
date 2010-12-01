@@ -1,6 +1,7 @@
 package com.apachetune.core.utils;
 
 import com.apachetune.core.ApplicationException;
+import com.apachetune.core.preferences.PreferencesManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -135,7 +136,9 @@ public final class Utils {
         return result;
     }
 
-    public static void showSendErrorReportDialog(Component parent, Throwable cause) {
+    public static void showSendErrorReportDialog(Component parent, Throwable cause,
+                                                 PreferencesManager preferencesManager) {
+        // preferencesManager can be null
         // TODO implement
 
         showMessageDialog(parent, "An error occurred during application run." +

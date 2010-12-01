@@ -7,4 +7,6 @@ public interface NSmartPart extends NView {
     void initialize(UIWorkItem workItem);
 
     void run();
+
+    void dispose();
 }

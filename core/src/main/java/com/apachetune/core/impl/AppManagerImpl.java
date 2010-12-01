@@ -2,7 +2,10 @@ package com.apachetune.core.impl;
 
 import com.apachetune.core.AppManager;
 import com.apachetune.core.AppVersion;
+import com.apachetune.core.preferences.Preferences;
+import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.utils.Utils;
+import com.google.inject.Inject;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -14,7 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.UUID;
+import java.util.prefs.BackingStoreException;
 
+import static com.apachetune.core.Constants.APP_INSTALLATION_UID_PROP;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 
 /**
@@ -44,9 +50,13 @@ public class AppManagerImpl implements AppManager {
 
     private static final String PRODUCT_WEB_PORTAL_URI_PROP = "productWebPortalUri";
 
+    private final PreferencesManager preferencesManager;
+
     private Properties appProps;
 
-    public AppManagerImpl() {
+    @Inject
+    public AppManagerImpl(PreferencesManager preferencesManager) {
+        this.preferencesManager = preferencesManager;
         try {
             appProps = new Properties();
 
@@ -55,6 +65,26 @@ public class AppManagerImpl implements AppManager {
         } catch (IOException e) {
             throw createRuntimeException(e);
         }
+    }
+
+    public UUID getAppInstallationUid() {
+        Preferences prefs = preferencesManager.systemNodeForPackage(AppManagerImpl.class);
+
+        String strUid = prefs.get(APP_INSTALLATION_UID_PROP, null);
+
+        if (strUid == null) {
+            strUid = UUID.randomUUID().toString();
+
+            prefs.put(APP_INSTALLATION_UID_PROP, strUid);
+
+            try {
+                prefs.flush();
+            } catch (BackingStoreException e) {
+                throw createRuntimeException(e);
+            }
+        }
+
+        return UUID.fromString(strUid);
     }
 
     public String getName() {

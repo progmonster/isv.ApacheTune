@@ -32,7 +32,7 @@ import static com.google.inject.name.Names.named;
  */
 public class CoreUIModule extends AbstractModule {
     protected void configure() {
-        bind(WorkItem.class).annotatedWith(named(CORE_UI_WORK_ITEM)).to(CoreUIWorkItem.class).in(SINGLETON);
+        bind(UIWorkItem.class).annotatedWith(named(CORE_UI_WORK_ITEM)).to(CoreUIWorkItem.class).in(SINGLETON);
 
         bind(JFrame.class).in(SINGLETON);
 

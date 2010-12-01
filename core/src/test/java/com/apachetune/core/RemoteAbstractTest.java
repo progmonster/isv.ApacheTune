@@ -1,4 +1,4 @@
-package com.apachetune.httpserver;
+package com.apachetune.core;
 
 import org.apache.commons.io.IOUtils;
 import org.jmock.Mockery;
@@ -54,6 +54,10 @@ public abstract class RemoteAbstractTest {
         httpService.setHandler(handler);
     }
 
+    protected final boolean isRequestHandlerCalled() {
+        return httpService.isHandlerCalled();
+    }
+
     protected final Connection getTestServiceConnection() {
         return connection;
     }
@@ -65,13 +69,23 @@ public abstract class RemoteAbstractTest {
     private class HttpService implements Container {
         private Container handler;
 
+        private boolean isHandlerCalled;
+
         public final void setHandler(Container handler) {
             this.handler = handler;
+
+            isHandlerCalled = false;
+        }
+
+        public final boolean isHandlerCalled() {
+            return isHandlerCalled;
         }
 
         @Override
         public final void handle(Request req, Response resp) {
             if (handler != null) {
+                isHandlerCalled = true;
+
                 handler.handle(req, resp);
             } else {
                 logger.error("You should set handler up before handling requests.");
@@ -113,6 +127,39 @@ public abstract class RemoteAbstractTest {
                 if (body != null) {
                     body.close();
                 }
+            }
+        }
+    }
+
+    public class AssertQueryAndBodyForPostRequest_Handler implements Container {
+        private final String expectationQuery;
+
+        private final Class clazz;
+        
+        private final String expRequestBodyResourceName;
+
+        public AssertQueryAndBodyForPostRequest_Handler(String expectationQuery, Class clazz,
+                                                        String expRequestBodyResourceName) {
+            this.expectationQuery = expectationQuery;
+            this.clazz = clazz;
+            this.expRequestBodyResourceName = expRequestBodyResourceName;
+        }
+
+        @Override
+        public final void handle(Request request, Response response) {
+            assertThat(request.getMethod()).isEqualTo("POST");
+            System.out.println(request.getAddress());
+            System.out.println(request.getQuery());
+            
+            assertThat(request.getQuery().toString()).isEqualTo(expectationQuery);
+
+            try {
+                String expRequestBody =
+                        IOUtils.toString(clazz.getResourceAsStream(expRequestBodyResourceName), "UTF-8").trim();
+
+                assertThat(request.getContent().trim()).isEqualTo(expRequestBody);
+            } catch (Throwable cause) {
+                logger.error("Request handling error", cause);
             }
         }
     }
