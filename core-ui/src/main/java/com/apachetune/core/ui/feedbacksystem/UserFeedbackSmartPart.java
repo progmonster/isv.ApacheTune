@@ -1,6 +1,8 @@
 package com.apachetune.core.ui.feedbacksystem;
 
+import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
+import com.google.inject.Inject;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
@@ -9,12 +11,29 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 
+import static com.apachetune.core.ui.Utils.*;
+import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_ACCEPTED_SENDING;
+import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_REJECTED_SENDING;
+import static java.awt.Dialog.ModalityType.APPLICATION_MODAL;
+
 public class UserFeedbackSmartPart extends JDialog implements UserFeedbackView {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
 
-    public UserFeedbackSmartPart() {
+    private final PreferencesManager preferencesManager;
+
+    private boolean isDisposed;
+
+    private Result result;
+
+    @Inject
+    public UserFeedbackSmartPart(PreferencesManager preferencesManager, JFrame mainFrame) {
+        super(mainFrame);
+        
+        this.preferencesManager = preferencesManager;
+        setModalityType(APPLICATION_MODAL);
+
         setContentPane(contentPane);
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
@@ -49,22 +68,24 @@ public class UserFeedbackSmartPart extends JDialog implements UserFeedbackView {
 
     @Override
     public final void initialize(UIWorkItem workItem) {
-        // TODO implement
+        setTitle("Send feedback"); // todo localize 
+
+        restoreDialogBounds(preferencesManager, USER_FEEDBACK_SMART_PART_ID, this, 600, 400);
     }
 
     @Override
     public final void run() {
-        // TODO implement
+        setVisible(true);
     }
 
     @Override
     public final Result getResult() {
-        return null;  // TODO implement
+        return result;
     }
 
     @Override
     public final void setUserEmail(String userEmail) {
-        // TODO i`mplement
+        // TODO implement
     }
 
     @Override
@@ -74,21 +95,33 @@ public class UserFeedbackSmartPart extends JDialog implements UserFeedbackView {
 
     @Override
     public final String getUserMessage() {
-        return null; // TODO implement
+        return "fake_user_message"; // TODO implement
     }
 
     @Override
     public final void dispose() {
-        // TODO implement
+        if (isDisposed) {
+            return;
+        }
+
+        isDisposed = true;
+
+        storeDialogBounds(preferencesManager, USER_FEEDBACK_SMART_PART_ID, this);
+
+        super.dispose();
     }
 
     private void onOK() {
 // add your code here
+        result = USER_ACCEPTED_SENDING;
+
         dispose();
     }
 
     private void onCancel() {
 // add your code here if necessary
+        result = USER_REJECTED_SENDING;
+
         dispose();
     }
 
@@ -126,7 +159,7 @@ public class UserFeedbackSmartPart extends JDialog implements UserFeedbackView {
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
                 false));
         buttonOK = new JButton();
-        buttonOK.setText("OK");
+        buttonOK.setText("Send ");
         panel2.add(buttonOK,
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,

@@ -9,6 +9,7 @@ import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.actions.*;
 import com.apachetune.core.ui.editors.EditorActionSite;
+import com.apachetune.core.ui.feedbacksystem.UserFeedbackManager;
 import com.apachetune.core.ui.resources.CoreUIResourceLocator;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.google.inject.Inject;
@@ -47,7 +48,7 @@ import static org.apache.commons.lang.Validate.notNull;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListener {
+public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListener, FeedbackActionSite {
     private final JFrame mainFrame;
 
     private final SwingMaxWindowPatch swingMaxWindowPatch = new SwingMaxWindowPatch();
@@ -74,6 +75,8 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private final PreferencesManager preferencesManager;
 
+    private final UserFeedbackManager userFeedbackManager;
+
     private JPanel mainPanel;
 
     @Inject
@@ -84,7 +87,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
             ToolBarManager toolBarManager,
             AppManager appManager,
             TitleBarManager titleBarManager,
-            PreferencesManager preferencesManager) {
+            PreferencesManager preferencesManager, UserFeedbackManager userFeedbackManager) {
         super(CORE_UI_WORK_ITEM);
 
         this.mainFrame = mainFrame;
@@ -98,6 +101,19 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         this.appManager = appManager;
         this.titleBarManager = titleBarManager;
         this.preferencesManager = preferencesManager;
+        this.userFeedbackManager = userFeedbackManager;
+    }
+
+    @ActionHandler(HELP_SUBMIT_FEEDBACK_ACTION)
+    @Override
+    public final void onSendFeedback() {
+        userFeedbackManager.sendUserFeedback();
+    }
+
+    @ActionPermission(HELP_SUBMIT_FEEDBACK_ACTION)
+    @Override
+    public final boolean isFeedbackEnabled() {
+        return true;
     }
 
     public final JFrame getMainFrame() {

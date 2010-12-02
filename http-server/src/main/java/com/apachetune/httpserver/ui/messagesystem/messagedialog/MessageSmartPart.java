@@ -3,7 +3,6 @@ package com.apachetune.httpserver.ui.messagesystem.messagedialog;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
-import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
@@ -29,10 +28,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.prefs.BackingStoreException;
 
-import static com.apachetune.core.utils.Utils.createRuntimeException;
-import static java.awt.Dialog.ModalityType.TOOLKIT_MODAL;
+import static com.apachetune.core.ui.Constants.MESSAGE_SMART_PART_ID;
+import static com.apachetune.core.ui.Utils.restoreDialogBounds;
+import static com.apachetune.core.ui.Utils.storeDialogBounds;
+import static java.awt.Dialog.ModalityType.APPLICATION_MODAL;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
 import static org.apache.commons.lang.Validate.notNull;
@@ -63,6 +63,8 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
     private JTable messageTable;
 
     private NewsMessage currentShowedMsg;
+
+    private boolean isDisposed;
 
     @Inject
     public MessageSmartPart(final MessagePresenter presenter, MessageManager messageManager,
@@ -137,7 +139,7 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
         presenter.initialize(workItem, this);
 
         setTitle("News Messages"); // todo localize
-        setModalityType(TOOLKIT_MODAL);
+        setModalityType(APPLICATION_MODAL);
 
         restoreBounds();
 
@@ -229,6 +231,12 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
     @Override
     public final void dispose() {
+        if (isDisposed) {
+            return;
+        }
+
+        isDisposed = true;
+
         messageTable.getSelectionModel().removeListSelectionListener(this);
 
         storeBounds();
@@ -236,6 +244,8 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
         presenter.onCloseView();
 
         presenter.dispose();
+
+        super.dispose();
     }
 
     @Override
@@ -372,40 +382,11 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
     }
 
     private void restoreBounds() {
-        setMinimumSize(new Dimension(600, 400));
-
-        Preferences pref = preferencesManager.userNodeForPackage(MessageSmartPart.class);
-
-        int left = pref.getInt("left", Integer.MAX_VALUE);
-
-        int top = pref.getInt("top", Integer.MAX_VALUE);
-
-        int width = pref.getInt("width", 600);
-
-        int height = pref.getInt("height", 400);
-
-        setSize(width, height);
-
-        if ((left == Integer.MAX_VALUE) || (top == Integer.MAX_VALUE)) {
-            setLocationRelativeTo(null);
-        } else {
-            setLocation(left, top);
-        }
+        restoreDialogBounds(preferencesManager, MESSAGE_SMART_PART_ID, this, 600, 400);
     }
 
     private void storeBounds() {
-        Preferences pref = preferencesManager.userNodeForPackage(MessageSmartPart.class);
-
-        pref.putInt("left", getLocation().x);
-        pref.putInt("top", getLocation().y);
-        pref.putInt("width", getSize().width);
-        pref.putInt("height", getSize().height);
-
-        try {
-            pref.flush();
-        } catch (BackingStoreException e) {
-            throw createRuntimeException(e);
-        }
+        storeDialogBounds(preferencesManager, MESSAGE_SMART_PART_ID, this);
     }
 
     /**
