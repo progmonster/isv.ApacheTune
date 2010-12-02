@@ -11,7 +11,7 @@ import com.apachetune.core.ui.editors.impl.SaveAllFilesAtOnceHelperImpl;
 import com.apachetune.core.ui.editors.impl.SaveFilesSeparatelyHelperImpl;
 import com.apachetune.core.ui.feedbacksystem.*;
 import com.apachetune.core.ui.feedbacksystem.impl.RemoteManagerImpl;
-import com.apachetune.core.ui.feedbacksystem.impl.SendUserFeedbackErrorDialogImpl;
+import com.apachetune.core.ui.feedbacksystem.impl.SendUserFeedbackMessageDialogImpl;
 import com.apachetune.core.ui.feedbacksystem.impl.UserFeedbackManagerImpl;
 import com.apachetune.core.ui.impl.*;
 import com.apachetune.core.ui.resources.CoreUIResourceLocator;
@@ -80,7 +80,7 @@ public class CoreUIModule extends AbstractModule {
 
         bind(RemoteManager.class).to(RemoteManagerImpl.class).in(SINGLETON);
 
-        bind(SendUserFeedbackErrorDialog.class).to(SendUserFeedbackErrorDialogImpl.class);
+        bind(SendUserFeedbackMessageDialog.class).to(SendUserFeedbackMessageDialogImpl.class);
 
         bind(UserFeedbackView.class).to(UserFeedbackSmartPart.class);
     }

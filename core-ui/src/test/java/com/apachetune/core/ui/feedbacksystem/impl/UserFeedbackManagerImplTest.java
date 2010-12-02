@@ -33,7 +33,7 @@ public class UserFeedbackManagerImplTest {
 
     private RemoteManager mockRemoteManager;
 
-    private SendUserFeedbackErrorDialog mockSendUserFeedbackErrorDialog;
+    private SendUserFeedbackMessageDialog mockSendUserFeedbackMessageDialog;
 
     private Sequence workflow;
 
@@ -56,12 +56,12 @@ public class UserFeedbackManagerImplTest {
 
         mockRemoteManager = mockCtx.mock(RemoteManager.class);
 
-        mockSendUserFeedbackErrorDialog = mockCtx.mock(SendUserFeedbackErrorDialog.class);
+        mockSendUserFeedbackMessageDialog = mockCtx.mock(SendUserFeedbackMessageDialog.class);
 
         workflow = mockCtx.sequence("workflow");
 
         testSubj = new UserFeedbackManagerImpl(mockWorkItem, fakeUserFeedbackViewProvider, mockRemoteManager,
-                mockFeedbackManager, mockSendUserFeedbackErrorDialog, null);
+                mockFeedbackManager, mockSendUserFeedbackMessageDialog, null);
     }
     
     @Test
@@ -120,6 +120,10 @@ public class UserFeedbackManagerImplTest {
             inSequence(workflow);
 
             oneOf(mockRemoteManager).sendUserFeedback("progmonster@gmail.com", "fake_user_message");
+            inSequence(workflow);
+
+            oneOf(mockSendUserFeedbackMessageDialog).showSuccess();
+            inSequence(workflow);
         }});
 
         testSubj.sendUserFeedback();
@@ -163,7 +167,7 @@ public class UserFeedbackManagerImplTest {
             will(throwException(new RemoteException("fake_exception")));
 
             //noinspection ThrowableResultOfMethodCallIgnored
-            oneOf(mockSendUserFeedbackErrorDialog).show(with(any(RemoteException.class)));
+            oneOf(mockSendUserFeedbackMessageDialog).showError(with(any(RemoteException.class)));
             inSequence(workflow);
 
             oneOf(mockWorkItem).raiseEvent(with(ON_SEND_ERROR_REPORT_EVENT), with(any(SendErrorReportEvent.class)));

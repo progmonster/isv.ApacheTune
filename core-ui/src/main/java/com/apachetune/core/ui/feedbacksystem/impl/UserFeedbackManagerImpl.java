@@ -30,7 +30,7 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
     private final FeedbackManager feedbackManager;
 
-    private final SendUserFeedbackErrorDialog sendUserFeedbackErrorDialog;
+    private final SendUserFeedbackMessageDialog sendUserFeedbackMessageDialog;
 
     private final JFrame mainFrame;
 
@@ -38,12 +38,12 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
     public UserFeedbackManagerImpl(@Named(CORE_UI_WORK_ITEM) UIWorkItem workItem,
                                    Provider<UserFeedbackView> userFeedbackViewProvider, RemoteManager remoteManager,
                                    FeedbackManager feedbackManager,
-                                   SendUserFeedbackErrorDialog sendUserFeedbackErrorDialog, JFrame mainFrame) {
+                                   SendUserFeedbackMessageDialog sendUserFeedbackMessageDialog, JFrame mainFrame) {
         this.workItem = workItem;
         this.userFeedbackViewProvider = userFeedbackViewProvider;
         this.remoteManager = remoteManager;
         this.feedbackManager = feedbackManager;
-        this.sendUserFeedbackErrorDialog = sendUserFeedbackErrorDialog;
+        this.sendUserFeedbackMessageDialog = sendUserFeedbackMessageDialog;
         this.mainFrame = mainFrame;
     }
 
@@ -73,11 +73,13 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
         try {
             remoteManager.sendUserFeedback(userEmail, userMessage);
+
+            sendUserFeedbackMessageDialog.showSuccess();
         } catch (RemoteException e) {
             logger.error("Error during sending user feedback [userEmail=" + userEmail + "; userMessage=" + userMessage +
                     ']');
 
-            sendUserFeedbackErrorDialog.show(e);
+            sendUserFeedbackMessageDialog.showError(e);
 
             workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
         }
