@@ -14,9 +14,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.swing.*;
+
 import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_ACCEPTED_SENDING;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_REJECTED_SENDING;
+import static javax.swing.JOptionPane.OK_OPTION;
 
 /**
  * FIXDOC
@@ -169,6 +172,7 @@ public class UserFeedbackManagerImplTest {
             //noinspection ThrowableResultOfMethodCallIgnored
             oneOf(mockSendUserFeedbackMessageDialog).showError(with(any(RemoteException.class)));
             inSequence(workflow);
+            will(returnValue(OK_OPTION));
 
             oneOf(mockWorkItem).raiseEvent(with(ON_SEND_ERROR_REPORT_EVENT), with(any(SendErrorReportEvent.class)));
             inSequence(workflow);

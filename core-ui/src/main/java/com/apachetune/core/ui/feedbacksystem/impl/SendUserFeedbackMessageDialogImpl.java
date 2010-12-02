@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.*;
+import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 
 /**
  * FIXDOC
@@ -20,14 +21,21 @@ public class SendUserFeedbackMessageDialogImpl implements SendUserFeedbackMessag
     }
 
     @Override
-    public final void showError(Throwable cause) {
-        // TODO implement
-        showMessageDialog(mainFrame, format("Error sending user feedback [{0}]", cause.getMessage()),
-                "Error", ERROR_MESSAGE);
+    public final int showError(Throwable cause) {
+        return showConfirmDialog(mainFrame, format(
+                "Oops! An error occurred during sending the feedback.\n\nThanks for feedback and don''t worry: it was" +
+                " saved into the application log.\nPlease, press OK to send information about the error and the" +
+                " application log to our developer command.\n\n" + "Error details:\n[errorMsg={0}]\n",
+                cause.getMessage()),
+                "Error", ERROR_MESSAGE, OK_CANCEL_OPTION);
     }
 
     @Override
     public final void showSuccess() {
-        showMessageDialog(mainFrame, "Thanks for sending your feedback!", "Success", INFORMATION_MESSAGE);
+        showMessageDialog(
+                mainFrame,
+                "Thanks for sending your feedback!", // todo localize
+                "Success", // todo localize
+                INFORMATION_MESSAGE);
     }
 }

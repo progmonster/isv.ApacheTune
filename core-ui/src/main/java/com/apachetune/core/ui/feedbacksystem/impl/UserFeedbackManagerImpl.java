@@ -15,6 +15,7 @@ import javax.swing.*;
 import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_ACCEPTED_SENDING;
+import static javax.swing.JOptionPane.OK_OPTION;
 
 /**
  * FIXDOC
@@ -79,9 +80,9 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
             logger.error("Error during sending user feedback [userEmail=" + userEmail + "; userMessage=" + userMessage +
                     ']');
 
-            sendUserFeedbackMessageDialog.showError(e);
-
-            workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
+            if (sendUserFeedbackMessageDialog.showError(e) == OK_OPTION) {
+                workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
+            }
         }
     }
 }
