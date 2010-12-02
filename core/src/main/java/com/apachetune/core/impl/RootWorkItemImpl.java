@@ -3,6 +3,7 @@ package com.apachetune.core.impl;
 import com.apachetune.core.*;
 import com.apachetune.events.SendErrorReportEvent;
 import com.google.inject.Inject;
+import org.apache.velocity.app.Velocity;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 
@@ -13,6 +14,7 @@ import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.Constants.ROOT_WORK_ITEM_ID;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
 
 /**
  * FIXDOC
@@ -37,6 +39,15 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
         try {
             scheduler.start();
         } catch (SchedulerException e) {
+            throw createRuntimeException(e);
+        }
+
+        Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
+        Velocity.setProperty("runtime.log.logsystem.log4j.logger", "velocity_logger");
+
+        try {
+            Velocity.init();
+        } catch (Exception e) {
             throw createRuntimeException(e);
         }
     }

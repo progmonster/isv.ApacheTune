@@ -2,7 +2,7 @@ package com.apachetune.httpserver;
 
 import com.apachetune.core.ModuleController;
 import com.apachetune.core.RootWorkItem;
-import com.apachetune.core.WorkItem;
+import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.Module;
@@ -21,7 +21,7 @@ public class HttpServerModuleController implements ModuleController {
     private final Module httpServerModule = new HttpServerModule();
 
     @Inject @Named(CORE_UI_WORK_ITEM)
-    private WorkItem coreUIWorkItem;
+    private UIWorkItem coreUIWorkItem;
 
     @Inject
     private HttpServerWorkItem httpServerWorkItem;

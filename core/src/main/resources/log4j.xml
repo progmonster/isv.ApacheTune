@@ -7,6 +7,8 @@
       <param name="ConversionPattern" value="%5p [%t] (%F:%L) - %m%n"/>
     </layout>
   </appender>
+
+  <!--WARNING! Current velocity configuration depends on "R" appender name -->  
   <appender name="R" class="org.apache.log4j.RollingFileAppender">
     <param name="file" value="logs/apachetune.log"/>
     <param name="MaxFileSize" value="1MB"/>

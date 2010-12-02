@@ -1,14 +1,18 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
 import com.apachetune.core.ui.UIWorkItem;
-import com.apachetune.core.ui.feedbacksystem.RemoteManager;
-import com.apachetune.core.ui.feedbacksystem.UserFeedbackManager;
-import com.apachetune.core.ui.feedbacksystem.UserFeedbackView;
+import com.apachetune.core.ui.feedbacksystem.*;
+import com.apachetune.events.SendErrorReportEvent;
 import com.apachetune.feedbacksystem.FeedbackManager;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.swing.*;
+
+import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_ACCEPTED_SENDING;
 
@@ -16,6 +20,8 @@ import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER
  * FIXDOC
  */
 public class UserFeedbackManagerImpl implements UserFeedbackManager {
+    private static final Logger logger = LoggerFactory.getLogger(UserFeedbackManagerImpl.class);
+
     private final UIWorkItem workItem;
 
     private final Provider<UserFeedbackView> userFeedbackViewProvider;
@@ -24,14 +30,21 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
     private final FeedbackManager feedbackManager;
 
+    private final SendUserFeedbackErrorDialog sendUserFeedbackErrorDialog;
+
+    private final JFrame mainFrame;
+
     @Inject
     public UserFeedbackManagerImpl(@Named(CORE_UI_WORK_ITEM) UIWorkItem workItem,
                                    Provider<UserFeedbackView> userFeedbackViewProvider, RemoteManager remoteManager,
-                                   FeedbackManager feedbackManager) {
+                                   FeedbackManager feedbackManager,
+                                   SendUserFeedbackErrorDialog sendUserFeedbackErrorDialog, JFrame mainFrame) {
         this.workItem = workItem;
         this.userFeedbackViewProvider = userFeedbackViewProvider;
         this.remoteManager = remoteManager;
         this.feedbackManager = feedbackManager;
+        this.sendUserFeedbackErrorDialog = sendUserFeedbackErrorDialog;
+        this.mainFrame = mainFrame;
     }
 
     @Override
@@ -58,6 +71,15 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
         userFeedbackView.dispose();
 
-        remoteManager.sendUserFeedback(userEmail, userMessage);
+        try {
+            remoteManager.sendUserFeedback(userEmail, userMessage);
+        } catch (RemoteException e) {
+            logger.error("Error during sending user feedback [userEmail=" + userEmail + "; userMessage=" + userMessage +
+                    ']');
+
+            sendUserFeedbackErrorDialog.show(e);
+
+            workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
+        }
     }
 }

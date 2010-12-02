@@ -1,8 +1,8 @@
 package com.apachetune.httpserver.ui.welcomescreen;
 
-import com.apachetune.core.WorkItem;
 import com.apachetune.core.ui.CoreUIWorkItem;
 import com.apachetune.core.ui.NPresenter;
+import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.httpserver.RecentOpenedServerListChangedListener;
 import com.apachetune.httpserver.RecentOpenedServersManager;
 import com.google.inject.Inject;
@@ -24,7 +24,7 @@ public class WelcomeScreenPresenter extends NPresenter<WelcomeScreenView>
 //    private final HttpServerManager httpServerManager;
 
     @Inject
-    public WelcomeScreenPresenter(final @Named(CORE_UI_WORK_ITEM) WorkItem coreUIWorkItem,
+    public WelcomeScreenPresenter(final @Named(CORE_UI_WORK_ITEM) UIWorkItem coreUIWorkItem,
                                   final RecentOpenedServersManager recentOpenedServersManager) {
         this.coreUIWorkItem = (CoreUIWorkItem) coreUIWorkItem;
         this.recentOpenedServersManager = recentOpenedServersManager;

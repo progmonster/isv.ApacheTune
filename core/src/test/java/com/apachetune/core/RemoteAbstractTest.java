@@ -13,6 +13,7 @@ import org.simpleframework.transport.connect.SocketConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.net.InetSocketAddress;
 
@@ -148,18 +149,21 @@ public abstract class RemoteAbstractTest {
         @Override
         public final void handle(Request request, Response response) {
             assertThat(request.getMethod()).isEqualTo("POST");
-            System.out.println(request.getAddress());
-            System.out.println(request.getQuery());
-            
-            assertThat(request.getQuery().toString()).isEqualTo(expectationQuery);
+            assertThat(request.getAddress().toString()).isEqualTo(expectationQuery);
 
             try {
                 String expRequestBody =
                         IOUtils.toString(clazz.getResourceAsStream(expRequestBodyResourceName), "UTF-8").trim();
 
-                assertThat(request.getContent().trim()).isEqualTo(expRequestBody);
+                assertThat(request.getContent().trim()).isEqualTo(expRequestBody.trim());
             } catch (Throwable cause) {
                 logger.error("Request handling error", cause);
+            } finally {
+                try {
+                    response.close();
+                } catch (IOException e) {
+                    logger.error("Error committing response.", e);
+                }
             }
         }
     }

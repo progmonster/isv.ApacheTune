@@ -13,5 +13,11 @@ public class Constants {
     
     public static final String ON_SEND_ERROR_REPORT_EVENT = "ON_SEND_ERROR_REPORT_EVENT";
 
-    public static final String APP_INSTALLATION_UID_PROP = "APP_INSTALLATION_UID_PROP"; 
+    public static final String APP_INSTALLATION_UID_PROP = "APP_INSTALLATION_UID_PROP";
+
+    public static final String REMOTE_FEEDBACK_SERVICE_URL_PROP = "REMOTE_FEEDBACK_SERVICE_URL";
+
+    public static final String VELOCITY_LOG4J_APPENDER_NAME = "R";
+    
+    public static final String REMOTE_SERVICE_USER_EMAIL_PROP_NAME = "REMOTE_SERVICE_USER_EMAIL";
 }

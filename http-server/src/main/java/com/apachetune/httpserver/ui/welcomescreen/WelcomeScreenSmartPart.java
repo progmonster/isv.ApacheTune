@@ -5,7 +5,6 @@ import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
 import com.apachetune.core.AppManager;
-import com.apachetune.core.WorkItem;
 import com.apachetune.core.ui.CoreUIWorkItem;
 import com.apachetune.core.ui.UIWorkItem;
 import com.google.inject.Inject;
@@ -22,13 +21,13 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
-import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
 
 /**
  * FIXDOC
@@ -56,7 +55,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
 
     @Inject
     public WelcomeScreenSmartPart(final WelcomeScreenPresenter presenter,
-                                  final @Named(CORE_UI_WORK_ITEM) WorkItem coreUIWorkItem,
+                                  final @Named(CORE_UI_WORK_ITEM) UIWorkItem coreUIWorkItem,
                                   final AppManager appManager, final JFrame mainFrame) {
         this.presenter = presenter;
         this.appManager = appManager;
@@ -185,7 +184,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
 
 class DefaultWebServerContent extends WebServer.WebServerContent {
     private final WebServer.HTTPRequest request;
-    
+
     private final VelocityContextProvider velocityContextProvider;
 
     public DefaultWebServerContent(WebServer.HTTPRequest request, VelocityContextProvider velocityContextProvider) {
@@ -201,7 +200,7 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
         String ext = getResourceExtension();
 
         if (ext.equals("vm")) {
-            return "text/html"; 
+            return "text/html";
         } else {
             return getDefaultMimeType(ext);
         }
@@ -228,15 +227,9 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
         try {
             StringWriter writer = new StringWriter();
 
-            Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
-            Velocity.setProperty("runtime.log.logsystem.log4j.logger", "velocity_logger");
-
-            Velocity.init();
-
-            // todo "stdout" to constant.
             VelocityContext ctx = velocityContextProvider.getVelocityContext();
 
-            boolean isOk = Velocity.evaluate(ctx, writer, "stdout", reader);
+            boolean isOk = Velocity.evaluate(ctx, writer, VELOCITY_LOG4J_APPENDER_NAME, reader);
 
             isTrue(isOk);
 

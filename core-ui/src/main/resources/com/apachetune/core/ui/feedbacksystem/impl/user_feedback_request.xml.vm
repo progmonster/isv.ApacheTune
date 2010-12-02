@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<userFeedBack appFullName="$appFullName" appInstallationUid="$appInstallationUid"#if($userEMail) userEMail="$userEMail"#end>
+	<message>$base64EncodedUserMessage</message>
+</userFeedBack>

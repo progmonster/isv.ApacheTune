@@ -1,9 +1,8 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
 import com.apachetune.core.ui.UIWorkItem;
-import com.apachetune.core.ui.feedbacksystem.RemoteManager;
-import com.apachetune.core.ui.feedbacksystem.UserFeedbackManager;
-import com.apachetune.core.ui.feedbacksystem.UserFeedbackView;
+import com.apachetune.core.ui.feedbacksystem.*;
+import com.apachetune.events.SendErrorReportEvent;
 import com.apachetune.feedbacksystem.FeedbackManager;
 import com.google.inject.Provider;
 import org.jmock.Expectations;
@@ -15,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_ACCEPTED_SENDING;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_REJECTED_SENDING;
 
@@ -29,11 +29,11 @@ public class UserFeedbackManagerImplTest {
 
     private FeedbackManager mockFeedbackManager;
 
-    private Provider<UserFeedbackView> fakeUserFeedbackViewProvider;
-
     private UserFeedbackView mockUserFeedbackView;
 
     private RemoteManager mockRemoteManager;
+
+    private SendUserFeedbackErrorDialog mockSendUserFeedbackErrorDialog;
 
     private Sequence workflow;
 
@@ -47,7 +47,7 @@ public class UserFeedbackManagerImplTest {
 
         mockUserFeedbackView = mockCtx.mock(UserFeedbackView.class);
 
-        fakeUserFeedbackViewProvider = new Provider<UserFeedbackView>() {
+        Provider<UserFeedbackView> fakeUserFeedbackViewProvider = new Provider<UserFeedbackView>() {
             @Override
             public final UserFeedbackView get() {
                 return mockUserFeedbackView;
@@ -56,10 +56,12 @@ public class UserFeedbackManagerImplTest {
 
         mockRemoteManager = mockCtx.mock(RemoteManager.class);
 
+        mockSendUserFeedbackErrorDialog = mockCtx.mock(SendUserFeedbackErrorDialog.class);
+
         workflow = mockCtx.sequence("workflow");
 
         testSubj = new UserFeedbackManagerImpl(mockWorkItem, fakeUserFeedbackViewProvider, mockRemoteManager,
-                mockFeedbackManager);
+                mockFeedbackManager, mockSendUserFeedbackErrorDialog, null);
     }
     
     @Test
@@ -118,6 +120,54 @@ public class UserFeedbackManagerImplTest {
             inSequence(workflow);
 
             oneOf(mockRemoteManager).sendUserFeedback("progmonster@gmail.com", "fake_user_message");
+        }});
+
+        testSubj.sendUserFeedback();
+    }
+
+    @Test
+    public void test_fail_on_user_feedback_sending() throws Exception {
+        mockCtx.checking(new Expectations(){{
+            allowing(mockFeedbackManager).getUserEmail();
+            will(returnValue("progmonster@gmail.com"));
+
+            one(mockFeedbackManager).storeUserEMail("progmonster@gmail.com");
+
+            oneOf(mockUserFeedbackView).initialize(mockWorkItem);
+            inSequence(workflow);
+
+            oneOf(mockUserFeedbackView).setUserEmail("progmonster@gmail.com");
+            inSequence(workflow);
+
+            oneOf(mockUserFeedbackView).run();
+            inSequence(workflow);
+
+            oneOf(mockUserFeedbackView).getResult();
+            inSequence(workflow);
+            will(returnValue(USER_ACCEPTED_SENDING));
+
+            oneOf(mockUserFeedbackView).getUserEmail();
+            inSequence(workflow);
+            will(returnValue("progmonster@gmail.com"));
+
+            oneOf(mockUserFeedbackView).getUserMessage();
+            inSequence(workflow);
+            will(returnValue("fake_user_message"));
+
+            oneOf(mockUserFeedbackView).dispose();
+            inSequence(workflow);
+
+            oneOf(mockRemoteManager).sendUserFeedback("progmonster@gmail.com", "fake_user_message");
+            inSequence(workflow);
+            //noinspection ThrowableInstanceNeverThrown
+            will(throwException(new RemoteException("fake_exception")));
+
+            //noinspection ThrowableResultOfMethodCallIgnored
+            oneOf(mockSendUserFeedbackErrorDialog).show(with(any(RemoteException.class)));
+            inSequence(workflow);
+
+            oneOf(mockWorkItem).raiseEvent(with(ON_SEND_ERROR_REPORT_EVENT), with(any(SendErrorReportEvent.class)));
+            inSequence(workflow);
         }});
 
         testSubj.sendUserFeedback();

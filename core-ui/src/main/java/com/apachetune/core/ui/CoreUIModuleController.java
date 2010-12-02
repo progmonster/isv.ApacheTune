@@ -2,7 +2,6 @@ package com.apachetune.core.ui;
 
 import com.apachetune.core.ModuleController;
 import com.apachetune.core.RootWorkItem;
-import com.apachetune.core.WorkItem;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.google.inject.Inject;
 import com.google.inject.Module;
@@ -29,7 +28,7 @@ public class CoreUIModuleController implements ModuleController {
     private final Module coreUIModule = new CoreUIModule();
 
     @Inject @Named(CORE_UI_WORK_ITEM)
-    private WorkItem coreUIWorkItem;
+    private UIWorkItem coreUIWorkItem;
 
     @Inject 
     private PreferencesManager preferencesManager;
