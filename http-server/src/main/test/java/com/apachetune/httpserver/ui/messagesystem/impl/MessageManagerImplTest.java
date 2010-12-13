@@ -12,7 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.quartz.Trigger;
 
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class MessageManagerImplTest {
 
     private MessageManager testSubj;
 
+    private Scheduler mockScheduler;
+
     @Before
     public void prepare_test() throws Exception {
         mockStatusBarManager = mockCtx.mock(StatusBarManager.class);
@@ -47,15 +51,27 @@ public class MessageManagerImplTest {
 
         mockRemoteManager = mockCtx.mock(RemoteManager.class);
 
-        Scheduler mockScheduler = mockCtx.mock(Scheduler.class);
+        mockScheduler = mockCtx.mock(Scheduler.class);
+
+        ScheduleLoadNewsMessagesStrategy fakeScheduleLoadNewsMessagesStrategy = new ScheduleLoadNewsMessagesStrategy() {
+            @Override
+            public final void scheduleLoadNewsMessages(Runnable loadNewsMessagesTask) {
+                loadNewsMessagesTask.run();
+            }
+        };
 
         testSubj = new MessageManagerImpl(mockStatusBarManager, mockMessageStatusBarSite, mockMessageStore,
-                mockRemoteManager, mockScheduler);
+                mockRemoteManager, fakeScheduleLoadNewsMessagesStrategy);
 
         mockCtx.checking(new Expectations() {{
             ignoring(mockStatusBarManager).addStatusBarSite(mockMessageStatusBarSite);
 
             ignoring(mockMessageStore).initialize();
+            ignoring(mockMessageStatusBarSite).initialize();
+            ignoring(mockMessageStatusBarSite).dispose();
+
+            ignoring(mockMessageStore).addDataChangedListener(with(any(MessageStoreDataChangedListener.class)));
+            ignoring(mockMessageStore).removeDataChangedListener(with(any(MessageStoreDataChangedListener.class)));
         }});
 
         testSubj.initialize();
@@ -119,9 +135,21 @@ public class MessageManagerImplTest {
         final States state = mockCtx.states("test_state").startsAs("initial_state");
 
         mockCtx.checking(new Expectations() {{
+            one(mockScheduler).scheduleJob(with(any(JobDetail.class)), with(any(Trigger.class)));
+
             allowing(mockMessageStore).getLastTimestamp();
             when(state.is("initial_state"));
             will(returnValue(MessageTimestamp.createEmpty()));
+
+            allowing(mockMessageStore).getUnreadMessages();
+            when(state.is("initial_state"));
+            will(returnValue(emptyList()));
+
+            allowing(mockMessageStatusBarSite).setNotificationAreaActive(false);
+            when(state.is("initial_state"));
+
+            allowing(mockMessageStatusBarSite).setNotificationTip("There are no unread messages.");
+            when(state.is("initial_state"));
 
             one(mockRemoteManager).loadNewMessages(MessageTimestamp.createEmpty());
             inSequence(sequence);

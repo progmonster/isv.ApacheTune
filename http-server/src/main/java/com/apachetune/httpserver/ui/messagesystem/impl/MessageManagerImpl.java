@@ -3,15 +3,12 @@ package com.apachetune.httpserver.ui.messagesystem.impl;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.httpserver.ui.messagesystem.*;
 import com.google.inject.Inject;
-import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.text.MessageFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.util.Arrays.asList;
@@ -27,8 +24,6 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
 
     private static final String HAVE_UNREAD_MESSAGES_MSG_TMPL = "There are {0} unread messages";  // todo localize
 
-    private static final int LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC = 60 * 1000;
-
     private final StatusBarManager statusBarManager;
 
     private final MessageStatusBarSite messageStatusBarSite;
@@ -37,18 +32,18 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
 
     private final RemoteManager remoteManager;
 
-    private Scheduler scheduler;
+    private final ScheduleLoadNewsMessagesStrategy scheduleLoadNewsMessagesStrategy;
 
     @Inject
     public MessageManagerImpl(StatusBarManager statusBarManager,
                               MessageStatusBarSite messageStatusBarSite,
                               MessageStore messageStore, RemoteManager remoteManager,
-                              Scheduler scheduler) {
+                              ScheduleLoadNewsMessagesStrategy scheduleLoadNewsMessagesStrategy) {
         this.statusBarManager = statusBarManager;
         this.messageStatusBarSite = messageStatusBarSite;
         this.messageStore = messageStore;
         this.remoteManager = remoteManager;
-        this.scheduler = scheduler;
+        this.scheduleLoadNewsMessagesStrategy = scheduleLoadNewsMessagesStrategy;
     }
 
     @Override
@@ -84,7 +79,19 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
     public final void start() {
         updateNotificationArea();
 
-        scheduleLoadNewMessagesTask();
+        scheduleLoadNewsMessagesStrategy.scheduleLoadNewsMessages(new Runnable() {
+            @Override
+            public final void run() {
+                List<NewsMessage> newsMessages = remoteManager.loadNewMessages(getLastLoadedMessageTimestamp());
+
+                if (newsMessages.size() > 0) {
+                    messageStore.storeMessages(newsMessages);
+
+                    updateNotificationArea();
+                    messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
+                }
+            }
+        });
     }
 
     @Override
@@ -156,55 +163,6 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
         } else {
             messageStatusBarSite.setNotificationAreaActive(false);
             messageStatusBarSite.setNotificationTip(NO_UNREAD_MESSAGES_NOTIFICATION_TIP_MSG);
-        }
-    }
-
-    private void scheduleLoadNewMessagesTask() {
-        LoadNewsMessagesTask task = new LoadNewsMessagesTask();
-
-        JobDetail jobDetail = new JobDetail();
-
-        jobDetail.setName("loadNewsMessagesTask");
-        jobDetail.setJobClass(LoadNewsMessagesJob.class);
-
-        Map dataMap = jobDetail.getJobDataMap();
-
-        dataMap.put("loadNewsMessagesTask", task);
-
-        SimpleTrigger trigger = new SimpleTrigger();
-
-        trigger.setName("loadNewsMessagesTrigger");
-        trigger.setStartTime(new Date(System.currentTimeMillis() + LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC));
-        trigger.setRepeatCount(0);
-
-        try {
-            scheduler.scheduleJob(jobDetail, trigger);
-        } catch (SchedulerException e) {
-            logger.error("Cannot schedule load new messages task.", e);
-        }
-    }
-
-    public class LoadNewsMessagesTask {
-        public final void execute() {
-            List<NewsMessage> newsMessages = remoteManager.loadNewMessages(getLastLoadedMessageTimestamp());
-
-            if (newsMessages.size() > 0) {
-                messageStore.storeMessages(newsMessages);
-
-                updateNotificationArea();
-                messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
-            }
-        }
-    }
-
-    public static class LoadNewsMessagesJob implements Job {
-        @Override
-        public final void execute(JobExecutionContext ctx) throws JobExecutionException {
-            Map dataMap = ctx.getJobDetail().getJobDataMap(); 
-
-            LoadNewsMessagesTask task = (LoadNewsMessagesTask) dataMap.get("loadNewsMessagesTask");
-
-            task.execute();
         }
     }
 }

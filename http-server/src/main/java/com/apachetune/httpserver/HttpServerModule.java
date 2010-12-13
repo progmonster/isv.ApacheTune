@@ -7,9 +7,11 @@ import com.apachetune.httpserver.ui.impl.HttpServerWorkItemImpl;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
 import com.apachetune.httpserver.ui.messagesystem.MessageStatusBarSite;
 import com.apachetune.httpserver.ui.messagesystem.MessageStore;
+import com.apachetune.httpserver.ui.messagesystem.ScheduleLoadNewsMessagesStrategy;
 import com.apachetune.httpserver.ui.messagesystem.impl.LocalMessageStoreImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.MessageManagerImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.MessageStatusBarSiteImpl;
+import com.apachetune.httpserver.ui.messagesystem.impl.ScheduleLoadNewsMessagesStrategyImpl;
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.apachetune.httpserver.ui.updating.UpdateInfoDialog;
 import com.apachetune.httpserver.ui.updating.OpenWebPageHelper;
@@ -42,6 +44,8 @@ public class HttpServerModule extends AbstractModule {
         bind(RecentOpenedServersManager.class).to(RecentOpenedServersManagerImpl.class).in(SINGLETON);
 
         bind(MessageManager.class).to(MessageManagerImpl.class).in(SINGLETON);
+
+        bind(ScheduleLoadNewsMessagesStrategy.class).to(ScheduleLoadNewsMessagesStrategyImpl.class);
 
         bind(com.apachetune.httpserver.ui.messagesystem.RemoteManager.class)
                 .to(com.apachetune.httpserver.ui.messagesystem.impl.RemoteManagerImpl.class).in(SINGLETON);
