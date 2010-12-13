@@ -78,7 +78,7 @@ public class UserFeedbackSmartPart extends JDialog implements UserFeedbackView {
         invokeLater(new Runnable() {
             @Override
             public final void run() {
-                  txtEmail.requestFocus();
+                txtEmail.requestFocus();
             }
         });
     }
@@ -227,18 +227,14 @@ public class UserFeedbackSmartPart extends JDialog implements UserFeedbackView {
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
                 false));
-        final JPanel panel7 = new JPanel();
-        panel7.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel6.add(panel7, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
-                false));
-        panel7.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(new Color(-16777216)), null));
-        messageEditor = new JEditorPane();
-        panel7.add(messageEditor,
+        final JScrollPane scrollPane1 = new JScrollPane();
+        panel6.add(scrollPane1,
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
-                        GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null,
-                        new Dimension(150, 50), null, 0, false));
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null,
+                        0, false));
+        messageEditor = new JEditorPane();
+        scrollPane1.setViewportView(messageEditor);
         final JLabel label2 = new JLabel();
         label2.setText("Your message:");
         panel4.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,

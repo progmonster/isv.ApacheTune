@@ -470,7 +470,11 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
         toolBarManager.addActionGroup(FEEDBACK_ACTION_GROUP, actionManager.getAction(HELP_SUBMIT_FEEDBACK_ACTION));
 
+/*
+        todo uncomment
         toolBarManager.addActionGroup(HELP_ACTION_GROUP, actionManager.getAction(HELP_HELP_TOPICS_ACTION));
+
+*/
     }
 
     private void initFileMenu() {
@@ -534,15 +538,18 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
         helpMenu.setMnemonic('H'); // TODO Localize. 
 
-        coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_HELP_TOPICS_ACTION)));
+/*        coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_HELP_TOPICS_ACTION)));
 
-        helpMenu.addSeparator();
+        helpMenu.addSeparator(); todo uncomment*/
 
         coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_SUBMIT_FEEDBACK_ACTION)));
 
         helpMenu.addSeparator();
 
+/*
         coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_REGISTER_ACTION)));
+        todo uncomment
+*/
 
         coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_CHECK_FOR_UPDATE_ACTION)));
 
