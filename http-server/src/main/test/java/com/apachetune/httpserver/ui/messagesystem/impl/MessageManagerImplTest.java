@@ -12,9 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
 
 import java.util.List;
 
@@ -39,8 +36,6 @@ public class MessageManagerImplTest {
 
     private MessageManager testSubj;
 
-    private Scheduler mockScheduler;
-
     @Before
     public void prepare_test() throws Exception {
         mockStatusBarManager = mockCtx.mock(StatusBarManager.class);
@@ -50,8 +45,6 @@ public class MessageManagerImplTest {
         mockMessageStore = mockCtx.mock(MessageStore.class);
 
         mockRemoteManager = mockCtx.mock(RemoteManager.class);
-
-        mockScheduler = mockCtx.mock(Scheduler.class);
 
         ScheduleLoadNewsMessagesStrategy fakeScheduleLoadNewsMessagesStrategy = new ScheduleLoadNewsMessagesStrategy() {
             @Override
@@ -135,8 +128,6 @@ public class MessageManagerImplTest {
         final States state = mockCtx.states("test_state").startsAs("initial_state");
 
         mockCtx.checking(new Expectations() {{
-            one(mockScheduler).scheduleJob(with(any(JobDetail.class)), with(any(Trigger.class)));
-
             allowing(mockMessageStore).getLastTimestamp();
             when(state.is("initial_state"));
             will(returnValue(MessageTimestamp.createEmpty()));
@@ -145,10 +136,10 @@ public class MessageManagerImplTest {
             when(state.is("initial_state"));
             will(returnValue(emptyList()));
 
-            allowing(mockMessageStatusBarSite).setNotificationAreaActive(false);
+            one(mockMessageStatusBarSite).setNotificationAreaActive(false);
             when(state.is("initial_state"));
 
-            allowing(mockMessageStatusBarSite).setNotificationTip("There are no unread messages.");
+            one(mockMessageStatusBarSite).setNotificationTip("There are no unread messages.");
             when(state.is("initial_state"));
 
             one(mockRemoteManager).loadNewMessages(MessageTimestamp.createEmpty());
@@ -202,8 +193,10 @@ public class MessageManagerImplTest {
             then(state.is("marked_message_as_read"));
 
             one(mockMessageStatusBarSite).setNotificationAreaActive(false);
+            when(state.is("marked_message_as_read"));
 
-            one(mockMessageStatusBarSite).setNotificationTip(with(aNull(String.class)));
+            one(mockMessageStatusBarSite).setNotificationTip("There are no unread messages.");
+            when(state.is("marked_message_as_read"));
 
             allowing(mockMessageStore).getUnreadMessages();
             when(state.is("marked_message_as_read"));
@@ -271,7 +264,7 @@ public class MessageManagerImplTest {
 
             one(mockMessageStatusBarSite).setNotificationAreaActive(false);
 
-            one(mockMessageStatusBarSite).setNotificationTip(with(aNull(String.class)));
+            one(mockMessageStatusBarSite).setNotificationTip("There are no unread messages.");
 
             allowing(mockMessageStore).getUnreadMessages();
             when(state.is("message_deleted"));
