@@ -1,9 +1,9 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
+import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.core.ui.feedbacksystem.*;
-import com.apachetune.events.SendErrorReportEvent;
-import com.apachetune.feedbacksystem.FeedbackManager;
+import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.google.inject.Provider;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -13,8 +13,6 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.swing.*;
 
 import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.ui.feedbacksystem.UserFeedbackView.Result.USER_ACCEPTED_SENDING;
@@ -30,13 +28,13 @@ public class UserFeedbackManagerImplTest {
 
     private UIWorkItem mockWorkItem;
 
-    private FeedbackManager mockFeedbackManager;
-
     private UserFeedbackView mockUserFeedbackView;
 
     private RemoteManager mockRemoteManager;
 
     private SendUserFeedbackMessageDialog mockSendUserFeedbackMessageDialog;
+
+    private PreferencesManager mockPreferencesManager;
 
     private Sequence workflow;
 
@@ -45,8 +43,6 @@ public class UserFeedbackManagerImplTest {
     @Before
     public void prepare_test() {
         mockWorkItem = mockCtx.mock(UIWorkItem.class);
-
-        mockFeedbackManager = mockCtx.mock(FeedbackManager.class);
 
         mockUserFeedbackView = mockCtx.mock(UserFeedbackView.class);
 
@@ -61,18 +57,17 @@ public class UserFeedbackManagerImplTest {
 
         mockSendUserFeedbackMessageDialog = mockCtx.mock(SendUserFeedbackMessageDialog.class);
 
+        mockPreferencesManager = mockCtx.mock(PreferencesManager.class);
+
         workflow = mockCtx.sequence("workflow");
 
         testSubj = new UserFeedbackManagerImpl(mockWorkItem, fakeUserFeedbackViewProvider, mockRemoteManager,
-                mockFeedbackManager, mockSendUserFeedbackMessageDialog, null);
+                mockSendUserFeedbackMessageDialog, null, mockPreferencesManager);
     }
     
     @Test
     public void test_user_cancel_sending_feedback() throws Exception {
         mockCtx.checking(new Expectations(){{
-            allowing(mockFeedbackManager).getUserEmail();
-            will(returnValue("progmonster@gmail.com"));
-
             oneOf(mockUserFeedbackView).initialize(mockWorkItem);
             inSequence(workflow);
 
@@ -93,11 +88,6 @@ public class UserFeedbackManagerImplTest {
     @Test
     public void test_send_user_feedback() throws Exception {
         mockCtx.checking(new Expectations(){{
-            allowing(mockFeedbackManager).getUserEmail();
-            will(returnValue("progmonster@gmail.com"));
-
-            one(mockFeedbackManager).storeUserEMail("progmonster@gmail.com");
-
             oneOf(mockUserFeedbackView).initialize(mockWorkItem);
             inSequence(workflow);
 
@@ -135,11 +125,6 @@ public class UserFeedbackManagerImplTest {
     @Test
     public void test_fail_on_user_feedback_sending() throws Exception {
         mockCtx.checking(new Expectations(){{
-            allowing(mockFeedbackManager).getUserEmail();
-            will(returnValue("progmonster@gmail.com"));
-
-            one(mockFeedbackManager).storeUserEMail("progmonster@gmail.com");
-
             oneOf(mockUserFeedbackView).initialize(mockWorkItem);
             inSequence(workflow);
 

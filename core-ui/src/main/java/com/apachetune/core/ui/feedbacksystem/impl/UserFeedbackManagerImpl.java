@@ -1,9 +1,10 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
+import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.core.ui.feedbacksystem.*;
-import com.apachetune.events.SendErrorReportEvent;
-import com.apachetune.feedbacksystem.FeedbackManager;
+import com.apachetune.errorreportsystem.ErrorReportManager;
+import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
@@ -29,23 +30,23 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
     private final RemoteManager remoteManager;
 
-    private final FeedbackManager feedbackManager;
-
     private final SendUserFeedbackMessageDialog sendUserFeedbackMessageDialog;
 
     private final JFrame mainFrame;
 
+    private final PreferencesManager preferencesManager;
+
     @Inject
     public UserFeedbackManagerImpl(@Named(CORE_UI_WORK_ITEM) UIWorkItem workItem,
                                    Provider<UserFeedbackView> userFeedbackViewProvider, RemoteManager remoteManager,
-                                   FeedbackManager feedbackManager,
-                                   SendUserFeedbackMessageDialog sendUserFeedbackMessageDialog, JFrame mainFrame) {
+                                   SendUserFeedbackMessageDialog sendUserFeedbackMessageDialog, JFrame mainFrame,
+                                   PreferencesManager preferencesManager) {
         this.workItem = workItem;
         this.userFeedbackViewProvider = userFeedbackViewProvider;
         this.remoteManager = remoteManager;
-        this.feedbackManager = feedbackManager;
         this.sendUserFeedbackMessageDialog = sendUserFeedbackMessageDialog;
         this.mainFrame = mainFrame;
+        this.preferencesManager = preferencesManager;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
         userFeedbackView.initialize(workItem);
 
-        String userEmail = feedbackManager.getUserEmail();
+        String userEmail = ErrorReportManager.getInstance().getUserEmail(preferencesManager);
 
         userFeedbackView.setUserEmail(userEmail);
 
@@ -66,7 +67,7 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
         userEmail = userFeedbackView.getUserEmail();
 
-        feedbackManager.storeUserEMail(userEmail);
+        ErrorReportManager.getInstance().storeUserEMail(userEmail, preferencesManager);
 
         String userMessage = userFeedbackView.getUserMessage();
 
@@ -81,7 +82,8 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
                     ']');
 
             if (sendUserFeedbackMessageDialog.showError(e) == OK_OPTION) {
-                workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
+                workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT,
+                        new SendErrorReportEvent(mainFrame, "User feedback sending error", e));
             }
         }
     }

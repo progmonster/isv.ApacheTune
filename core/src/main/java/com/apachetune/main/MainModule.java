@@ -8,8 +8,6 @@ import com.apachetune.core.impl.LicenseManagerImpl;
 import com.apachetune.core.impl.RootWorkItemImpl;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.preferences.impl.PreferencesManagerImpl;
-import com.apachetune.feedbacksystem.FeedbackManager;
-import com.apachetune.feedbacksystem.impl.FeedbackManagerImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 import org.quartz.Scheduler;
@@ -50,7 +48,5 @@ public class MainModule extends AbstractModule {
 
         bind(String.class).annotatedWith(Names.named(REMOTE_FEEDBACK_SERVICE_URL_PROP))
                 .toInstance("http://apachetune.com/services/reports");
-
-        bind(FeedbackManager.class).to(FeedbackManagerImpl.class).in(SINGLETON);
     }
 }

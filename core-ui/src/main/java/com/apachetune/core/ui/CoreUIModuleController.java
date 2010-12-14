@@ -62,7 +62,7 @@ public class CoreUIModuleController implements ModuleController {
                         mainFrame = ((CoreUIWorkItem) coreUIWorkItem).getMainFrame();
                     }
                     
-                    showSendErrorReportDialog(mainFrame, cause, preferencesManager);
+                    showSendErrorReportDialog(mainFrame, "Application error", cause, preferencesManager);
                 }
             }
         });

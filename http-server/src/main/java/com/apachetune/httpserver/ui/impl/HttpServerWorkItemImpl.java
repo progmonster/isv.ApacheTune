@@ -255,9 +255,6 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
     @ActionHandler(SERVER_CLOSE_SERVER_ACTION)
     public void onServerClose() {
-        throw new RuntimeException("bla-bla");
-
-/*
         if (askAndSaveConfFilesSeparately("Save files", "You are about to close the server.\n\nSave configuration" +
                 " file?\n{0}"
         )) {
@@ -265,7 +262,6 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
             closeCurrentHttpServer();
         }
-*/
     }
 
     @ActionPermission(SERVER_CLOSE_SERVER_ACTION)

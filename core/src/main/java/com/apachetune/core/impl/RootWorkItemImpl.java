@@ -1,7 +1,8 @@
 package com.apachetune.core.impl;
 
 import com.apachetune.core.*;
-import com.apachetune.events.SendErrorReportEvent;
+import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.google.inject.Inject;
 import org.apache.velocity.app.Velocity;
 import org.quartz.Scheduler;
@@ -13,6 +14,7 @@ import java.util.List;
 import static com.apachetune.core.Constants.ON_SEND_ERROR_REPORT_EVENT;
 import static com.apachetune.core.Constants.ROOT_WORK_ITEM_ID;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.showSendErrorReportDialog;
 import static org.apache.commons.lang.Validate.notNull;
 import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
 
@@ -24,13 +26,17 @@ import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM
  */
 public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
     private final List<ActivationListener> childActivationListeners = new ArrayList<ActivationListener>();
+
     private final Scheduler scheduler;
 
+    private final PreferencesManager preferencesManager;
+
     @Inject
-    public RootWorkItemImpl(Scheduler scheduler) {
+    public RootWorkItemImpl(Scheduler scheduler, PreferencesManager preferencesManager) {
         super(ROOT_WORK_ITEM_ID);
 
         this.scheduler = scheduler;
+        this.preferencesManager = preferencesManager;
 
         setRootWorkItem(this);
     }
@@ -94,6 +100,7 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
 
     @Subscriber(eventId = ON_SEND_ERROR_REPORT_EVENT)
     private void onSendErrorReportEvent(SendErrorReportEvent event) {
-        // todo send report
+        showSendErrorReportDialog(event.getParentComponent(), event.getErrorMessage(), event.getCause(),
+                preferencesManager);
     }
 }

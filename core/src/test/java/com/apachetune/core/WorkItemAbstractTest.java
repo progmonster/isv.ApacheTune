@@ -20,7 +20,7 @@ public class WorkItemAbstractTest {
 
         Scheduler mockScheduler = mockCtx.mock(Scheduler.class);
 
-        rootWorkItem = new RootWorkItemImpl(mockScheduler);
+        rootWorkItem = new RootWorkItemImpl(mockScheduler, null);
     }
 
     @After

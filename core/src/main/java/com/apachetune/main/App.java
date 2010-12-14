@@ -51,7 +51,7 @@ public class App {
         } catch (Throwable cause) {
             logger.error("Error in app", cause);
 
-            showSendErrorReportDialog(null, cause, null);
+            showSendErrorReportDialog(null, "Error in app main method", cause, null);
         }
     }
 

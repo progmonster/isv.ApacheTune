@@ -1,6 +1,6 @@
 package com.apachetune.httpserver.ui.updating.impl;
 
-import com.apachetune.events.SendErrorReportEvent;
+import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.updating.*;
 import com.google.inject.Inject;
@@ -94,7 +94,8 @@ public class UpdateManagerImpl implements UpdateManager {
             UpdateInfoDialog.UserActionOnUpdateError userAction = updateInfoDialog.showUpdateCheckingError(e);
 
             if (userAction.isUserAgreeSendErrorReport()) {
-                httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame, e));
+                httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame,
+                        "Check for update error", e));
             }
         }
     }
