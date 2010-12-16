@@ -57,6 +57,7 @@ public class AppManagerImpl implements AppManager {
     @Inject
     public AppManagerImpl(PreferencesManager preferencesManager) {
         this.preferencesManager = preferencesManager;
+        
         try {
             appProps = new Properties();
 

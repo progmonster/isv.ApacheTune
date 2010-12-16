@@ -1,4 +1,4 @@
-package com.apachetune.errorreportsystem;
+package com.apachetune.core.errorreportsystem;
 
 import java.awt.*;
 

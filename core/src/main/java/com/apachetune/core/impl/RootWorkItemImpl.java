@@ -1,8 +1,8 @@
 package com.apachetune.core.impl;
 
 import com.apachetune.core.*;
+import com.apachetune.core.errorreportsystem.SendErrorReportEvent;
 import com.apachetune.core.preferences.PreferencesManager;
-import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.google.inject.Inject;
 import org.apache.velocity.app.Velocity;
 import org.quartz.Scheduler;
@@ -27,14 +27,17 @@ import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM
 public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
     private final List<ActivationListener> childActivationListeners = new ArrayList<ActivationListener>();
 
+    private final AppManager appManager;
+
     private final Scheduler scheduler;
 
     private final PreferencesManager preferencesManager;
 
     @Inject
-    public RootWorkItemImpl(Scheduler scheduler, PreferencesManager preferencesManager) {
+    public RootWorkItemImpl(AppManager appManager, Scheduler scheduler, PreferencesManager preferencesManager) {
         super(ROOT_WORK_ITEM_ID);
 
+        this.appManager = appManager;
         this.scheduler = scheduler;
         this.preferencesManager = preferencesManager;
 
@@ -100,7 +103,8 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
 
     @Subscriber(eventId = ON_SEND_ERROR_REPORT_EVENT)
     private void onSendErrorReportEvent(SendErrorReportEvent event) {
+        //noinspection ThrowableResultOfMethodCallIgnored
         showSendErrorReportDialog(event.getParentComponent(), event.getErrorMessage(), event.getCause(),
-                preferencesManager);
+                appManager, preferencesManager);
     }
 }

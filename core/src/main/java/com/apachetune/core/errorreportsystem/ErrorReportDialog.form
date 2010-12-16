@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="com.apachetune.core.errorreportsystem.ErrorReportDialog">
+  <grid id="cbd77" binding="contentPane" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="48" y="54" width="427" height="70"/>
+    </constraints>
+    <properties/>
+    <border type="etched"/>
+    <children>
+      <grid id="e3588" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <grid id="74ba1" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints border-constraint="West"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="955e9" class="javax.swing.JLabel">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <icon value="com/apachetune/core/errorreportsystem/send_error_report.gif"/>
+                  <text value=""/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="91450" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="1">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="f8f89" class="javax.swing.JTextArea" binding="pleaseWaitWhileErrorTextArea" default-binding="true">
+                <constraints/>
+                <properties>
+                  <editable value="false"/>
+                  <opaque value="false"/>
+                  <text value="Please, wait while error report and application&#10;log will be sent to developer team..."/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+  <inspectionSuppressions>
+    <suppress inspection="NoLabelFor" id="f8f89"/>
+  </inspectionSuppressions>
+</form>

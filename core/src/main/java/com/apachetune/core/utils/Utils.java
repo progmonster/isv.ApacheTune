@@ -1,8 +1,9 @@
 package com.apachetune.core.utils;
 
+import com.apachetune.core.AppManager;
 import com.apachetune.core.ApplicationException;
+import com.apachetune.core.errorreportsystem.ErrorReportManager;
 import com.apachetune.core.preferences.PreferencesManager;
-import com.apachetune.errorreportsystem.ErrorReportManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -135,7 +136,7 @@ public final class Utils {
     }
 
     public static void showSendErrorReportDialog(Component parent, String errorMessage, Throwable cause,
-                                                 PreferencesManager preferencesManager) {
-        ErrorReportManager.getInstance().sendErrorReport(parent, errorMessage, cause, preferencesManager);
+                                                 AppManager appManager, PreferencesManager preferencesManager) {
+        ErrorReportManager.getInstance().sendErrorReport(parent, errorMessage, cause, appManager, preferencesManager);
     }
 }

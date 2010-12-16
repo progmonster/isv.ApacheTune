@@ -1,5 +1,6 @@
 package com.apachetune.core.ui;
 
+import com.apachetune.core.AppManager;
 import com.apachetune.core.ModuleController;
 import com.apachetune.core.RootWorkItem;
 import com.apachetune.core.preferences.PreferencesManager;
@@ -29,6 +30,9 @@ public class CoreUIModuleController implements ModuleController {
 
     @Inject @Named(CORE_UI_WORK_ITEM)
     private UIWorkItem coreUIWorkItem;
+
+    @Inject
+    private AppManager appManager;
 
     @Inject 
     private PreferencesManager preferencesManager;
@@ -62,7 +66,7 @@ public class CoreUIModuleController implements ModuleController {
                         mainFrame = ((CoreUIWorkItem) coreUIWorkItem).getMainFrame();
                     }
                     
-                    showSendErrorReportDialog(mainFrame, "Application error", cause, preferencesManager);
+                    showSendErrorReportDialog(mainFrame, "Application error", cause, appManager, preferencesManager);
                 }
             }
         });

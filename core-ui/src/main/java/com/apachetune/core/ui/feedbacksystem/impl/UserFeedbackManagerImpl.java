@@ -1,10 +1,11 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
+import com.apachetune.core.AppManager;
+import com.apachetune.core.errorreportsystem.ErrorReportManager;
+import com.apachetune.core.errorreportsystem.SendErrorReportEvent;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.core.ui.feedbacksystem.*;
-import com.apachetune.errorreportsystem.ErrorReportManager;
-import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
@@ -26,6 +27,8 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
     private final UIWorkItem workItem;
 
+    private final AppManager appManager;
+
     private final Provider<UserFeedbackView> userFeedbackViewProvider;
 
     private final RemoteManager remoteManager;
@@ -37,11 +40,12 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
     private final PreferencesManager preferencesManager;
 
     @Inject
-    public UserFeedbackManagerImpl(@Named(CORE_UI_WORK_ITEM) UIWorkItem workItem,
+    public UserFeedbackManagerImpl(@Named(CORE_UI_WORK_ITEM) UIWorkItem workItem, AppManager appManager,
                                    Provider<UserFeedbackView> userFeedbackViewProvider, RemoteManager remoteManager,
                                    SendUserFeedbackMessageDialog sendUserFeedbackMessageDialog, JFrame mainFrame,
                                    PreferencesManager preferencesManager) {
         this.workItem = workItem;
+        this.appManager = appManager;
         this.userFeedbackViewProvider = userFeedbackViewProvider;
         this.remoteManager = remoteManager;
         this.sendUserFeedbackMessageDialog = sendUserFeedbackMessageDialog;
@@ -55,7 +59,7 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
         userFeedbackView.initialize(workItem);
 
-        String userEmail = ErrorReportManager.getInstance().getUserEmail(preferencesManager);
+        String userEmail = ErrorReportManager.getInstance().getUserEmail(appManager, preferencesManager);
 
         userFeedbackView.setUserEmail(userEmail);
 
@@ -67,7 +71,7 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
         userEmail = userFeedbackView.getUserEmail();
 
-        ErrorReportManager.getInstance().storeUserEMail(userEmail, preferencesManager);
+        ErrorReportManager.getInstance().storeUserEMail(userEmail, appManager, preferencesManager);
 
         String userMessage = userFeedbackView.getUserMessage();
 

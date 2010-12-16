@@ -1,6 +1,6 @@
 package com.apachetune.httpserver.ui.updating.impl;
 
-import com.apachetune.errorreportsystem.SendErrorReportEvent;
+import com.apachetune.core.errorreportsystem.SendErrorReportEvent;
 import com.apachetune.httpserver.ui.HttpServerWorkItem;
 import com.apachetune.httpserver.ui.updating.*;
 import com.google.inject.Inject;

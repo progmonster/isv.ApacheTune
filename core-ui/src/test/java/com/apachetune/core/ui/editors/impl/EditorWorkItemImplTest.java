@@ -86,7 +86,7 @@ public class EditorWorkItemImplTest {
 
         coreUIUtils = new CoreUIUtils(mockStatusBarManager, mockActionManager, toolWindowManager);
 
-        rootWorkItem = new RootWorkItemImpl(mockScheduler, null);
+        rootWorkItem = new RootWorkItemImpl(null, mockScheduler, null);
 
         mockEditorInput = new MockEditorInput();
     }

@@ -1,9 +1,9 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
+import com.apachetune.core.errorreportsystem.SendErrorReportEvent;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.core.ui.feedbacksystem.*;
-import com.apachetune.errorreportsystem.SendErrorReportEvent;
 import com.google.inject.Provider;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -61,7 +61,7 @@ public class UserFeedbackManagerImplTest {
 
         workflow = mockCtx.sequence("workflow");
 
-        testSubj = new UserFeedbackManagerImpl(mockWorkItem, fakeUserFeedbackViewProvider, mockRemoteManager,
+        testSubj = new UserFeedbackManagerImpl(mockWorkItem, null, fakeUserFeedbackViewProvider, mockRemoteManager,
                 mockSendUserFeedbackMessageDialog, null, mockPreferencesManager);
     }
     
