@@ -6,20 +6,37 @@ import com.apachetune.core.impl.AppManagerImpl;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.preferences.impl.PreferencesManagerImpl;
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.io.*;
 import java.net.URL;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
 import static com.apachetune.core.Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME;
+import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
+import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.text.MessageFormat.format;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
+import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.SwingUtilities.invokeLater;
+import static org.apache.commons.codec.binary.Base64.encodeBase64String;
+import static org.apache.commons.httpclient.HttpStatus.SC_OK;
+import static org.apache.commons.httpclient.params.HttpMethodParams.RETRY_HANDLER;
+import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang.exception.ExceptionUtils.getFullStackTrace;
+import static org.apache.velocity.runtime.RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS;
 
 /**
  * FIXDOC
@@ -36,32 +53,64 @@ public class ErrorReportManager {
     public final void sendErrorReport(Component parentComponent, final String message, final Throwable cause,
                                       final AppManager nullableAppManager,
                                       final PreferencesManager nullablePreferencesManager) {
-        final ErrorReportDialog errorReportDialog = new ErrorReportDialog(parentComponent);
+        logger.info(format("Sending error info to remote service... [message={0};\ncause=\n{1}\n]",
+                message, getFullStackTrace(cause)));
 
-        final ExecutorService executorService = newSingleThreadExecutor();
+        try {
+            final Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
 
-        executorService.execute(new Runnable() {
-            @Override
-            public final void run() {
-                invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        errorReportDialog.setVisible(true);
+            String lastUsedNullableUserEmail = getUserEmail(managers.getAppManager(), managers.getPreferencesManager());
+
+            final String nullableUserEmail = showAskForReporterEmailDialog(parentComponent, lastUsedNullableUserEmail);
+
+            final ErrorReportDialog errorReportDialog = new ErrorReportDialog(parentComponent);
+
+            final ExecutorService executorService = newSingleThreadExecutor();
+
+            executorService.execute(new Runnable() {
+                @Override
+                public final void run() {
+                    try {
+                        invokeLater(new Runnable() {
+                            @Override
+                            public final void run() {
+                                try {
+                                    errorReportDialog.setVisible(true);
+                                } catch (Throwable throwable) {
+                                    //noinspection ThrowableInstanceNeverThrown
+                                    handleErrorReportingException(new ErrorReportManagerException(throwable));
+                                }
+                            }
+                        });
+
+                        doSendErrorReport(nullableUserEmail, message, cause, managers.getAppManager(),
+                                managers.getPreferencesManager());
+                    } catch (ErrorReportManagerException e) {
+                        handleErrorReportingException(e);
+                    } catch (Throwable throwable) {
+                        //noinspection ThrowableInstanceNeverThrown
+                        handleErrorReportingException(new ErrorReportManagerException(throwable));
+                    } finally {
+                        invokeLater(new Runnable() {
+                            @Override
+                            public final void run() {
+                                try {
+                                    errorReportDialog.dispose();
+                                } catch (Throwable throwable) {
+                                    //noinspection ThrowableInstanceNeverThrown
+                                    handleErrorReportingException(new ErrorReportManagerException(throwable));
+                                }
+                            }
+                        });
+
+                        executorService.shutdown();
                     }
-                });
-
-                doSendErrorReport(message, cause, nullableAppManager, nullablePreferencesManager);
-
-                invokeLater(new Runnable() {
-                    @Override
-                    public final void run() {
-                        errorReportDialog.dispose();
-                    }
-                });
-
-                executorService.shutdown();
-            }
-        });
+                }
+            });
+        } catch (Throwable throwable) {
+            //noinspection ThrowableInstanceNeverThrown
+            handleErrorReportingException(new ErrorReportManagerException(throwable));
+        }
     }
 
     public final String getUserEmail(AppManager nullableAppManager, PreferencesManager nullablePreferencesManager) {
@@ -77,7 +126,6 @@ public class ErrorReportManager {
 
         return prefs.get(REMOTE_SERVICE_USER_EMAIL_PROP_NAME, null);
     }
-
 
     public final void storeUserEMail(String userEMail, AppManager nullableAppManager,
                                      PreferencesManager nullablePreferencesManager) {
@@ -95,36 +143,59 @@ public class ErrorReportManager {
         prefs.put(REMOTE_SERVICE_USER_EMAIL_PROP_NAME, userEMail);
     }
 
-    private void doSendErrorReport(String message, Throwable cause, AppManager nullableAppManager,
-                                   PreferencesManager nullablePreferencesManager) {
-        Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
+    private String showAskForReporterEmailDialog(Component parentComponent, String defUserEmail) {
+        String result = showInputDialog(parentComponent, "Please input your email to field below.\n" +
+                "It may be useful for us when we was trying to solve error you got.\n" +
+                "We'll no use with email to spam or ad messages and you can leave this field empty.",
+                defUserEmail);
 
-        String nullableUserEmail = getUserEmail(managers.getAppManager(), managers.getPreferencesManager());
+        return !result.trim().isEmpty() ? result.trim() : null;
+    }
+
+    private void doSendErrorReport(String nullableUserEmail, String message, Throwable cause,
+                                   AppManager nullableAppManager, PreferencesManager nullablePreferencesManager)
+            throws ErrorReportManagerException {
+        final Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
 
         UUID nullableAppInstallationUid =
                 (managers.getAppManager() != null) ? managers.getAppManager().getAppInstallationUid() : null;
 
-        System.out.println(nullableUserEmail); // todo remove
+        String nullableAppFullName =
+                (managers.getAppManager() != null) ? managers.getAppManager().getFullAppName() : null;
 
-        System.out.println(nullableAppInstallationUid); // todo remove
-        
-        // TODO send error info and app log and delete it
-        // todo если возникнет ошибка, залоггировать и  попытаться все же отправить логи, после этого попросить отправить логи вручную
+        String errorMessageReport =
+                prepareErrorMessageReport(nullableUserEmail, nullableAppFullName, nullableAppInstallationUid, message,
+                        cause);
 
-        sendAppLog(nullableUserEmail, nullableAppInstallationUid);
+        initializeVelocity();
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        postMessageToRemoteService(errorMessageReport);
 
+        sendAppLogs(nullableUserEmail, nullableAppInstallationUid);
     }
 
-    private void sendAppLog(String nullableUserEmail, UUID nullableAppInstallationUid) {
+    private void sendAppLogs(String nullableUserEmail, UUID nullableAppInstallationUid) {
         // в цикле паковать, отправлять и удалять (кроме самого последнего) файлы лога. Если на любом этапе возникнет
         // ошибка - все же продолжать работу, логгировать ее. В конце, если были ошибки, попросить пользователя отправить
         // лог вручную
+        // TODO app logs and delete it
+        // todo send and delete velocity log
+        // TODO implement
+    }
+
+    private void initializeVelocity() {
+        Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
+        Velocity.setProperty("runtime.log.logsystem.log4j.logger", "velocity_logger");
+
+        try {
+            Velocity.init();
+        } catch (Exception e) {
+            throw createRuntimeException(e);
+        }
+    }
+
+    private void handleErrorReportingException(ErrorReportManagerException e) {
+        System.out.println(getFullStackTrace(e));
         // TODO implement
     }
 
@@ -152,6 +223,78 @@ public class ErrorReportManager {
         return new Managers(appManager, preferencesManager);
     }
 
+    private String prepareErrorMessageReport(String nullableUserEmail, String nullableAppFullName,
+                                             UUID nullableAppInstallationUid, String errorMessage, Throwable cause) {
+        VelocityContext ctx = new VelocityContext();
+
+        ctx.put("appFullName", nullableAppFullName);
+        ctx.put("appInstallationUid", nullableAppInstallationUid);
+        ctx.put("userEMail", nullableUserEmail);
+
+        String stackTrace = errorMessage + '\n' + getFullStackTrace(cause);
+
+        try {
+            ctx.put("base64EncodedStackTrace", encodeBase64String(stackTrace.getBytes("UTF-8")).trim());
+        } catch (UnsupportedEncodingException e) {
+            throw createRuntimeException(e);
+        }
+
+        Reader reader;
+
+        try {
+            reader = new InputStreamReader(getClass().getResourceAsStream("send_error_info_request.xml.vm"), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw createRuntimeException(e);
+        }
+
+        StringWriter writer = new StringWriter();
+
+        try {
+            boolean isOk = Velocity.evaluate(ctx, writer, VELOCITY_LOG4J_APPENDER_NAME, reader);
+
+            isTrue(isOk);
+
+            writer.close();
+
+            return writer.toString();
+        } catch (IOException e) {
+            throw createRuntimeException(e);
+        }
+    }
+
+    private void postMessageToRemoteService(String content) throws ErrorReportManagerException {
+        HttpClient client = new HttpClient();
+
+        PostMethod method = new PostMethod("http://apachetune.com/services/reports");
+
+        method.getParams().setParameter(RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
+
+        method.setQueryString("action=send-error-info");
+
+        method.setRequestHeader(new Header("Content-Type", "text/xml; charset=UTF-8"));
+
+        try {
+            method.setRequestEntity(new ByteArrayRequestEntity(content.getBytes("UTF-8"), "text/html"));
+        } catch (UnsupportedEncodingException e) {
+            throw createRuntimeException(e);
+        }
+
+        int resultCode;
+
+        try {
+            resultCode = client.executeMethod(method);
+
+            if (resultCode != SC_OK) {
+                throw new ErrorReportManagerException(
+                        "Remote service returned non successful result [resultCode=" + resultCode + ']');
+            }
+        } catch (IOException e) {
+            throw new ErrorReportManagerException(e);
+        }
+
+        method.releaseConnection();
+    }
+
     class Managers {
         private final AppManager appManager;
 
@@ -169,6 +312,7 @@ public class ErrorReportManager {
         public final PreferencesManager getPreferencesManager() {
             return preferencesManager;
         }
+
     }
 
     class AppManagerProxy implements AppManager {
@@ -178,7 +322,7 @@ public class ErrorReportManager {
 
         public AppManagerProxy(PreferencesManager preferencesManager) {
             notNull(preferencesManager);
-            
+
             this.preferencesManager = preferencesManager;
         }
 
@@ -241,6 +385,7 @@ public class ErrorReportManager {
 
             return appManager;
         }
+
     }
 
     class PreferencesManagerProxy implements PreferencesManager {
@@ -283,10 +428,10 @@ public class ErrorReportManager {
 
             return preferencesManager;
         }
+
     }
 
-
     public static void main(String[] args) {
-        ErrorReportManager.getInstance().sendErrorReport(null, "Test error", new RuntimeException("Heya!"), null, null);
+        ErrorReportManager.getInstance().sendErrorReport(null, "error", new RuntimeException("bla-bla"), null, null);
     }
 }
