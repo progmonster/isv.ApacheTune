@@ -6,7 +6,6 @@ import com.apachetune.core.impl.AppManagerImpl;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.preferences.impl.PreferencesManagerImpl;
-import com.apachetune.core.utils.Utils;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -16,11 +15,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
+import org.jdesktop.swingx.JXHyperlink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -30,10 +34,12 @@ import java.util.concurrent.ExecutorService;
 import static com.apachetune.core.Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME;
 import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.gzip;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static javax.swing.JOptionPane.showInputDialog;
+import static javax.swing.JOptionPane.showMessageDialog;
 import static javax.swing.SwingUtilities.invokeLater;
 import static org.apache.commons.codec.binary.Base64.encodeBase64String;
 import static org.apache.commons.httpclient.HttpStatus.SC_OK;
@@ -65,7 +71,7 @@ public class ErrorReportManager {
         return INSTANCE;
     }
 
-    public final void sendErrorReport(Component parentComponent, final String message, final Throwable cause,
+    public final void sendErrorReport(final Component parentComponent, final String message, final Throwable cause,
                                       final AppManager nullableAppManager,
                                       final PreferencesManager nullablePreferencesManager) {
         logger.info(format("Sending error info to remote service... [message={0};\ncause=\n{1}\n]",
@@ -89,32 +95,37 @@ public class ErrorReportManager {
                         invokeLater(new Runnable() {
                             @Override
                             public final void run() {
-                                try {
-                                    errorReportDialog.setVisible(true);
-                                } catch (Throwable throwable) {
-                                    //noinspection ThrowableInstanceNeverThrown
-                                    handleReportError(new ErrorReportManagerException(throwable));
-                                }
+                                errorReportDialog.setVisible(true);
                             }
                         });
 
-                        doSendErrorReport(nullableUserEmail, message, cause, managers.getAppManager(),
-                                managers.getPreferencesManager());
+                        boolean wasError = doSendErrorReport(parentComponent, nullableUserEmail, message, cause,
+                                managers.getAppManager(), managers.getPreferencesManager());
+
+                        if (wasError) {
+                            invokeLater(new Runnable() {
+                                @Override
+                                public final void run() {
+                                    errorReportDialog.setVisible(false);
+                                }
+                            });
+
+                            handleReportError(parentComponent, null);
+                        }
                     } catch (ErrorReportManagerException e) {
-                        handleReportError(e);
+                        errorReportDialog.setVisible(false);
+
+                        handleReportError(parentComponent, e);
                     } catch (Throwable throwable) {
+                        errorReportDialog.setVisible(false);
+
                         //noinspection ThrowableInstanceNeverThrown
-                        handleReportError(new ErrorReportManagerException(throwable));
+                        handleReportError(parentComponent, new ErrorReportManagerException(throwable));
                     } finally {
                         invokeLater(new Runnable() {
                             @Override
                             public final void run() {
-                                try {
-                                    errorReportDialog.dispose();
-                                } catch (Throwable throwable) {
-                                    //noinspection ThrowableInstanceNeverThrown
-                                    handleReportError(new ErrorReportManagerException(throwable));
-                                }
+                                errorReportDialog.dispose();
                             }
                         });
 
@@ -124,7 +135,7 @@ public class ErrorReportManager {
             });
         } catch (Throwable throwable) {
             //noinspection ThrowableInstanceNeverThrown
-            handleReportError(new ErrorReportManagerException(throwable));
+            handleReportError(parentComponent, new ErrorReportManagerException(throwable));
         }
     }
 
@@ -167,7 +178,7 @@ public class ErrorReportManager {
         return !result.trim().isEmpty() ? result.trim() : null;
     }
 
-    private void doSendErrorReport(String nullableUserEmail, String message, Throwable cause,
+    private boolean doSendErrorReport(Component parentComponent, String nullableUserEmail, String message, Throwable cause,
                                    AppManager nullableAppManager, PreferencesManager nullablePreferencesManager)
             throws ErrorReportManagerException {
         final Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
@@ -202,9 +213,7 @@ public class ErrorReportManager {
 
         wasError |= sendAppLogs(nullableUserEmail, nullableAppInstallationUid);
 
-        if (wasError) {
-            handleReportError(null);
-        }
+        return wasError;
     }
 
     private boolean sendAppLogs(String nullableUserEmail, UUID nullableAppInstallationUid) {
@@ -269,10 +278,35 @@ public class ErrorReportManager {
         }
     }
 
-    private void handleReportError(ErrorReportManagerException nullableException) {
+    private void handleReportError(Component parentComponent, ErrorReportManagerException nullableException) {
         logger.error("Error reporting subsystem.", nullableException);
 
-        
+        String errMsg = "Unbelievable!" +
+                " An error occurred during sending error report.\n\n You can help us by sending application log files" +
+                " under directory\n" +
+                '\"' + new File(LOGS_PATH).getAbsolutePath() + "\"\nvia email manually.\n\n" +
+                "The email address to send is:\n";
+
+        JXHyperlink supportEmail = new JXHyperlink();
+
+        supportEmail.setText("support@apachetune.com");
+
+        supportEmail.addActionListener(new ActionListener() {
+            @Override
+            public final void actionPerformed(ActionEvent e) {
+                try {
+                    Desktop.getDesktop().browse(new URI("mailto:support@apachetune.com?subject=Error%20report"));
+                } catch (IOException e1) {
+                    logger.error("Internal error", e1);
+                } catch (URISyntaxException e1) {
+                    logger.error("Internal error", e1);
+                }
+            }
+        });
+
+        Object[] dialogPane = new Object[] {errMsg, supportEmail};
+
+        showMessageDialog(parentComponent, dialogPane);
     }
 
     private Managers prepareManagers(AppManager nullableAppManager, PreferencesManager nullablePreferencesManager) {
@@ -329,7 +363,7 @@ public class ErrorReportManager {
 
         ctx.put("logFileName", logFileName);
 
-        byte[] gzippedLogFileContent = Utils.gzip(logFileContent);
+        byte[] gzippedLogFileContent = gzip(logFileContent);
 
         ctx.put("base64EncodedGzippedLogFileContent", encodeBase64String(gzippedLogFileContent));
 
@@ -394,7 +428,7 @@ public class ErrorReportManager {
         method.releaseConnection();
     }
 
-    class Managers {
+    static class Managers {
         private final AppManager appManager;
 
         private final PreferencesManager preferencesManager;
@@ -414,7 +448,7 @@ public class ErrorReportManager {
 
     }
 
-    class AppManagerProxy implements AppManager {
+    static class AppManagerProxy implements AppManager {
         private final PreferencesManager preferencesManager;
 
         private AppManager appManager;
@@ -487,7 +521,7 @@ public class ErrorReportManager {
 
     }
 
-    class PreferencesManagerProxy implements PreferencesManager {
+    static class PreferencesManagerProxy implements PreferencesManager {
         private AppManager appManager;
 
         private PreferencesManager preferencesManager;
