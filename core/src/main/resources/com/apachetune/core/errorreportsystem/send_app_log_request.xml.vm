@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appLog
+        #if($appFullName)appFullName="$appFullName"#end
+        #if($appInstallationUid)appInstallationUid="$appInstallationUid"#end
+        #if($userEMail)userEMail="$userEMail"#end>
+	<logFile fileName="$logFileName">$base64EncodedGzippedLogFileContent</logFile>
+</appLog>

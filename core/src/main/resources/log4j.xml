@@ -9,25 +9,35 @@
   </appender>
 
   <!--WARNING! Current velocity configuration depends on "R" appender name -->  
-  <appender name="R" class="org.apache.log4j.RollingFileAppender">
-    <param name="file" value="logs/apachetune.log"/>
-    <param name="MaxFileSize" value="1MB"/>
-    <!-- Keep one backup file -->
-    <param name="MaxBackupIndex" value="1"/>
+    <appender name="R" class="org.apache.log4j.RollingFileAppender">
+        <!--WARNING! Current error reporting logic depends on paths and names of logs. -->  
+        <param name="file" value="logs/apachetune.log"/>
+        <param name="MaxFileSize" value="10MB"/>
+        <!-- Keep one backup file -->
+        <param name="MaxBackupIndex" value="128"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %5p [%t] (%F:%L) - %m%n"/>
+        </layout>
+    </appender>
 
-<!--
-      <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-        <param name="FileNamePattern" value="/wombat/foo.%d{yyyy-MM-dd}**.gz**"/>
-      </rollingPolicy>
--->
+    <logger name="org.apache.commons.httpclient" additivity="false">
+        <level value="warn" />
 
-    <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%5p [%t] (%F:%L) - %m%n"/>
-    </layout>
-  </appender>
-  <root>
-    <priority value ="warn" />
-    <appender-ref ref="stdout" />
-    <appender-ref ref="R" />
-  </root>
+        <appender-ref ref="stdout" />
+        <appender-ref ref="R" />
+    </logger>
+
+    <logger name="httpclient.wire" additivity="false">
+        <level value="debug" />
+
+        <appender-ref ref="stdout" />
+        <appender-ref ref="R" />
+    </logger>
+
+    <root>
+        <priority value="info" />
+
+        <appender-ref ref="stdout" />
+        <appender-ref ref="R" />
+    </root>
 </log4j:configuration>

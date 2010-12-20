@@ -6,11 +6,14 @@ import com.apachetune.core.impl.AppManagerImpl;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.preferences.impl.PreferencesManagerImpl;
+import com.apachetune.core.utils.Utils;
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
@@ -20,6 +23,7 @@ import java.awt.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
@@ -27,6 +31,7 @@ import static com.apachetune.core.Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME;
 import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static javax.swing.JOptionPane.showInputDialog;
 import static javax.swing.SwingUtilities.invokeLater;
@@ -45,6 +50,16 @@ public class ErrorReportManager {
     private static final Logger logger = LoggerFactory.getLogger(ErrorReportManager.class);
 
     private static final ErrorReportManager INSTANCE = new ErrorReportManager();
+
+    private static final String LOGS_PATH = "logs";
+
+    private static final String LOG_BASE_NAME = "apachetune.log";
+
+    public static final String REMOTE_REPORTING_SERVICE = "http://apachetune.com/services/reports";
+
+    public static final String SEND_ERROR_INFO_REPORT_ACTION = "send-error-info";
+    
+    public static final String SEND_APP_LOG_ACTION = "send-app-log";
 
     public static ErrorReportManager getInstance() {
         return INSTANCE;
@@ -78,7 +93,7 @@ public class ErrorReportManager {
                                     errorReportDialog.setVisible(true);
                                 } catch (Throwable throwable) {
                                     //noinspection ThrowableInstanceNeverThrown
-                                    handleErrorReportingException(new ErrorReportManagerException(throwable));
+                                    handleReportError(new ErrorReportManagerException(throwable));
                                 }
                             }
                         });
@@ -86,10 +101,10 @@ public class ErrorReportManager {
                         doSendErrorReport(nullableUserEmail, message, cause, managers.getAppManager(),
                                 managers.getPreferencesManager());
                     } catch (ErrorReportManagerException e) {
-                        handleErrorReportingException(e);
+                        handleReportError(e);
                     } catch (Throwable throwable) {
                         //noinspection ThrowableInstanceNeverThrown
-                        handleErrorReportingException(new ErrorReportManagerException(throwable));
+                        handleReportError(new ErrorReportManagerException(throwable));
                     } finally {
                         invokeLater(new Runnable() {
                             @Override
@@ -98,7 +113,7 @@ public class ErrorReportManager {
                                     errorReportDialog.dispose();
                                 } catch (Throwable throwable) {
                                     //noinspection ThrowableInstanceNeverThrown
-                                    handleErrorReportingException(new ErrorReportManagerException(throwable));
+                                    handleReportError(new ErrorReportManagerException(throwable));
                                 }
                             }
                         });
@@ -109,7 +124,7 @@ public class ErrorReportManager {
             });
         } catch (Throwable throwable) {
             //noinspection ThrowableInstanceNeverThrown
-            handleErrorReportingException(new ErrorReportManagerException(throwable));
+            handleReportError(new ErrorReportManagerException(throwable));
         }
     }
 
@@ -169,18 +184,78 @@ public class ErrorReportManager {
 
         initializeVelocity();
 
-        postMessageToRemoteService(errorMessageReport);
+        boolean wasError = false;
 
-        sendAppLogs(nullableUserEmail, nullableAppInstallationUid);
+        try {
+            postMessageToRemoteService(REMOTE_REPORTING_SERVICE, SEND_ERROR_INFO_REPORT_ACTION, errorMessageReport);
+        } catch (ErrorReportManagerException e) {
+            wasError = true;
+
+            logger.error(format("Cannot send error message report [" +
+                    "remoteReportingService={0};\n" +
+                    "action={1}\n" +
+                    "message=\n{2}\n]",
+                    REMOTE_REPORTING_SERVICE,
+                    SEND_ERROR_INFO_REPORT_ACTION,
+                    errorMessageReport));
+        }
+
+        wasError |= sendAppLogs(nullableUserEmail, nullableAppInstallationUid);
+
+        if (wasError) {
+            handleReportError(null);
+        }
     }
 
-    private void sendAppLogs(String nullableUserEmail, UUID nullableAppInstallationUid) {
-        // в цикле паковать, отправлять и удалять (кроме самого последнего) файлы лога. Если на любом этапе возникнет
-        // ошибка - все же продолжать работу, логгировать ее. В конце, если были ошибки, попросить пользователя отправить
-        // лог вручную
-        // TODO app logs and delete it
-        // todo send and delete velocity log
-        // TODO implement
+    private boolean sendAppLogs(String nullableUserEmail, UUID nullableAppInstallationUid) {
+        boolean wasError = false;
+
+        final File currentLogFile = new File(LOGS_PATH, LOG_BASE_NAME);
+
+        if (currentLogFile.exists()) {
+            wasError = sendAppLog(nullableUserEmail, nullableAppInstallationUid, LOG_BASE_NAME, false);
+        } else {
+            logger.warn(format("Log file {0} is not exists.", currentLogFile.getName()));
+        }
+
+        List<File> logs =
+                asList(new File(LOGS_PATH).listFiles((FilenameFilter) new WildcardFileFilter("apachetune.log.*")));
+
+        for (File log : logs) {
+            wasError |= sendAppLog(nullableUserEmail, nullableAppInstallationUid, log.getName(), true);
+        }
+
+        return wasError;
+    }
+
+    private boolean sendAppLog(String nullableUserEmail, UUID nullableAppInstallationUid, String logFileName,
+                            boolean deleteAfterSending) {
+        boolean wasError = false;
+
+        try {
+            final File logFile = new File(LOGS_PATH, logFileName);
+
+            String logFileContent = IOUtils.toString(new FileInputStream(logFile), "UTF-8");
+
+            String message =
+                    prepareLogFileReport(nullableUserEmail, logFileName, nullableAppInstallationUid, logFileName,
+                            logFileContent);
+
+
+            postMessageToRemoteService(REMOTE_REPORTING_SERVICE, SEND_APP_LOG_ACTION, message);
+
+            if (deleteAfterSending) {
+                if (!logFile.delete()) {
+                    logger.warn(format("Cannot delete log file {0}.", logFile.getName()));
+                }
+            }
+        } catch (Throwable cause) {
+            wasError = true;
+
+            logger.error(format("Error occurred during sending log file [logFileName={0}]", logFileName));
+        }
+
+        return wasError;
     }
 
     private void initializeVelocity() {
@@ -194,9 +269,10 @@ public class ErrorReportManager {
         }
     }
 
-    private void handleErrorReportingException(ErrorReportManagerException e) {
-        System.out.println(getFullStackTrace(e));
-        // TODO implement
+    private void handleReportError(ErrorReportManagerException nullableException) {
+        logger.error("Error reporting subsystem.", nullableException);
+
+        
     }
 
     private Managers prepareManagers(AppManager nullableAppManager, PreferencesManager nullablePreferencesManager) {
@@ -239,10 +315,32 @@ public class ErrorReportManager {
             throw createRuntimeException(e);
         }
 
+        return fillTemplate(ctx, "send_error_info_request.xml.vm");
+    }
+
+    private String prepareLogFileReport(String nullableUserEmail, String nullableAppFullName,
+                                             UUID nullableAppInstallationUid, String logFileName,
+                                             String logFileContent) {
+        VelocityContext ctx = new VelocityContext();
+
+        ctx.put("appFullName", nullableAppFullName);
+        ctx.put("appInstallationUid", nullableAppInstallationUid);
+        ctx.put("userEMail", nullableUserEmail);
+
+        ctx.put("logFileName", logFileName);
+
+        byte[] gzippedLogFileContent = Utils.gzip(logFileContent);
+
+        ctx.put("base64EncodedGzippedLogFileContent", encodeBase64String(gzippedLogFileContent));
+
+        return fillTemplate(ctx, "send_app_log_request.xml.vm");
+    }
+
+    private String fillTemplate(VelocityContext ctx, String templateResourceName) {
         Reader reader;
 
         try {
-            reader = new InputStreamReader(getClass().getResourceAsStream("send_error_info_request.xml.vm"), "UTF-8");
+            reader = new InputStreamReader(getClass().getResourceAsStream(templateResourceName), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }
@@ -262,14 +360,15 @@ public class ErrorReportManager {
         }
     }
 
-    private void postMessageToRemoteService(String content) throws ErrorReportManagerException {
+    private void postMessageToRemoteService(String serviceUrl, String action, String content)
+            throws ErrorReportManagerException {
         HttpClient client = new HttpClient();
 
-        PostMethod method = new PostMethod("http://apachetune.com/services/reports");
+        PostMethod method = new PostMethod(serviceUrl);
 
         method.getParams().setParameter(RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
-        method.setQueryString("action=send-error-info");
+        method.setQueryString("action=" + action);
 
         method.setRequestHeader(new Header("Content-Type", "text/xml; charset=UTF-8"));
 
@@ -428,7 +527,6 @@ public class ErrorReportManager {
 
             return preferencesManager;
         }
-
     }
 
     public static void main(String[] args) {

@@ -10,9 +10,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.awt.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.zip.GZIPOutputStream;
 
 import static org.apache.commons.lang.StringUtils.left;
 import static org.apache.commons.lang.StringUtils.right;
@@ -138,5 +141,21 @@ public final class Utils {
     public static void showSendErrorReportDialog(Component parent, String errorMessage, Throwable cause,
                                                  AppManager appManager, PreferencesManager preferencesManager) {
         ErrorReportManager.getInstance().sendErrorReport(parent, errorMessage, cause, appManager, preferencesManager);
+    }
+
+    public static byte[] gzip(String content) {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try {
+            GZIPOutputStream gzipOS = new GZIPOutputStream(bos);
+
+            gzipOS.write(content.getBytes("UTF-8"));
+
+            gzipOS.close();
+        } catch (IOException e) {
+            throw createRuntimeException(e);
+        }
+
+        return bos.toByteArray();
     }
 }
