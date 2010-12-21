@@ -208,11 +208,11 @@ public class ErrorReportManager {
         String nullableAppFullName =
                 (managers.getAppManager() != null) ? managers.getAppManager().getFullAppName() : null;
 
+        initializeVelocity();
+
         String errorMessageReport =
                 prepareErrorMessageReport(nullableUserEmail, nullableAppFullName, nullableAppInstallationUid, message,
                         cause);
-
-        initializeVelocity();
 
         boolean wasError = false;
 
@@ -230,18 +230,19 @@ public class ErrorReportManager {
                     errorMessageReport));
         }
 
-        wasError |= sendAppLogs(nullableUserEmail, nullableAppInstallationUid);
+        wasError |= sendAppLogs(nullableUserEmail, nullableAppFullName, nullableAppInstallationUid);
 
         return wasError;
     }
 
-    private boolean sendAppLogs(String nullableUserEmail, UUID nullableAppInstallationUid) {
+    private boolean sendAppLogs(String nullableUserEmail, String nullableAppFullName, UUID nullableAppInstallationUid) {
         boolean wasError = false;
 
         final File currentLogFile = new File(LOGS_PATH, LOG_BASE_NAME);
 
         if (currentLogFile.exists()) {
-            wasError = sendAppLog(nullableUserEmail, nullableAppInstallationUid, LOG_BASE_NAME, false);
+            wasError = sendAppLog(nullableUserEmail, nullableAppInstallationUid, nullableAppFullName, LOG_BASE_NAME,
+                    false);
         } else {
             logger.warn(format("Log file {0} is not exists.", currentLogFile.getName()));
         }
@@ -250,25 +251,28 @@ public class ErrorReportManager {
                 (FilenameFilter) new WildcardFileFilter(APACHETUNE_LOG_FILE_FILTER)));
 
         for (File log : logs) {
-            wasError |= sendAppLog(nullableUserEmail, nullableAppInstallationUid, log.getName(), true);
+            wasError |=
+                    sendAppLog(nullableUserEmail, nullableAppInstallationUid, nullableAppFullName, log.getName(), true);
         }
 
         return wasError;
     }
 
-    private boolean sendAppLog(String nullableUserEmail, UUID nullableAppInstallationUid, String logFileName,
-                            boolean deleteAfterSending) {
+    private boolean sendAppLog(String nullableUserEmail, UUID nullableAppInstallationUid, String nullableAppFullName,
+                               String logFileName, boolean deleteAfterSending) {
         boolean wasError = false;
 
         try {
             final File logFile = new File(LOGS_PATH, logFileName);
 
-            String logFileContent = IOUtils.toString(new FileInputStream(logFile), "UTF-8");
+            final FileInputStream logFileIS = new FileInputStream(logFile);
 
-            String message =
-                    prepareLogFileReport(nullableUserEmail, logFileName, nullableAppInstallationUid, logFileName,
-                            logFileContent);
+            String logFileContent = IOUtils.toString(logFileIS, "UTF-8");
 
+            logFileIS.close();
+
+            String message = prepareLogFileReport(nullableUserEmail, nullableAppFullName, nullableAppInstallationUid,
+                    logFileName, logFileContent);
 
             postMessageToRemoteService(REMOTE_REPORTING_SERVICE, SEND_APP_LOG_ACTION, message);
 

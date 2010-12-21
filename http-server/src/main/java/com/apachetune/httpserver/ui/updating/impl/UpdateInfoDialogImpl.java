@@ -59,7 +59,7 @@ public class UpdateInfoDialogImpl implements UpdateInfoDialog {
     @Override
     public final UserActionOnUpdateError showUpdateCheckingError(UpdateException e) {
         JOptionPane optionPane = new JOptionPane(
-                format("An error occurred during checking application update [{0}].\n\n" +
+                format("An error occurred during checking application update [{0}].\n\n" + // todo localize
                     "It may be temporary internet connection problem, but if this error repeats,\n" +
                     "please, send error report to application developers.", e.getMessage()),
                 ERROR_MESSAGE);

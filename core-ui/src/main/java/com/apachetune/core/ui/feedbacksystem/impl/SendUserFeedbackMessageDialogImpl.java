@@ -23,7 +23,7 @@ public class SendUserFeedbackMessageDialogImpl implements SendUserFeedbackMessag
     @Override
     public final int showError(Throwable cause) {
         return showConfirmDialog(mainFrame, format( // TODO localize
-                "Oops! An error occurred during sending the feedback.\n It's may be temporary Internet connection" +
+                "Oops! An error occurred during sending the feedback.\n It''s may be temporary Internet connection" +
                 " error, but it may be also internal application error.\n\n" +
                 "Thanks for feedback and don''t worry: it was" +
                 " saved into the application log.\nPlease, press YES to send information about the error and the" +
