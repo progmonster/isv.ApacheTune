@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
+import static com.apachetune.core.ui.Constants.SEND_FEEDBACK_EVENT;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
@@ -119,6 +120,8 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
                     } catch (URISyntaxException e1) {
                         throw createRuntimeException(e1);
                     }
+                } else if (cmd.equals("sendFeedback")) {
+                    coreUIWorkItem.raiseEvent(SEND_FEEDBACK_EVENT);
                 } else {
                     throw createRuntimeException("Unknown command [cmd=" + cmd + ']');
                 }

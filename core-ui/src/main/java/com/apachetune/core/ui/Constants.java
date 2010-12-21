@@ -112,4 +112,6 @@ public final class Constants {
     public static final String VIEW_POSITION_PREFS_NODE_NAME = "VIEW_POSITIONS";
     
     public static final String MESSAGE_SMART_PART_ID = "MESSAGE_SMART_PART";
+
+    public static final String SEND_FEEDBACK_EVENT = "SEND_FEEDBACK_EVENT";
 }

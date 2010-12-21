@@ -131,9 +131,13 @@
                 </div>
 
                 <div>
-                    <h3><a href="#">Send feedback and get ApacheTune Professional license</a></h3>
+                    <h3><a href="#">Send feedback (we need your opinion!)</a></h3>
 
-                    <div>[TODO description]</div>
+                    <div><p>Do not be hesitate to send feedback to our developer team! You can send information about
+                    errors or your reprove or just wish for us. Click link below to send feedback.</p>
+
+                    <a href="command://sendFeedback">Send feedback</a>
+                    </div>
                 </div>
             </div>
         </div>

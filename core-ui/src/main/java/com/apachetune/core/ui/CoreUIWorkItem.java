@@ -1,10 +1,7 @@
 package com.apachetune.core.ui;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
-import com.apachetune.core.ActivationListener;
-import com.apachetune.core.AppManager;
-import com.apachetune.core.AppVersion;
-import com.apachetune.core.WorkItem;
+import com.apachetune.core.*;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.actions.*;
@@ -104,6 +101,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         this.userFeedbackManager = userFeedbackManager;
     }
 
+    @Subscriber(eventId = SEND_FEEDBACK_EVENT)
     @ActionHandler(HELP_SUBMIT_FEEDBACK_ACTION)
     @Override
     public final void onSendFeedback() {
