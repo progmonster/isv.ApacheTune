@@ -87,7 +87,7 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
             if (sendUserFeedbackMessageDialog.showError(e) == OK_OPTION) {
                 workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT,
-                        new SendErrorReportEvent(mainFrame, "User feedback sending error", e));
+                        new SendErrorReportEvent(mainFrame, "User feedback sending error", e, false));
             }
         }
     }

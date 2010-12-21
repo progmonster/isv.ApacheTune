@@ -13,6 +13,7 @@ import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.mutable.MutableObject;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.jdesktop.swingx.JXHyperlink;
@@ -82,8 +83,16 @@ public class ErrorReportManager {
 
             String lastUsedNullableUserEmail = getUserEmail(managers.getAppManager(), managers.getPreferencesManager());
 
-            final String nullableUserEmail = showAskForReporterEmailDialog(parentComponent, lastUsedNullableUserEmail);
+            final MutableObject userEmail = new MutableObject(lastUsedNullableUserEmail);
 
+            boolean isUserInputEmail = showAskForReporterEmailDialog(parentComponent, userEmail);
+
+            if (isUserInputEmail) {
+                storeUserEMail((String) userEmail.getValue(), nullableAppManager, nullablePreferencesManager);
+            }
+
+            final String nullableUserEmail = (String) userEmail.getValue();
+            
             final ErrorReportDialog errorReportDialog = new ErrorReportDialog(parentComponent);
 
             final ExecutorService executorService = newSingleThreadExecutor();
@@ -99,7 +108,7 @@ public class ErrorReportManager {
                             }
                         });
 
-                        boolean wasError = doSendErrorReport(parentComponent, nullableUserEmail, message, cause,
+                        boolean wasError = doSendErrorReport(nullableUserEmail, message, cause,
                                 managers.getAppManager(), managers.getPreferencesManager());
 
                         if (wasError) {
@@ -169,16 +178,22 @@ public class ErrorReportManager {
         prefs.put(REMOTE_SERVICE_USER_EMAIL_PROP_NAME, userEMail);
     }
 
-    private String showAskForReporterEmailDialog(Component parentComponent, String defUserEmail) {
+    private boolean showAskForReporterEmailDialog(Component parentComponent, MutableObject email) {
         String result = showInputDialog(parentComponent, "Please input your email to field below.\n" +
                 "It may be useful for us when we was trying to solve error you got.\n" +
                 "We'll no use with email to spam or ad messages and you can leave this field empty.",
-                defUserEmail);
+                email.getValue());
 
-        return !result.trim().isEmpty() ? result.trim() : null;
+        if (result == null) {
+            return false;
+        }
+
+        email.setValue(!result.trim().isEmpty() ? result.trim() : null);
+
+        return true;
     }
 
-    private boolean doSendErrorReport(Component parentComponent, String nullableUserEmail, String message, Throwable cause,
+    private boolean doSendErrorReport(String nullableUserEmail, String message, Throwable cause,
                                    AppManager nullableAppManager, PreferencesManager nullablePreferencesManager)
             throws ErrorReportManagerException {
         final Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
@@ -561,9 +576,5 @@ public class ErrorReportManager {
 
             return preferencesManager;
         }
-    }
-
-    public static void main(String[] args) {
-        ErrorReportManager.getInstance().sendErrorReport(null, "error", new RuntimeException("bla-bla"), null, null);
     }
 }

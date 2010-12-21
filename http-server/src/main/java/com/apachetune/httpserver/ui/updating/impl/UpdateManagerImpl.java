@@ -95,7 +95,7 @@ public class UpdateManagerImpl implements UpdateManager {
 
             if (userAction.isUserAgreeSendErrorReport()) {
                 httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame,
-                        "Check for update error", e));
+                        "Check for update error", e, false));
             }
         }
     }

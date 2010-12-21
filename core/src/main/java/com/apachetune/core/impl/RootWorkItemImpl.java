@@ -105,6 +105,6 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
     private void onSendErrorReportEvent(SendErrorReportEvent event) {
         //noinspection ThrowableResultOfMethodCallIgnored
         showSendErrorReportDialog(event.getParentComponent(), event.getErrorMessage(), event.getCause(),
-                appManager, preferencesManager);
+                appManager, preferencesManager, event.isShowSendCancelDialog());
     }
 }

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.zip.GZIPOutputStream;
 
+import static javax.swing.JOptionPane.*;
 import static org.apache.commons.lang.StringUtils.left;
 import static org.apache.commons.lang.StringUtils.right;
 import static org.apache.commons.lang.Validate.isTrue;
@@ -139,7 +141,19 @@ public final class Utils {
     }
 
     public static void showSendErrorReportDialog(Component parent, String errorMessage, Throwable cause,
-                                                 AppManager appManager, PreferencesManager preferencesManager) {
+                                                 AppManager appManager, PreferencesManager preferencesManager,
+                                                 boolean showSendCancelDialog) {
+        if (showSendCancelDialog) {
+            if (showConfirmDialog(
+                    parent,
+                    "An error occurred.\n\n" +
+                    "You can help us by sending error report to our developer team.",
+                    "Error",
+                    OK_CANCEL_OPTION) == CANCEL_OPTION) {
+                return;
+            }
+        }
+
         ErrorReportManager.getInstance().sendErrorReport(parent, errorMessage, cause, appManager, preferencesManager);
     }
 

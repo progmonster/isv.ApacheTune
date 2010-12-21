@@ -12,10 +12,14 @@ public class SendErrorReportEvent {
 
     private final Throwable cause;
 
-    public SendErrorReportEvent(Component parentComponent, String errorMessage, Throwable cause) {
+    public final boolean showSendCancelDialog;
+
+    public SendErrorReportEvent(Component parentComponent, String errorMessage, Throwable cause,
+                                boolean showSendCancelDialog) {
         this.parentComponent = parentComponent;
         this.errorMessage = errorMessage;
         this.cause = cause;
+        this.showSendCancelDialog = showSendCancelDialog;
     }
 
     public final Component getParentComponent() {
@@ -28,5 +32,9 @@ public class SendErrorReportEvent {
 
     public final Throwable getCause() {
         return cause;
+    }
+
+    public boolean isShowSendCancelDialog() {
+        return showSendCancelDialog;
     }
 }
