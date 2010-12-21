@@ -68,6 +68,10 @@ public class ErrorReportManager {
     
     public static final String SEND_APP_LOG_ACTION = "send-app-log";
 
+    public static final String APACHETUNE_LOG_FILE_FILTER = "apachetune.log.*";
+
+    public static final String SUPPORT_EMAIL_URL = "mailto:support@apachetune.com?subject=Error%20report";
+
     public static ErrorReportManager getInstance() {
         return INSTANCE;
     }
@@ -168,7 +172,7 @@ public class ErrorReportManager {
 
         if (managers.getPreferencesManager() == null) {
             logger.warn(format("Cannot store userEmail because cannot create preferences manager [userEmail={0}]",
-                    userEMail));
+                    "" + userEMail));
 
             return;
         }
@@ -179,7 +183,7 @@ public class ErrorReportManager {
     }
 
     private boolean showAskForReporterEmailDialog(Component parentComponent, MutableObject email) {
-        String result = showInputDialog(parentComponent, "Please input your email to field below.\n" +
+        String result = showInputDialog(parentComponent, "Please input your email to field below.\n" + // todo localize
                 "It may be useful for us when we was trying to solve error you got.\n" +
                 "We'll no use with email to spam or ad messages and you can leave this field empty.",
                 email.getValue());
@@ -242,8 +246,8 @@ public class ErrorReportManager {
             logger.warn(format("Log file {0} is not exists.", currentLogFile.getName()));
         }
 
-        List<File> logs =
-                asList(new File(LOGS_PATH).listFiles((FilenameFilter) new WildcardFileFilter("apachetune.log.*")));
+        List<File> logs = asList(new File(LOGS_PATH).listFiles(
+                (FilenameFilter) new WildcardFileFilter(APACHETUNE_LOG_FILE_FILTER)));
 
         for (File log : logs) {
             wasError |= sendAppLog(nullableUserEmail, nullableAppInstallationUid, log.getName(), true);
@@ -296,7 +300,7 @@ public class ErrorReportManager {
     private void handleReportError(Component parentComponent, ErrorReportManagerException nullableException) {
         logger.error("Error reporting subsystem.", nullableException);
 
-        String errMsg = "Unbelievable!" +
+        String errMsg = "Unbelievable!" + // todo localize
                 " An error occurred during sending error report.\n\n You can help us by sending application log files" +
                 " under directory\n" +
                 '\"' + new File(LOGS_PATH).getAbsolutePath() + "\"\nvia email manually.\n\n" +
@@ -310,7 +314,7 @@ public class ErrorReportManager {
             @Override
             public final void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI("mailto:support@apachetune.com?subject=Error%20report"));
+                    Desktop.getDesktop().browse(new URI(SUPPORT_EMAIL_URL));
                 } catch (IOException e1) {
                     logger.error("Internal error", e1);
                 } catch (URISyntaxException e1) {
