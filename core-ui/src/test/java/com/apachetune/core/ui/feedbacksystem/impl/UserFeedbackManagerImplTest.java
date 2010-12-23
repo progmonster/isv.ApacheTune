@@ -1,6 +1,9 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
+import com.apachetune.core.Constants;
+import com.apachetune.core.errorreportsystem.ErrorReportManager;
 import com.apachetune.core.errorreportsystem.SendErrorReportEvent;
+import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.core.ui.feedbacksystem.*;
@@ -36,6 +39,8 @@ public class UserFeedbackManagerImplTest {
 
     private PreferencesManager mockPreferencesManager;
 
+    private Preferences mockUserNodeForErrorReportManager;
+
     private Sequence workflow;
 
     private UserFeedbackManager testSubj;
@@ -59,6 +64,8 @@ public class UserFeedbackManagerImplTest {
 
         mockPreferencesManager = mockCtx.mock(PreferencesManager.class);
 
+        mockUserNodeForErrorReportManager = mockCtx.mock(Preferences.class);
+
         workflow = mockCtx.sequence("workflow");
 
         testSubj = new UserFeedbackManagerImpl(mockWorkItem, null, fakeUserFeedbackViewProvider, mockRemoteManager,
@@ -68,6 +75,12 @@ public class UserFeedbackManagerImplTest {
     @Test
     public void test_user_cancel_sending_feedback() throws Exception {
         mockCtx.checking(new Expectations(){{
+            allowing(mockPreferencesManager).userNodeForPackage(ErrorReportManager.class);
+            will(returnValue(mockUserNodeForErrorReportManager));
+
+            allowing(mockUserNodeForErrorReportManager).get(Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME, null);
+            will(returnValue("progmonster@gmail.com"));
+
             oneOf(mockUserFeedbackView).initialize(mockWorkItem);
             inSequence(workflow);
 
@@ -88,6 +101,15 @@ public class UserFeedbackManagerImplTest {
     @Test
     public void test_send_user_feedback() throws Exception {
         mockCtx.checking(new Expectations(){{
+            allowing(mockPreferencesManager).userNodeForPackage(ErrorReportManager.class);
+            will(returnValue(mockUserNodeForErrorReportManager));
+
+            allowing(mockUserNodeForErrorReportManager).get(Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME, null);
+            will(returnValue("progmonster@gmail.com"));
+
+            one(mockUserNodeForErrorReportManager)
+                    .put(Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME, "progmonster@gmail.com");
+
             oneOf(mockUserFeedbackView).initialize(mockWorkItem);
             inSequence(workflow);
 
@@ -125,7 +147,16 @@ public class UserFeedbackManagerImplTest {
     @Test
     public void test_fail_on_user_feedback_sending() throws Exception {
         mockCtx.checking(new Expectations(){{
+            allowing(mockPreferencesManager).userNodeForPackage(ErrorReportManager.class);
+            will(returnValue(mockUserNodeForErrorReportManager));
+
+            allowing(mockUserNodeForErrorReportManager).get(Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME, null);
+            will(returnValue("progmonster@gmail.com"));
+
+            one(mockUserNodeForErrorReportManager)
+                    .put(Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME, "progmonster@gmail.com");
             oneOf(mockUserFeedbackView).initialize(mockWorkItem);
+
             inSequence(workflow);
 
             oneOf(mockUserFeedbackView).setUserEmail("progmonster@gmail.com");
