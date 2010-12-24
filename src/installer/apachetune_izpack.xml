@@ -34,10 +34,11 @@
         <res id="LicencePanel.licence" parse="yes" src="..\..\distr.unpacked\LICENSE.txt"/>
         <res id="shortcutSpec.xml" src="apachetune_izpack_shortcutSpec.xml"/>
         <res id="Heading.image" src="logo.png"/>
-        <res id="HelloPanel.info" parse="yes" src="hello_panel.txt"/>
+        <res id="InfoPanel.info" parse="yes" src="info_panel.txt"/>
     </resources>
     <panels>
         <panel classname="HelloPanel"/>
+        <panel classname="InfoPanel"/>
         <panel classname="LicencePanel"/>
         <panel classname="TargetPanel"/>
         <panel classname="InstallPanel"/>
