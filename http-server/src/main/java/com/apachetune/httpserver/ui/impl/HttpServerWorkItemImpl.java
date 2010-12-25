@@ -54,6 +54,7 @@ import java.util.prefs.BackingStoreException;
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_2;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.openExternalWebPage;
 import static com.apachetune.httpserver.Constants.*;
 import static java.text.MessageFormat.format;
 

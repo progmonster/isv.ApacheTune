@@ -9,6 +9,7 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
+import static com.apachetune.core.ui.Constants.OPEN_WEB_PORTAL_DONATE_PAGE_EVENT;
 import static com.apachetune.httpserver.Constants.SERVER_SEARCH_FOR_HTTP_SERVER_EVENT;
 import static com.apachetune.httpserver.Constants.SERVER_SELECT_HTTP_SERVER_EVENT;
 
@@ -21,11 +22,10 @@ public class WelcomeScreenPresenter extends NPresenter<WelcomeScreenView>
 
     private final RecentOpenedServersManager recentOpenedServersManager;
 
-//    private final HttpServerManager httpServerManager;
-
     @Inject
     public WelcomeScreenPresenter(final @Named(CORE_UI_WORK_ITEM) UIWorkItem coreUIWorkItem,
-                                  final RecentOpenedServersManager recentOpenedServersManager) {
+                                  final RecentOpenedServersManager recentOpenedServersManager
+    ) {
         this.coreUIWorkItem = (CoreUIWorkItem) coreUIWorkItem;
         this.recentOpenedServersManager = recentOpenedServersManager;
     }
@@ -53,15 +53,16 @@ public class WelcomeScreenPresenter extends NPresenter<WelcomeScreenView>
         getView().reloadStartPage();
     }
 
-    // todo on server path selected handler
-    // workItem.raiseEvent(Constants.SERVER_PATH_SELECTED_EVENT, view.getPath());
-
-    public void OnShowOpenServerDialog() {
+    public void onShowOpenServerDialog() {
         getWorkItem().raiseEvent(SERVER_SELECT_HTTP_SERVER_EVENT);
     }
 
-    public void OnShowSearchServerDialog() {
+    public void onShowSearchServerDialog() {
         getWorkItem().raiseEvent(SERVER_SEARCH_FOR_HTTP_SERVER_EVENT);
+    }
+
+    public void onOpenWebPortalDonatePage() {
+        getWorkItem().raiseEvent(OPEN_WEB_PORTAL_DONATE_PAGE_EVENT);
     }
 
     private void doSetRecentServerListToView() {

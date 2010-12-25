@@ -27,8 +27,11 @@ import java.awt.event.WindowEvent;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.core.ui.Constants.DONATE_ACTION_GROUP;
+import static com.apachetune.core.ui.Constants.HELP_DONATE_ACTION;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_1;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.openExternalWebPage;
 import static java.awt.Frame.NORMAL;
 import static java.awt.event.InputEvent.CTRL_MASK;
 import static java.awt.event.InputEvent.SHIFT_MASK;
@@ -45,7 +48,8 @@ import static org.apache.commons.lang.Validate.notNull;
  * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
  * @version 1.0
  */
-public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListener, FeedbackActionSite {
+public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListener, FeedbackActionSite,
+        DonateActionSite {
     private final JFrame mainFrame;
 
     private final SwingMaxWindowPatch swingMaxWindowPatch = new SwingMaxWindowPatch();
@@ -111,6 +115,25 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     @ActionPermission(HELP_SUBMIT_FEEDBACK_ACTION)
     @Override
     public final boolean isFeedbackEnabled() {
+        return true;
+    }
+
+    @Subscriber(eventId = OPEN_WEB_PORTAL_DONATE_PAGE_EVENT)
+    @ActionHandler(HELP_DONATE_ACTION)
+    @Override
+    public void onOpenWebPortalDonatePage() {
+        String webPortalBaseUri = appManager.getProductWebPortalUri();
+
+        if (webPortalBaseUri.charAt(webPortalBaseUri.length() - 1) != '/') {
+            webPortalBaseUri += '/';
+        }
+
+        openExternalWebPage(mainFrame, webPortalBaseUri + "donate");
+    }
+
+    @ActionPermission(HELP_DONATE_ACTION)
+    @Override
+    public boolean isOpenWebPortalDonatePageEnabled() {
         return true;
     }
 
@@ -400,6 +423,13 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 coreUIActionGroup, coreUIResourceLocator, "Check for update...", "Check for update",
                 "Check for update the application", null, null, 'C', null, false);
 
+        // TODO Localize.
+        coreUIUtils.createAndConfigureAction(HELP_DONATE_ACTION, DonateActionSite.class,
+                coreUIActionGroup, coreUIResourceLocator, "Donate us",
+                "Donate to help us to improve this application",
+                "Donate to help us to improve this application (even $1 will be useful).",
+                "donate_16.png", null, 'D', null, false);
+
         actionManager.registerActionGroup(coreUIActionGroup);
 
         ActionGroup clipboardActionGroup = actionManager.createActionGroup(CLIPBOARD_ACTION_GROUP);
@@ -467,6 +497,8 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 .getAction(EDIT_COPY_ACTION), actionManager.getAction(EDIT_PASTE_ACTION));
 
         toolBarManager.addActionGroup(FEEDBACK_ACTION_GROUP, actionManager.getAction(HELP_SUBMIT_FEEDBACK_ACTION));
+
+        toolBarManager.addActionGroup(DONATE_ACTION_GROUP, actionManager.getAction(HELP_DONATE_ACTION));
 
 /*
         todo uncomment
@@ -544,6 +576,9 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
         helpMenu.addSeparator();
 
+        coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_DONATE_ACTION)));
+
+        helpMenu.addSeparator();
 /*
         coreUIUtils.addUIActionHint(helpMenu.add(actionManager.getAction(HELP_REGISTER_ACTION)));
         todo uncomment

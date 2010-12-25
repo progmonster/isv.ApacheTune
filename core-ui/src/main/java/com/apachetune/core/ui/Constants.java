@@ -114,4 +114,10 @@ public final class Constants {
     public static final String MESSAGE_SMART_PART_ID = "MESSAGE_SMART_PART";
 
     public static final String SEND_FEEDBACK_EVENT = "SEND_FEEDBACK_EVENT";
+
+    public static final String OPEN_WEB_PORTAL_DONATE_PAGE_EVENT = "OPEN_WEB_PORTAL_DONATE_PAGE_EVENT";
+
+    public static final String HELP_DONATE_ACTION = "HELP_DONATE_ACTION";
+
+    public static final String DONATE_ACTION_GROUP = "DONATE_ACTION_GROUP";
 }

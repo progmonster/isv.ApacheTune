@@ -83,18 +83,17 @@
     <div class="ui-widget-content" style="margin: 4px; padding: 4px;">
         <h1>Welcome to The Apache HTTP Server Configuration Utility!</h1>
         <br />
-        <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">This is a free open source graphical
+        <p style="font-size: 1.3em; line-height: 1.5; margin: 1em 0; width: 50%;">This is a free graphical
             Apache HTTP Server configure utility.
-            <br /><br />
+            <br />
             Visit our site <a href="command://openProductWebPortal">apachetune.com</a> to get more information about this
-            <br />product and obtain source code if you need.
+            product.
         </p>
 
         <p style="font-weight: bold; margin: 2em 0 1em; font-size: 1.3em;">YOU CAN:</p>
 
         <div id="accordion">
             <div style="float: left; width: 40%;">
-                <!-- TODO The first column -->
                 <div>
                     <h3><a href="#">Open an Apache HTTP Server</a></h3>
 
@@ -114,20 +113,17 @@
                         <a href="command://searchServer">Click to show the Search Server dialog</a>
                     </div>
                 </div>
-            </div>
-
-            <div style="width: 40%; clear: both;">
-                <!-- TODO The second column -->
-                <div>
-                    <h3><a href="#">Register and WIN ApacheTune Professional license from 50.</a></h3>
-
-                    <div>[TODO description]</div>
-                </div>
 
                 <div>
-                    <h3><a href="#">Donate and get ApacheTune Professional license</a></h3>
+                    <h3><a href="#">Donate and help us to improve this application!</a></h3>
 
-                    <div>[TODO description]</div>
+                    <div>
+                        <p>This application is free, but you can help us to develop and maintain it. Even $1 will help us
+                        to small improve this application and make for you new better version.
+                        <br /><br />
+                        Visit our site <a href="command://openProductWebPortal_DonatePage">apachetune.com</a> to make donation.
+                        And thanks for help :)</p>
+                    </div>
                 </div>
 
                 <div>

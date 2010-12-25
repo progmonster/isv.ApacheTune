@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -171,5 +172,17 @@ public final class Utils {
         }
 
         return bos.toByteArray();
+    }
+
+    public static void openExternalWebPage(Component parentComponent, String uri) {
+        try {
+            Desktop.getDesktop().browse(new URI(uri));
+        } catch (IOException e1) {
+            logger.error("Error opening a web page", e1);
+
+            showMessageDialog(parentComponent, "Error open web page", "Error", ERROR_MESSAGE); // todo localize
+        } catch (URISyntaxException e1) {
+            throw createRuntimeException(e1);
+        }
     }
 }

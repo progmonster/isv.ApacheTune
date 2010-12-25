@@ -18,15 +18,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.List;
 
 import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
 import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.core.ui.Constants.SEND_FEEDBACK_EVENT;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
-import static javax.swing.JOptionPane.ERROR_MESSAGE;
-import static javax.swing.JOptionPane.showMessageDialog;
+import static com.apachetune.core.utils.Utils.openExternalWebPage;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -44,6 +42,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
     private final WelcomeScreenPresenter presenter;
 
     private final AppManager appManager;
+
     private final JFrame mainFrame;
 
     private final CoreUIWorkItem coreUIWorkItem;
@@ -107,19 +106,13 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
                 String cmd = e.getCommand();
 
                 if (cmd.equals("openServer")) {
-                    presenter.OnShowOpenServerDialog();
+                    presenter.onShowOpenServerDialog();
                 } else if (cmd.equals("searchServer")) {
-                    presenter.OnShowSearchServerDialog();
+                    presenter.onShowSearchServerDialog();
                 } else if (cmd.equals("openProductWebPortal")) {
-                    try {
-                        Desktop.getDesktop().browse(new URI(appManager.getProductWebPortalUri()));
-                    } catch (IOException e1) {
-                        logger.error("Error opening a web page", e1);
-
-                        showMessageDialog(mainFrame, "Error open web page", "Error", ERROR_MESSAGE);
-                    } catch (URISyntaxException e1) {
-                        throw createRuntimeException(e1);
-                    }
+                    openExternalWebPage(mainFrame, appManager.getProductWebPortalUri());
+                } else if (cmd.equals("openProductWebPortal_DonatePage")) {
+                    presenter.onOpenWebPortalDonatePage();
                 } else if (cmd.equals("sendFeedback")) {
                     coreUIWorkItem.raiseEvent(SEND_FEEDBACK_EVENT);
                 } else {
