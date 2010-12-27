@@ -9,6 +9,7 @@ import com.apachetune.core.ui.CoreUIWorkItem;
 import com.apachetune.core.ui.UIWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import static com.apachetune.core.ui.Constants.CORE_UI_WORK_ITEM;
 import static com.apachetune.core.ui.Constants.SEND_FEEDBACK_EVENT;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.core.utils.Utils.openExternalWebPage;
+import static org.apache.commons.lang.StringUtils.removeStart;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -66,9 +68,17 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
         WebServer.getDefaultWebServer().addContentProvider(new WebServer.WebServerContentProvider() {
             @Override
             public WebServer.WebServerContent getWebServerContent(WebServer.HTTPRequest httpRequest) {
+                logger.debug("Local web-server requested [requestUrl=" + httpRequest.getURLPath() + ']');
+
+                DefaultWebServerContent content;
+
                 synchronized (listLock) {
-                    return new DefaultWebServerContent(httpRequest, WelcomeScreenSmartPart.this);
+                    content = new DefaultWebServerContent(httpRequest, WelcomeScreenSmartPart.this);
                 }
+
+                logger.debug("Content handler created [requestUrl=" + httpRequest.getURLPath() + ']');
+
+                return content;
             }
         });
     }
@@ -152,7 +162,11 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
     }
 
     public void openStartPage() {
+        logger.debug("Open start page... [startPageUrl=" + getStartPageUrl() + ']');
+        
         browser.navigate(getStartPageUrl());
+
+        logger.debug("Start page has been opened [startPageUrl=" + getStartPageUrl() + ']');
     }
 
     private String getStartPageUrl() {
@@ -205,7 +219,8 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
     @Override
     public InputStream getInputStream() {
         try {
-            InputStream contentIS = getClass().getResourceAsStream("." + request.getResourcePath());
+            InputStream contentIS =
+                    WelcomeScreenPresenter.class.getResourceAsStream(removeStart(request.getResourcePath(), "/"));
 
             if (getResourceExtension().equals("vm")) {
                 Reader contentReader = new InputStreamReader(contentIS, "UTF-8");
@@ -214,8 +229,8 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
             } else {
                 return contentIS;
             }
-        } catch (UnsupportedEncodingException e) {
-            throw createRuntimeException(e);
+        } catch (Throwable cause) {
+            throw createRuntimeException(cause);
         }
     }
 
