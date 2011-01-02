@@ -43,15 +43,16 @@ import static com.apachetune.core.utils.Utils.showSendErrorReportDialog;
 public class App {
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
-    private static final String CONFIG_FILE_NAME = "config.xml";
+    private static final String CONFIG_FILE_NAME = "config.xml"; //NON-NLS
 
     public static void main(String[] args) {
         try {
             new App();
         } catch (Throwable cause) {
-            logger.error("Error in app", cause);
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("Error in app", cause); //NON-NLS
 
-            showSendErrorReportDialog(null, "Error in app main method", cause, null, null, true);
+            showSendErrorReportDialog(null, "Error in app main method", cause, null, null, true); //NON-NLS
         }
     }
 
@@ -104,14 +105,14 @@ public class App {
 
         Document config = db.parse(getClass().getClassLoader().getResourceAsStream(CONFIG_FILE_NAME));
 
-        NodeList modulesNodes = config.getDocumentElement().getElementsByTagName("module");
+        NodeList modulesNodes = config.getDocumentElement().getElementsByTagName("module"); //NON-NLS
 
         String[] result = new String[modulesNodes.getLength()];
 
         for (int moduleIdx = 0; moduleIdx < modulesNodes.getLength(); moduleIdx++) {
             Element moduleElement = (Element) modulesNodes.item(moduleIdx);
 
-            String moduleControllerClassName = moduleElement.getAttribute("moduleControllerClass");
+            String moduleControllerClassName = moduleElement.getAttribute("moduleControllerClass"); //NON-NLS
 
             result[moduleIdx] = moduleControllerClassName;
         }

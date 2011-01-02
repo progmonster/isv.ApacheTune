@@ -14,14 +14,12 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.Constants.APP_INSTALLATION_UID_PROP;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static java.util.Locale.ENGLISH;
 
 /**
  * FIXDOC
@@ -30,25 +28,27 @@ import static com.apachetune.core.utils.Utils.createRuntimeException;
  * @version 1.0
  */
 public class AppManagerImpl implements AppManager {
-    private static final String APP_PROPERTIES_PATH = "/app.properties";
+    private static final String APP_PROPERTIES_PATH = "/app.properties"; //NON-NLS
 
-    private static final String APP_PROPERTIES_ENCODING = "utf-8";
+    private static final String APP_PROPERTIES_ENCODING = "utf-8"; //NON-NLS
 
-    private static final String NAME_PROP = "name";
+    private static final String NAME_PROP = "name"; //NON-NLS
 
-    private static final String VERSION_PROP = "version";
+    private static final String VERSION_PROP = "version"; //NON-NLS
 
-    private static final String DEVELOPMENT_START_DATE_PROP = "developmentStartDate";
+    private static final String DEVELOPMENT_START_DATE_PROP = "developmentStartDate"; //NON-NLS
 
-    private static final String COPYRIGHT_TEXT_PROP = "copyright";
+    private static final String COPYRIGHT_TEXT_PROP = "copyright"; //NON-NLS
 
-    private static final String WEBSITE_PROP = "website";
+    private static final String WEBSITE_PROP = "website"; //NON-NLS
 
-    private static final String VENDOR_PROP = "vendor";
+    private static final String VENDOR_PROP = "vendor"; //NON-NLS
 
-    private static final String BUILD_DATE_PROP = "buildDate";
+    private static final String BUILD_DATE_PROP = "buildDate"; //NON-NLS
 
-    private static final String PRODUCT_WEB_PORTAL_URI_PROP = "productWebPortalUri";
+    private static final String PRODUCT_WEB_PORTAL_URI_PROP = "productWebPortalUri"; //NON-NLS
+
+    public static final String APP_BUILD_DATE_FORMAT = "dd-MM-yyyy"; //NON-NLS
 
     private final PreferencesManager preferencesManager;
 
@@ -98,7 +98,7 @@ public class AppManagerImpl implements AppManager {
 
     public Date getBuildDate() {
         try {
-            return new SimpleDateFormat("dd-MM-yyyy").parse(appProps.getProperty(BUILD_DATE_PROP));
+            return new SimpleDateFormat(APP_BUILD_DATE_FORMAT, ENGLISH).parse(appProps.getProperty(BUILD_DATE_PROP));
         } catch (ParseException e) {
             throw Utils.createRuntimeException(e);
         }
@@ -106,7 +106,8 @@ public class AppManagerImpl implements AppManager {
 
     public Date getDevelopmentStartDate() {
         try {
-            return new SimpleDateFormat("dd-MM-yyyy").parse(appProps.getProperty(DEVELOPMENT_START_DATE_PROP));
+            return new SimpleDateFormat(APP_BUILD_DATE_FORMAT, ENGLISH)
+                    .parse(appProps.getProperty(DEVELOPMENT_START_DATE_PROP));
         } catch (ParseException e) {
             throw Utils.createRuntimeException(e);
         }
@@ -144,6 +145,7 @@ public class AppManagerImpl implements AppManager {
         if (buildDateYear == startDevYear) {
             copyrightYears = String.valueOf(buildDateYear);
         } else {
+            //noinspection MagicCharacter,StringConcatenation
             copyrightYears = String.valueOf(startDevYear) + '-' + String.valueOf(buildDateYear);
         }
 
@@ -153,7 +155,8 @@ public class AppManagerImpl implements AppManager {
     }
 
     public String getFullAppName() {
-        return getName() +'-' + getVersion().format();
+        //noinspection MagicCharacter,StringConcatenation
+        return getName() + '-' + getVersion().format();
     }
 
     public String getProductWebPortalUri() {

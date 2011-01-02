@@ -2,6 +2,7 @@ package com.apachetune.core.errorreportsystem;
 
 import com.apachetune.core.AppManager;
 import com.apachetune.core.AppVersion;
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.impl.AppManagerImpl;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
@@ -27,15 +28,17 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 
-import static com.apachetune.core.Constants.REMOTE_SERVICE_USER_EMAIL_PROP_NAME;
-import static com.apachetune.core.Constants.VELOCITY_LOG4J_APPENDER_NAME;
+import static com.apachetune.core.Constants.*;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.core.utils.Utils.gzip;
+import static com.apachetune.main.MainModule.REMOTE_REPORTING_SERVICE;
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
@@ -58,19 +61,22 @@ public class ErrorReportManager {
 
     private static final ErrorReportManager INSTANCE = new ErrorReportManager();
 
-    private static final String LOGS_PATH = "logs";
+    private static final String LOGS_PATH = "logs"; //NON-NLS
 
-    private static final String LOG_BASE_NAME = "apachetune.log";
+    private static final String LOG_BASE_NAME = "apachetune.log"; //NON-NLS
 
-    public static final String REMOTE_REPORTING_SERVICE = "http://apachetune.com/services/reports";
-
-    public static final String SEND_ERROR_INFO_REPORT_ACTION = "send-error-info";
+    private static final String SEND_ERROR_INFO_REPORT_ACTION = "send-error-info"; //NON-NLS
     
-    public static final String SEND_APP_LOG_ACTION = "send-app-log";
+    private static final String SEND_APP_LOG_ACTION = "send-app-log"; //NON-NLS
 
-    public static final String APACHETUNE_LOG_FILE_FILTER = "apachetune.log.*";
+    private static final String APACHETUNE_LOG_FILE_FILTER = "apachetune.log.*"; //NON-NLS
 
-    public static final String SUPPORT_EMAIL_URL = "mailto:support@apachetune.com?subject=Error%20report";
+    @SuppressWarnings({"StringConcatenation"})
+    private static final String SUPPORT_PRODUCT_EMAIL_URL = "mailto:" + SUPPORT_PRODUCT_EMAIL //NON-NLS
+            + "?subject=Error%20report"; //NON-NLS
+
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(ErrorReportManager.class);
 
     public static ErrorReportManager getInstance() {
         return INSTANCE;
@@ -79,7 +85,7 @@ public class ErrorReportManager {
     public final void sendErrorReport(final Component parentComponent, final String message, final Throwable cause,
                                       final AppManager nullableAppManager,
                                       final PreferencesManager nullablePreferencesManager) {
-        logger.info(format("Sending error info to remote service... [message={0};\ncause=\n{1}\n]",
+        logger.info(format("Sending error info to remote service... [message={0};\ncause=\n{1}\n]", //NON-NLS
                 message, getFullStackTrace(cause)));
 
         try {
@@ -156,7 +162,7 @@ public class ErrorReportManager {
         Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
 
         if (managers.getPreferencesManager() == null) {
-            logger.warn("Cannot get userEmail because cannot create preferences manager.");
+            logger.warn("Cannot get userEmail because cannot create preferences manager."); //NON-NLS
 
             return null;
         }
@@ -171,8 +177,11 @@ public class ErrorReportManager {
         Managers managers = prepareManagers(nullableAppManager, nullablePreferencesManager);
 
         if (managers.getPreferencesManager() == null) {
-            logger.warn(format("Cannot store userEmail because cannot create preferences manager [userEmail={0}]",
-                    "" + userEMail));
+            //noinspection StringConcatenation
+            logger.warn(format(
+                    "Cannot store userEmail because cannot create preferences manager [userEmail={0}]",  //NON-NLS
+                    "" + userEMail
+            ));
 
             return;
         }
@@ -183,10 +192,8 @@ public class ErrorReportManager {
     }
 
     private boolean showAskForReporterEmailDialog(Component parentComponent, MutableObject email) {
-        String result = showInputDialog(parentComponent, "Please input your email to field below.\n" + // todo localize
-                "It may be useful for us when we was trying to solve error you got.\n" +
-                "We'll no use with email to spam or ad messages and you can leave this field empty.",
-                email.getValue());
+        String result = showInputDialog(parentComponent, MessageFormat.format(
+                resourceBundle.getString("errorReportManager.showAskForReporterEmailDialog.text"), email.getValue()));
 
         if (result == null) {
             return false;
@@ -221,10 +228,11 @@ public class ErrorReportManager {
         } catch (ErrorReportManagerException e) {
             wasError = true;
 
-            logger.error(format("Cannot send error message report [" +
-                    "remoteReportingService={0};\n" +
-                    "action={1}\n" +
-                    "message=\n{2}\n]",
+            //noinspection StringConcatenation
+            logger.error(format("Cannot send error message report [" + //NON-NLS
+                    "remoteReportingService={0};\n" + //NON-NLS
+                    "action={1}\n" + //NON-NLS
+                    "message=\n{2}\n]", //NON-NLS
                     REMOTE_REPORTING_SERVICE,
                     SEND_ERROR_INFO_REPORT_ACTION,
                     errorMessageReport));
@@ -244,7 +252,7 @@ public class ErrorReportManager {
             wasError = sendAppLog(nullableUserEmail, nullableAppInstallationUid, nullableAppFullName, LOG_BASE_NAME,
                     false);
         } else {
-            logger.warn(format("Log file {0} is not exists.", currentLogFile.getName()));
+            logger.warn(format("Log file {0} is not exists.", currentLogFile.getName())); //NON-NLS
         }
 
         List<File> logs = asList(new File(LOGS_PATH).listFiles(
@@ -267,7 +275,7 @@ public class ErrorReportManager {
 
             final FileInputStream logFileIS = new FileInputStream(logFile);
 
-            String logFileContent = IOUtils.toString(logFileIS, "UTF-8");
+            String logFileContent = IOUtils.toString(logFileIS, "UTF-8"); //NON-NLS
 
             logFileIS.close();
 
@@ -278,21 +286,21 @@ public class ErrorReportManager {
 
             if (deleteAfterSending) {
                 if (!logFile.delete()) {
-                    logger.warn(format("Cannot delete log file {0}.", logFile.getName()));
+                    logger.warn(format("Cannot delete log file {0}.", logFile.getName())); //NON-NLS
                 }
             }
         } catch (Throwable cause) {
             wasError = true;
 
-            logger.error(format("Error occurred during sending log file [logFileName={0}]", logFileName));
+            logger.error(format("Error occurred during sending log file [logFileName={0}]", logFileName)); //NON-NLS
         }
 
         return wasError;
     }
 
     private void initializeVelocity() {
-        Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
-        Velocity.setProperty("runtime.log.logsystem.log4j.logger", "velocity_logger");
+        Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, VELOCITY_LOG_CLASS);
+        Velocity.setProperty(VELOCITY_LOGGER_NAME_PROP, VELOCITY_LOGGER);
 
         try {
             Velocity.init();
@@ -302,27 +310,27 @@ public class ErrorReportManager {
     }
 
     private void handleReportError(Component parentComponent, ErrorReportManagerException nullableException) {
-        logger.error("Error reporting subsystem.", nullableException);
+        logger.error("Error reporting subsystem.", nullableException); //NON-NLS
 
-        String errMsg = "Unbelievable!" + // todo localize
-                " An error occurred during sending error report.\n\n You can help us by sending application log files" +
-                " under directory\n" +
-                '\"' + new File(LOGS_PATH).getAbsolutePath() + "\"\nvia email manually.\n\n" +
-                "The email address to send is:\n";
+        String errMsg = MessageFormat
+                .format(resourceBundle.getString("errorReportManager.handleReportError.errorMessage"),
+                        new File(LOGS_PATH).getAbsolutePath());
 
         JXHyperlink supportEmail = new JXHyperlink();
 
-        supportEmail.setText("support@apachetune.com");
+        supportEmail.setText(SUPPORT_PRODUCT_EMAIL);
 
         supportEmail.addActionListener(new ActionListener() {
             @Override
             public final void actionPerformed(ActionEvent e) {
                 try {
-                    Desktop.getDesktop().browse(new URI(SUPPORT_EMAIL_URL));
+                    Desktop.getDesktop().browse(new URI(SUPPORT_PRODUCT_EMAIL_URL));
                 } catch (IOException e1) {
-                    logger.error("Internal error", e1);
+                    //noinspection DuplicateStringLiteralInspection
+                    logger.error("Internal error", e1); //NON-NLS
                 } catch (URISyntaxException e1) {
-                    logger.error("Internal error", e1);
+                    //noinspection DuplicateStringLiteralInspection
+                    logger.error("Internal error", e1); //NON-NLS
                 }
             }
         });
@@ -350,7 +358,7 @@ public class ErrorReportManager {
                 preferencesManagerProxy.setAppManager(appManager);
             }
         } catch (Throwable cause) {
-            logger.error("Error creating managers.");
+            logger.error("Error creating managers."); //NON-NLS
         }
 
         return new Managers(appManager, preferencesManager);
@@ -360,19 +368,23 @@ public class ErrorReportManager {
                                              UUID nullableAppInstallationUid, String errorMessage, Throwable cause) {
         VelocityContext ctx = new VelocityContext();
 
-        ctx.put("appFullName", nullableAppFullName);
-        ctx.put("appInstallationUid", nullableAppInstallationUid);
-        ctx.put("userEMail", nullableUserEmail);
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("appFullName", nullableAppFullName); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("appInstallationUid", nullableAppInstallationUid); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("userEMail", nullableUserEmail); //NON-NLS
 
-        String stackTrace = errorMessage + '\n' + getFullStackTrace(cause);
+        @SuppressWarnings({"StringConcatenation"})
+        String stackTrace = errorMessage + "\n" + getFullStackTrace(cause);
 
         try {
-            ctx.put("base64EncodedStackTrace", encodeBase64String(stackTrace.getBytes("UTF-8")).trim());
+            ctx.put("base64EncodedStackTrace", encodeBase64String(stackTrace.getBytes("UTF-8")).trim()); //NON-NLS
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }
 
-        return fillTemplate(ctx, "send_error_info_request.xml.vm");
+        return fillTemplate(ctx, "send_error_info_request.xml.vm"); //NON-NLS
     }
 
     private String prepareLogFileReport(String nullableUserEmail, String nullableAppFullName,
@@ -380,24 +392,27 @@ public class ErrorReportManager {
                                              String logFileContent) {
         VelocityContext ctx = new VelocityContext();
 
-        ctx.put("appFullName", nullableAppFullName);
-        ctx.put("appInstallationUid", nullableAppInstallationUid);
-        ctx.put("userEMail", nullableUserEmail);
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("appFullName", nullableAppFullName); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("appInstallationUid", nullableAppInstallationUid); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("userEMail", nullableUserEmail); //NON-NLS
 
-        ctx.put("logFileName", logFileName);
+        ctx.put("logFileName", logFileName); //NON-NLS
 
         byte[] gzippedLogFileContent = gzip(logFileContent);
 
-        ctx.put("base64EncodedGzippedLogFileContent", encodeBase64String(gzippedLogFileContent));
+        ctx.put("base64EncodedGzippedLogFileContent", encodeBase64String(gzippedLogFileContent)); //NON-NLS
 
-        return fillTemplate(ctx, "send_app_log_request.xml.vm");
+        return fillTemplate(ctx, "send_app_log_request.xml.vm"); //NON-NLS
     }
 
     private String fillTemplate(VelocityContext ctx, String templateResourceName) {
         Reader reader;
 
         try {
-            reader = new InputStreamReader(getClass().getResourceAsStream(templateResourceName), "UTF-8");
+            reader = new InputStreamReader(getClass().getResourceAsStream(templateResourceName), "UTF-8"); //NON-NLS
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }
@@ -425,12 +440,14 @@ public class ErrorReportManager {
 
         method.getParams().setParameter(RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
-        method.setQueryString("action=" + action);
+        //noinspection StringConcatenation
+        method.setQueryString("action=" + action); //NON-NLS
 
-        method.setRequestHeader(new Header("Content-Type", "text/xml; charset=UTF-8"));
+        //noinspection DuplicateStringLiteralInspection
+        method.setRequestHeader(new Header("Content-Type", "text/xml; charset=UTF-8")); //NON-NLS
 
         try {
-            method.setRequestEntity(new ByteArrayRequestEntity(content.getBytes("UTF-8"), "text/html"));
+            method.setRequestEntity(new ByteArrayRequestEntity(content.getBytes("UTF-8"), "text/html")); //NON-NLS
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }
@@ -441,8 +458,9 @@ public class ErrorReportManager {
             resultCode = client.executeMethod(method);
 
             if (resultCode != SC_OK) {
+                //noinspection DuplicateStringLiteralInspection,MagicCharacter,StringConcatenation
                 throw new ErrorReportManagerException(
-                        "Remote service returned non successful result [resultCode=" + resultCode + ']');
+                        "Remote service returned non successful result [resultCode=" + resultCode + ']'); //NON-NLS
             }
         } catch (IOException e) {
             throw new ErrorReportManagerException(e);

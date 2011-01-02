@@ -24,6 +24,7 @@ import com.apachetune.httpserver.ui.updating.impl.UpdateManagerImpl;
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
 
+import static com.apachetune.core.Constants.APPLICATION_WEB_PORTAL_HOME;
 import static com.apachetune.httpserver.Constants.*;
 import static com.google.inject.Scopes.SINGLETON;
 
@@ -58,12 +59,12 @@ public class HttpServerModule extends AbstractModule {
         bind(MessageStatusBarSite.class).to(MessageStatusBarSiteImpl.class).in(SINGLETON);
 
         bind(String.class).annotatedWith(Names.named(REMOTE_MESSAGE_SERVICE_URL_PROP))
-                .toInstance("http://apachetune.com/services/news");
+                .toInstance(APPLICATION_WEB_PORTAL_HOME + "services/news");
 
         bind(Long.class).annotatedWith(Names.named(CHECK_UPDATE_DELAY_IN_MSEC_PROP)).toInstance(120L * 1000);
 
         bind(String.class).annotatedWith(Names.named(REMOTE_UPDATE_SERVICE_URL_PROP))
-                .toInstance("http://apachetune.com/services/updates");
+                .toInstance(APPLICATION_WEB_PORTAL_HOME + "services/updates");
 
         bind(UpdateManager.class).to(UpdateManagerImpl.class).in(SINGLETON);
 

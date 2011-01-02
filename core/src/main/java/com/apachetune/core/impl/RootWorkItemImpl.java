@@ -3,6 +3,7 @@ package com.apachetune.core.impl;
 import com.apachetune.core.*;
 import com.apachetune.core.errorreportsystem.SendErrorReportEvent;
 import com.apachetune.core.preferences.PreferencesManager;
+import com.apachetune.core.utils.Utils;
 import com.google.inject.Inject;
 import org.apache.velocity.app.Velocity;
 import org.quartz.Scheduler;
@@ -51,8 +52,8 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
             throw createRuntimeException(e);
         }
 
-        Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
-        Velocity.setProperty("runtime.log.logsystem.log4j.logger", "velocity_logger");
+        Velocity.setProperty(RUNTIME_LOG_LOGSYSTEM_CLASS, Constants.VELOCITY_LOG_CLASS);
+        Velocity.setProperty(Constants.VELOCITY_LOGGER_NAME_PROP, Constants.VELOCITY_LOGGER);
 
         try {
             Velocity.init();
@@ -70,13 +71,15 @@ public class RootWorkItemImpl extends GenericWorkItem implements RootWorkItem {
     }
 
     public void addChildActivationListener(ActivationListener childActivationListener) {
-        notNull(childActivationListener, "Argument activationListener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(childActivationListener, Utils.getArgumentCannotBeNullMessage("childActivationListener")); //NON-NLS
 
         childActivationListeners.add(childActivationListener);
     }
 
     public void removeChildActivationListener(ActivationListener childActivationListener) {
-        notNull(childActivationListener, "Argument activationListener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(childActivationListener, Utils.getArgumentCannotBeNullMessage("childActivationListener")); //NON-NLS
 
         childActivationListeners.remove(childActivationListener);
     }

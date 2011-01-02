@@ -31,12 +31,11 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="f8f89" class="javax.swing.JTextArea" binding="pleaseWaitWhileErrorTextArea" default-binding="true">
+              <component id="f8f89" class="javax.swing.JTextArea" binding="pleaseWaitWhileErrorTextArea" custom-create="true" default-binding="true">
                 <constraints/>
                 <properties>
                   <editable value="false"/>
                   <opaque value="false"/>
-                  <text value="Please, wait while error report and application&#10;log will be sent to developer team..."/>
                 </properties>
               </component>
             </children>

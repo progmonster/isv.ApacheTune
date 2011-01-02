@@ -13,7 +13,7 @@ import static org.apache.commons.lang.Validate.notNull;
  * @version 1.0
  */
 public class AppVersion {
-    private static final String DEFAULT_FORMAT = "{major}.{minor}-{edition}-{build}";
+    private static final String DEFAULT_FORMAT = "{major}.{minor}-{edition}-{build}"; //NON-NLS
 
     private String major;
 
@@ -23,15 +23,15 @@ public class AppVersion {
 
     private String build;
 
-    private static final String MAJOR_SUBSTITUTION = "{major}";
+    private static final String MAJOR_SUBSTITUTION = "{major}"; //NON-NLS
 
-    private static final String MINOR_SUBSTITUTION = "{minor}";
+    private static final String MINOR_SUBSTITUTION = "{minor}"; //NON-NLS
     
-    private static final String EDITION_SUBSTITUTION = "{edition}";
+    private static final String EDITION_SUBSTITUTION = "{edition}"; //NON-NLS
 
-    private static final String UPPER_EDITION_SUBSTITUTION = "{Edition}";
+    private static final String UPPER_EDITION_SUBSTITUTION = "{Edition}"; //NON-NLS
 
-    private static final String BUILD_SUBSTITUTION = "{build}";
+    private static final String BUILD_SUBSTITUTION = "{build}"; //NON-NLS
 
     /**
      * <p>Parses a version given in single line to its components.</p>
@@ -45,7 +45,7 @@ public class AppVersion {
      * @param versionLine a version as a single line.
      */
     public AppVersion(String versionLine) {
-        notNull(versionLine, "Argument versionLine cannot be a null");
+        notNull(versionLine, "Argument versionLine cannot be a null"); //NON-NLS
 
         parseVersionLine(versionLine);
     }
@@ -53,11 +53,13 @@ public class AppVersion {
     private void parseVersionLine(String versionLine) {
         int majorSeparatorIndex = versionLine.indexOf('.');
 
-        isTrue(majorSeparatorIndex != -1, "Invalid versionLine format");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(majorSeparatorIndex != -1, "Invalid versionLine format"); //NON-NLS
 
         major = versionLine.substring(0, majorSeparatorIndex);
 
-        isTrue(majorSeparatorIndex + 1 != versionLine.length(), "Invalid versionLine format");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(majorSeparatorIndex + 1 != versionLine.length(), "Invalid versionLine format"); //NON-NLS
 
         int minorSeparatorIndex = versionLine.indexOf('-', majorSeparatorIndex + 1);
 
@@ -107,7 +109,7 @@ public class AppVersion {
      * @return Version as string formatted by given format string.
      */
     public String format(String format) {
-        notNull(format, "Argument format cannot be a null");
+        notNull(format, "Argument format cannot be a null"); //NON-NLS
 
         isTrue(EDITION_SUBSTITUTION.length() == UPPER_EDITION_SUBSTITUTION.length());
 

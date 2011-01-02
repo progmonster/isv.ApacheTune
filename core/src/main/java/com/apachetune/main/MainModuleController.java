@@ -6,7 +6,6 @@ import com.google.inject.Inject;
 import com.google.inject.Module;
 
 import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notNull;
 
 /**
  * FIXDOC
@@ -25,8 +24,9 @@ public class MainModuleController implements ModuleController {
     }
 
     public void initialize(RootWorkItem rootWorkItem) {
-        isTrue(rootWorkItem == null, "Argument rootWorkItem should be a null because main module controller" +
-                    "creates a rootWorkItem oneself [rootWorkItem = " + rootWorkItem + "; this = " + this +"]");
+        isTrue(rootWorkItem == null, "Argument rootWorkItem should be a null because main module controller" + //NON-NLS
+                    "creates a rootWorkItem oneself [rootWorkItem = " + rootWorkItem + "; this = " //NON-NLS
+                + this +"]");
     }
 
     public RootWorkItem getRootWorkItem() {

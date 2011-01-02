@@ -14,6 +14,7 @@ import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 
+import static com.apachetune.core.Constants.APPLICATION_WEB_PORTAL_HOME;
 import static com.apachetune.core.Constants.REMOTE_FEEDBACK_SERVICE_URL_PROP;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.google.inject.Scopes.SINGLETON;
@@ -25,13 +26,16 @@ import static com.google.inject.Scopes.SINGLETON;
  * @version 1.0
  */
 public class MainModule extends AbstractModule {
+    public static final String REMOTE_REPORTING_SERVICE = APPLICATION_WEB_PORTAL_HOME
+            + "services/reports"; //NON-NLS
+
     private final Scheduler scheduler;
 
     public MainModule() {
         try {
             scheduler = new StdSchedulerFactory().getScheduler();
         } catch (SchedulerException e) {
-            throw createRuntimeException("Cannot create scheduler.", e);
+            throw createRuntimeException("Cannot create scheduler.", e); //NON-NLS
         }
     }
 
@@ -47,6 +51,6 @@ public class MainModule extends AbstractModule {
         bind(Scheduler.class).toInstance(scheduler);
 
         bind(String.class).annotatedWith(Names.named(REMOTE_FEEDBACK_SERVICE_URL_PROP))
-                .toInstance("http://apachetune.com/services/reports");
+                .toInstance(REMOTE_REPORTING_SERVICE);
     }
 }

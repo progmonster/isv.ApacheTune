@@ -10,6 +10,6 @@ import com.apachetune.core.LicenseManager;
  */
 public class LicenseManagerImpl implements LicenseManager {
     public String getOwner() {
-        return "LexX"; // TODO: Auto-generated stub.
+        return "public"; //NON-NLS // TODO: Auto-generated stub.
     }
 }

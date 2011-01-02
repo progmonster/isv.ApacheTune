@@ -63,8 +63,9 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void setId(String id) {
-        notNull(id, "Argument id cannot be a null");
-        notEmpty(id, "Argument id cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(id, "Argument id cannot be a null"); //NON-NLS
+        notEmpty(id, "Argument id cannot be empty"); //NON-NLS
 
         this.id = id;
     }
@@ -74,11 +75,12 @@ public abstract class GenericWorkItem implements WorkItem {
             return;
         }
 
-        isTrue(!wasInitialized, "Work item cannot be initialized repeatedly [this = " + this + ']');
+        isTrue(!wasInitialized, "Work item cannot be initialized repeatedly [this = " + this + ']'); //NON-NLS
 
-        notNull(rootWorkItem, "It should setting up a root work item before initializing.");
+        notNull(rootWorkItem, "It should setting up a root work item before initializing."); //NON-NLS
 
-        isTrue((parent != null) || rootWorkItem.equals(this), "It should setting up a parent work item before initializing.");
+        isTrue((parent != null) || rootWorkItem.equals(this),
+                "It should setting up a parent work item before initializing."); //NON-NLS
 
         doInitialize();
 
@@ -99,7 +101,7 @@ public abstract class GenericWorkItem implements WorkItem {
             return;
         }
         
-        // TODO catch child dispose exceptions and log it (maybe send to support, maybe deffered if no UI accesible).
+        // TODO catch child dispose exceptions and log it (maybe send to support, maybe deferred if no UI accessible).
 
         List<WorkItem> childWorkItemListCopy = new ArrayList<WorkItem>(childWorkItems.values());
 
@@ -109,7 +111,7 @@ public abstract class GenericWorkItem implements WorkItem {
 
         deactivate();
 
-        // TODO catch an exception and log it (maybe send to support, maybe deffered if no UI accesible).
+        // TODO catch an exception and log it (maybe send to support, maybe deferred if no UI accessible).
         doDispose();
 
         if (getParent() != null) {
@@ -142,21 +144,26 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final WorkItem getDirectChildWorkItem(String workItemId) {
-        notNull(workItemId, "Argument workItemId cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItemId, "Argument workItemId cannot be a null"); //NON-NLS
 
-        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty"); //NON-NLS
 
         isTrue(childWorkItems.containsKey(workItemId),
-                "Work item is not contained in a children list [workItemId = \"" + workItemId + "\"; this = " + this +
-                        "]");
+                "Work item is not contained in a children list [workItemId = \"" //NON-NLS
+                        + workItemId + "\"; this = " + this + //NON-NLS
+                        "]"); //NON-NLS
 
         return childWorkItems.get(workItemId);
     }
 
     public WorkItem getChildWorkItem(final String workItemId) {
-        notNull(workItemId, "Argument workItemId cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItemId, "Argument workItemId cannot be a null"); //NON-NLS
 
-        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty"); //NON-NLS
 
         if (hasDirectChildWorkItem(workItemId)) {
             return getDirectChildWorkItem(workItemId);
@@ -172,21 +179,24 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void addChildWorkItem(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
-        isTrue(!workItem.equals(this), "Cannot add work item to himself [workItem = " + workItem + "]");
+        isTrue(!workItem.equals(this), "Cannot add work item to himself [workItem = " + workItem + "]"); //NON-NLS
 
-        isTrue(workItem.getParent() == null, "Work item already has a parent [workItem = " + workItem + "; this = " +
-                    this + "]");
+        isTrue(workItem.getParent() == null,
+                "Work item already has a parent [workItem = " + workItem + "; this = " + //NON-NLS
+                    this + "]"); //NON-NLS
 
-        notNull(workItem.getId(), "Work item to add should has a not null id [workItem = " + workItem +
-                    "; this = " + this + "]");
+        notNull(workItem.getId(), "Work item to add should has a not null id [workItem = " + workItem + //NON-NLS
+                    "; this = " + this + "]"); //NON-NLS
 
         isTrue(!childWorkItems.containsValue(workItem),
-                "Work item already was added [workItem = " + workItem + "; this = " + this + "]");
+                "Work item already was added [workItem = " + workItem + "; this = " + this + "]"); //NON-NLS
 
-        notNull(rootWorkItem, "It should set up a parent and a root work items to the container" +
-                    " before adding a child workItem to him [workItem = " + workItem + "; this = " + this + "]");
+        notNull(rootWorkItem, "It should set up a parent and a root work items to the container" + //NON-NLS
+                    " before adding a child workItem to him [workItem = " + workItem + "; this = " //NON-NLS
+                + this + "]");
 
         childWorkItems.put(workItem.getId(), workItem);
 
@@ -195,17 +205,21 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public boolean hasDirectChildWorkItem(final String workItemId) {
-        notNull(workItemId, "Argument workItemId cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItemId, "Argument workItemId cannot be a null"); //NON-NLS
 
-        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty"); //NON-NLS
 
         return childWorkItems.containsKey(workItemId);
     }
 
     public boolean hasChildWorkItem(final String workItemId) {
-        notNull(workItemId, "Argument workItemId cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItemId, "Argument workItemId cannot be a null"); //NON-NLS
 
-        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty"); //NON-NLS
 
         return hasDirectChildWorkItem(workItemId) || (find(childWorkItems.values(), new Predicate() {
             public boolean evaluate(final Object object) {
@@ -217,12 +231,15 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void removeDirectChildWorkItem(String workItemId) {
-        notNull(workItemId, "Argument workItemId cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItemId, "Argument workItemId cannot be a null"); //NON-NLS
 
-        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!workItemId.isEmpty(), "Argument workItemId cannot be empty"); //NON-NLS
 
-        isTrue(childWorkItems.containsKey(workItemId), "Work item is not contains in a children list [workItemId = " +
-                    workItemId + "; this = " + this + "]");
+        isTrue(childWorkItems.containsKey(workItemId), "Work item is not contains in a children list" + //NON-NLS
+                " [workItemId = " + //NON-NLS
+                    workItemId + "; this = " + this + "]"); //NON-NLS
 
         WorkItem workItemToRemove = childWorkItems.get(workItemId);
 
@@ -235,23 +252,25 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void removeDirectChildWorkItem(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
         removeDirectChildWorkItem(workItem.getId());
     }
 
     public final void raiseEvent(String eventId, Object data, WorkItem caller) {
-        notNull(eventId, "Argument eventId cannot be a null");
+        notNull(eventId, "Argument eventId cannot be a null"); //NON-NLS
 
-        isTrue(!eventId.isEmpty(), "Argument eventId cannot be empty");
+        isTrue(!eventId.isEmpty(), "Argument eventId cannot be empty"); //NON-NLS
 
         if (eventId.equals(EMPTY_EVENT)) {
             return;
         }
 
         isTrue((parent != null) || rootWorkItem.equals(this),
-                "Work item must have a parent or should be a root work item before raising an event [this = " + this +
-                        "]");
+                "Work item must have a parent or should be a root work item before raising an event [this = " //NON-NLS
+                        + this +
+                        "]"); //NON-NLS
 
         if (caller == null) {
             caller = this;
@@ -283,9 +302,11 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final void setState(String name, Object state) {
-        notNull(name, "Argument name cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(name, "Argument name cannot be a null"); //NON-NLS
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!name.isEmpty(), "Argument name cannot be empty"); //NON-NLS
 
         if ((getParent() != null) && getParent().hasState(name)) {
             getParent().setState(name, state);
@@ -295,17 +316,21 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final boolean hasState(String name) {
-        notNull(name, "Argument name cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(name, "Argument name cannot be a null"); //NON-NLS
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!name.isEmpty(), "Argument name cannot be empty"); //NON-NLS
 
         return states.containsKey(name) || ((getParent() != null) && getParent().hasState(name));
     }
 
     public final Object getState(String name) {
-        notNull(name, "Argument name cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(name, "Argument name cannot be a null"); //NON-NLS
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!name.isEmpty(), "Argument name cannot be empty"); //NON-NLS
 
         Object state;
 
@@ -322,12 +347,14 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public final Object removeState(String name) {
-        notNull(name, "Argument name cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(name, "Argument name cannot be a null"); //NON-NLS
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!name.isEmpty(), "Argument name cannot be empty"); //NON-NLS
 
-        isTrue(hasState(name), "Required state not found in workItem or its parents [name = \"" + name +
-                    "\"; this = " + this + "]");
+        isTrue(hasState(name), "Required state not found in workItem or its parents [name = \"" + name + //NON-NLS
+                    "\"; this = " + this + "]"); //NON-NLS
 
         if (states.containsKey(name)) {
             return states.remove(name);
@@ -337,11 +364,12 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public boolean hasAncestor(WorkItem testAncestor) {
-        notNull(testAncestor, "Argument testAncestor cannot be a null");
+        notNull(testAncestor, "Argument testAncestor cannot be a null"); //NON-NLS
 
         isTrue((parent != null) || rootWorkItem.equals(this),
-                "Work item must have a parent or should be a root work item before call this method [this = " + this +
-                        "]");
+                "Work item must have a parent or should be a root work item before call this method [this = " //NON-NLS
+                        + this +
+                        "]"); //NON-NLS
 
         WorkItem parent = getParent();
 
@@ -443,13 +471,15 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void addActivationListener(ActivationListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         activationListeners.add(listener);
     }
 
     public void removeActivationListener(ActivationListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         activationListeners.remove(listener);
     }
@@ -459,7 +489,8 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void addLifecycleListener(WorkItemLifecycleListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         lifecycleListeners.add(listener);
     }
@@ -469,13 +500,15 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void removeLifecycleListener(WorkItemLifecycleListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         lifecycleListeners.remove(listener);
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
-        notNull(propertyChangeSupport, "Argument propertyChangeSupport cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(propertyChangeSupport, "Argument propertyChangeSupport cannot be a null"); //NON-NLS
 
         propertyChangeSupport.addPropertyChangeListener(listener);
     }
@@ -489,14 +522,15 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        notNull(propertyChangeSupport, "Argument propertyChangeSupport cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(propertyChangeSupport, "Argument propertyChangeSupport cannot be a null"); //NON-NLS
 
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
     @Override
     public String toString() {
-        return "WorkItem [id: " + id + ']';
+        return "WorkItem [id: " + id + ']'; //NON-NLS
     }
 
     protected void onRaiseEvent(String eventId, Object data, WorkItem caller) {
@@ -550,9 +584,16 @@ public abstract class GenericWorkItem implements WorkItem {
                             method.invoke(obj, data);
                         }
                     } catch (IllegalAccessException e) {
-                        throw createRuntimeException(format("Error occurred during handling work item event [eventId={0}; obj={1}; data={2}]", eventId, obj, data), e);
+                        //noinspection DuplicateStringLiteralInspection
+                        throw createRuntimeException(format(
+                                "Error occurred during handling work item event" + //NON-NLS //NON-NLS
+                                        " [eventId={0}; obj={1}; data={2}]", //NON-NLS
+                                eventId, obj, data), e);
                     } catch (InvocationTargetException e) {
-                        throw createRuntimeException(format("Error occurred during handling work item event [eventId={0}; obj={1}; data={2}]", eventId, obj, data), e);
+                        //noinspection DuplicateStringLiteralInspection
+                        throw createRuntimeException(format(
+                                "Error occurred during handling work item event" + //NON-NLS
+                                        " [eventId={0}; obj={1}; data={2}]", eventId, obj, data), e); //NON-NLS
                     }
                 }
             }
@@ -560,13 +601,14 @@ public abstract class GenericWorkItem implements WorkItem {
     }
 
     private GenericWorkItem getCommonAncestor(GenericWorkItem workItem) {
-        isTrue(!equals(workItem), "Argument cannot be this work item");
+        isTrue(!equals(workItem), "Argument cannot be this work item"); //NON-NLS
 
-        isTrue(!hasAncestor(workItem), "Argument cannot be an ancestor of this work item [workItem = " +
-                    workItem + "; this = " + this + "]");
+        isTrue(!hasAncestor(workItem), "Argument cannot be an ancestor of this work item [workItem = " + //NON-NLS
+                    workItem + "; this = " + this + "]"); //NON-NLS
 
-        isTrue(!workItem.hasAncestor(this), "Argument cannot be an descendant of this work item [workItem = " +
-                    workItem + "; this = " + this + "]");
+        isTrue(!workItem.hasAncestor(this), "Argument cannot be an descendant of this work item" + //NON-NLS
+                " [workItem = " + //NON-NLS
+                    workItem + "; this = " + this + "]"); //NON-NLS
 
         GenericWorkItem thisParent = getParent();
 
@@ -603,11 +645,11 @@ public abstract class GenericWorkItem implements WorkItem {
         checkRootWorkItemExists();
 
         isTrue((parent != null) || rootWorkItem.equals(this),
-                "Work item must have a parent or should be a root work item");
+                "Work item must have a parent or should be a root work item"); //NON-NLS
     }
 
     private void checkRootWorkItemExists() {
-        notNull(rootWorkItem, "Work item must have a root work item");
+        notNull(rootWorkItem, "Work item must have a root work item"); //NON-NLS
     }
 
     private boolean isRootWorkItem() {

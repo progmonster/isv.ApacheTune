@@ -6,6 +6,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.NodeChangeListener;
 import java.util.prefs.PreferenceChangeListener;
 
+import static com.apachetune.core.utils.Utils.getArgumentCannotBeNullMessage;
 import static org.apache.commons.lang.Validate.notNull;
 
 /**
@@ -18,7 +19,7 @@ public class PreferencesWrapper implements Preferences {
     private final java.util.prefs.Preferences preferences;
 
     public PreferencesWrapper(java.util.prefs.Preferences preferences) {
-        notNull(preferences, "Argument preferences cannot be a null");
+        notNull(preferences, getArgumentCannotBeNullMessage("preferences")); //NON-NLS
 
         this.preferences = preferences;
     }

@@ -93,7 +93,7 @@
         <p style="font-weight: bold; margin: 2em 0 1em; font-size: 1.3em;">YOU CAN:</p>
 
         <div id="accordion">
-            <div style="float: left; width: 40%;">
+            <div style="width: 40%;">
                 <div>
                     <h3><a href="#">Open an Apache HTTP Server</a></h3>
 
@@ -129,10 +129,12 @@
                 <div>
                     <h3><a href="#">Send feedback (we need your opinion!)</a></h3>
 
-                    <div><p>Do not be hesitate to send feedback to our developer team! You can send information about
-                    errors or your reprove or just wish for us. Click link below to send feedback.</p>
-
-                    <a href="command://sendFeedback">Send feedback</a>
+                    <div>
+                        <p>Do not be hesitate to send feedback to our developer team! You can send information about
+                        errors or your reprove or just wish for us. Click link below to send feedback.
+                        <br /><br />
+                        <a href="command://sendFeedback">Send feedback</a>
+                        </p>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@ package com.apachetune.core.utils;
 
 import com.apachetune.core.AppManager;
 import com.apachetune.core.ApplicationException;
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.errorreportsystem.ErrorReportManager;
 import com.apachetune.core.preferences.PreferencesManager;
 import org.slf4j.Logger;
@@ -17,13 +18,14 @@ import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ResourceBundle;
 import java.util.zip.GZIPOutputStream;
 
+import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.*;
 import static org.apache.commons.lang.StringUtils.left;
 import static org.apache.commons.lang.StringUtils.right;
-import static org.apache.commons.lang.Validate.isTrue;
-import static org.apache.commons.lang.Validate.notNull;
+import static org.apache.commons.lang.Validate.*;
 
 /**
  * FIXDOC
@@ -34,12 +36,16 @@ import static org.apache.commons.lang.Validate.notNull;
 public final class Utils {
     private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
+    private static final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(Utils.class);
+
     private Utils() {
         // No-op.
     }
 
     public static RuntimeException createRuntimeException(Throwable cause) {
-        return new RuntimeException("Internal error", cause);
+        //noinspection DuplicateStringLiteralInspection
+        return new RuntimeException("Internal error", cause); //NON-NLS
     }
 
     public static RuntimeException createRuntimeException(String message) {
@@ -51,14 +57,15 @@ public final class Utils {
     }
 
     public static String deleteSubstring(String text, int startIdx, int length) {
-        notNull(text, "Argument text cannot be a null [text = \"" + text + "\"]");
+        notNull(text, "Argument text cannot be a null [text = \"" + text + "\"]"); //NON-NLS
 
-        isTrue(text.length() > 0, "Argument text cannot be zero length.");
+        isTrue(text.length() > 0, "Argument text cannot be zero length."); //NON-NLS
 
         isTrue((startIdx >= 0) && (startIdx < text.length()),
-                "Invalid argument startIdx value [startIdx = " + startIdx + "]");
+                "Invalid argument startIdx value [startIdx = " + startIdx + "]"); //NON-NLS
 
-        isTrue((startIdx + length < text.length()), "Invalid argument length value [length = " + startIdx + "]");
+        isTrue((startIdx + length < text.length()),
+                "Invalid argument length value [length = " + startIdx + "]"); //NON-NLS
 
         String leftPiece;
 
@@ -80,9 +87,9 @@ public final class Utils {
     }
 
     public static String abbreviateFilePath(String filePath, int maxSize) {
-        notNull(filePath, "Argument filePath cannot be a null [filePath = \"" + filePath + "\"]");
+        notNull(filePath, "Argument filePath cannot be a null [filePath = \"" + filePath + "\"]"); //NON-NLS
 
-        isTrue(maxSize >= 1, "Argument maxSize must be greate than zero [maxSize = " + maxSize + ']');
+        isTrue(maxSize >= 1, "Argument maxSize must be greater than zero [maxSize = " + maxSize + ']'); //NON-NLS
 
         String abbreviatedLocation;
 
@@ -103,7 +110,7 @@ public final class Utils {
         try {
             rs.close();
         } catch (SQLException e) {
-            logger.error("Error during closing result set", e);
+            logger.error("Error during closing result set", e); //NON-NLS
         }
     }
 
@@ -115,7 +122,7 @@ public final class Utils {
         try {
             st.close();
         } catch (SQLException e) {
-            logger.error("Error during closing statement", e);
+            logger.error("Error during closing statement", e); //NON-NLS
         }
     }
 
@@ -124,8 +131,9 @@ public final class Utils {
 
         if (childElems.getLength() != 1) {
             throw new ApplicationException(
-                    "Error during parsing element. Multiple children elements with same name. [child_element_name=" +
-                            childElementName + ']');
+                    "Error during parsing element. Multiple children elements with same name." + //NON-NLS
+                            " [child_element_name=" + //NON-NLS
+                            childElementName + ']'); //NON-NLS
         }
 
         String result;
@@ -147,9 +155,8 @@ public final class Utils {
         if (showSendCancelDialog) {
             if (showConfirmDialog(
                     parent,
-                    "An error occurred.\n\n" +
-                    "You can help us by sending error report to our developer team.",
-                    "Error",
+                    resourceBundle.getString("utils.showSendErrorReportDialog.message"),
+                    resourceBundle.getString("utils.showSendErrorReportDialog.title"),
                     OK_CANCEL_OPTION) == CANCEL_OPTION) {
                 return;
             }
@@ -164,7 +171,7 @@ public final class Utils {
         try {
             GZIPOutputStream gzipOS = new GZIPOutputStream(bos);
 
-            gzipOS.write(content.getBytes("UTF-8"));
+            gzipOS.write(content.getBytes("UTF-8")); //NON-NLS
 
             gzipOS.close();
         } catch (IOException e) {
@@ -178,11 +185,21 @@ public final class Utils {
         try {
             Desktop.getDesktop().browse(new URI(uri));
         } catch (IOException e1) {
-            logger.error("Error opening a web page", e1);
+            logger.error("Error opening a web page", e1); //NON-NLS
 
-            showMessageDialog(parentComponent, "Error open web page", "Error", ERROR_MESSAGE); // todo localize
+            showMessageDialog(
+                    parentComponent,
+                    resourceBundle.getString("utils.openExternalWebPage.error.message"),
+                    resourceBundle.getString("utils.openExternalWebPage.error.title"),
+                    ERROR_MESSAGE);
         } catch (URISyntaxException e1) {
             throw createRuntimeException(e1);
         }
+    }
+
+    public static String getArgumentCannotBeNullMessage(String argumentName) {
+        notEmpty(argumentName);
+
+        return format("Argument {0} cannot be a null", argumentName); //NON-NLS
     }
 }
