@@ -32,9 +32,11 @@ public class SaveAllFilesAtOnceHelperImpl implements SaveFilesHelper {
     }
 
     public void initialize(Collection fileIds, SaveFilesHelperCallBack helperCallBack) {
-        notNull(fileIds, "Argument fileIds cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(fileIds, "Argument fileIds cannot be a null"); //NON-NLS
 
-        notNull(helperCallBack, "Argument helperCallBack cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(helperCallBack, "Argument helperCallBack cannot be a null"); //NON-NLS
 
         this.fileIds = fileIds;
         this.helperCallBack = helperCallBack;

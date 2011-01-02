@@ -1,16 +1,16 @@
 package com.apachetune.core.ui.editors.impl;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.CoreUIUtils;
 import com.apachetune.core.ui.GenericUIWorkItem;
 import com.apachetune.core.ui.MenuBarManager;
-import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.core.ui.actions.*;
 import com.apachetune.core.ui.editors.EditorActionSite;
 import com.apachetune.core.ui.editors.EditorInput;
 import com.apachetune.core.ui.editors.EditorWorkItem;
-import com.apachetune.core.utils.Utils;
+import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import jsyntaxpane.ExtendedSyntaxDocument;
@@ -34,12 +34,14 @@ import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.net.URI;
 import java.text.MessageFormat;
+import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.awt.Color.RED;
 import static java.lang.Math.min;
+import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static org.apache.commons.lang.Validate.isTrue;
@@ -55,7 +57,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         SaveFileActionSite, UndoWorkflowActionSite, PrintDocumentActionSite  {
     private static final Logger logger = LoggerFactory.getLogger(EditorWorkItemImpl.class);    
 
-    private static final char EDITOR_DIRTY_FLAG = '*';
+    private static final char EDITOR_DIRTY_FLAG = '*'; //NON-NLS
 
     private static final Color HIGHLIGHT_ERROR_LINE_COLOR = RED;
 
@@ -89,6 +91,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
     private JScrollPane editorScrollPane;
 
+    private ResourceBundle resourceBundle = ResourceManager.getInstance().getResourceBundle(EditorWorkItemImpl.class);
+
     @Inject
     public EditorWorkItemImpl(@Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
             ActionManager actionManager, StatusBarManager statusBarManager, MenuBarManager menuBarManager,
@@ -103,7 +107,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     public void setEditorInput(EditorInput editorInput) {
-        notNull(editorInput, "Argument editorInput cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(editorInput, "Argument editorInput cannot be a null"); //NON-NLS
 
         this.editorInput = editorInput;
 
@@ -191,7 +196,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
         /* TODO Rewrite printing with using manual creating pages. Need to intend a dual-printing ability, line-numbers,
          --TODO icons of a line-break and borders around a text to print.*/
 
-        statusBarManager.addMainStatus(PRINT_DOCUMENT_STATUS, "Printing..."); // TODO Localize.
+        statusBarManager.addMainStatus(PRINT_DOCUMENT_STATUS,
+                resourceBundle.getString("editorWorkItemImpl.onPrintDocument.statusBarManager.printingStatus"));
 
         try {
             String content = getContent();
@@ -206,11 +212,17 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
             String header = editorInput.getPrintTitle();
 
-            textPane.print(new MessageFormat(header), new MessageFormat("Page {0}"), true, null, null, true);
+            textPane.print(new MessageFormat(header), new MessageFormat(
+                    resourceBundle.getString("editorWorkItemImpl.onPrintDocument.pageNumberFormat")),
+                    true, null, null, true);
         } catch (PrinterException e) {
-            logger.error("Error printing file", e);
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("Error printing file", e); //NON-NLS
 
-            showMessageDialog(mainFrame, "Error printing file", "Print error", ERROR_MESSAGE); // todo localize
+            showMessageDialog(mainFrame,
+                    resourceBundle.getString("editorWorkItemImpl.onPrintDocument.showMessageDialog.message"),
+                    resourceBundle.getString("editorWorkItemImpl.onPrintDocument.showMessageDialog.title"),
+                    ERROR_MESSAGE);
         } catch (BadLocationException e) {
             throw createRuntimeException(e);
         } finally {
@@ -228,8 +240,9 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
             return;
         }
 
-        // TODO Localize.
-        statusBarManager.addMainStatus(SAVE_FILE_STATUS, "Saving " + editorInput.getSaveTitle() + "...");
+        statusBarManager.addMainStatus(SAVE_FILE_STATUS, format(
+                resourceBundle.getString("editorWorkItemImpl.save.statusBarManager.savingStatus"),
+                editorInput.getSaveTitle()));
 
         try {
             editorInput.saveContent(getContent());
@@ -425,9 +438,10 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     public int getLineStartPosition(int lineNum) {
         int lineCount = getDocument().getLineCount();
 
+        //noinspection DuplicateStringLiteralInspection
         isTrue((lineNum >= 1) && (lineNum <= lineCount),
-                "Argument lineNum cannot be less than unity and greater than " + lineCount + "[lineNum = " + lineNum +
-                        "; this = " + this + ']');
+                "Argument lineNum cannot be less than unity and greater than " + lineCount + //NON-NLS
+                        "[lineNum = " + lineNum + "; this = " + this + ']'); //NON-NLS
 
         return getDocument().getDefaultRootElement().getElement(lineNum - 1).getStartOffset();
     }
@@ -435,9 +449,10 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     public void highlightLine(int lineNum, Color red) {
         int lineCount = getDocument().getLineCount();
 
+        //noinspection DuplicateStringLiteralInspection
         isTrue((lineNum >= 1) && (lineNum <= lineCount),
-                "Argument lineNum cannot be less than unity and greater than " + lineCount + "[lineNum = " + lineNum +
-                        "; this = " + this + ']');
+                "Argument lineNum cannot be less than unity and greater than " + lineCount + //NON-NLS
+                        "[lineNum = " + lineNum + "; this = " + this + ']'); //NON-NLS
 
         Element lineElement = getDocument().getDefaultRootElement().getElement(lineNum - 1);
 
@@ -484,7 +499,8 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
     }
 
     private void checkEditorInput() {
-        notNull(editorInput, "Argument editorInput cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(editorInput, "Argument editorInput cannot be a null"); //NON-NLS
     }
 
     private String getContent() {
@@ -504,7 +520,7 @@ public class EditorWorkItemImpl extends GenericUIWorkItem implements EditorWorkI
 
         actionManager.updateActionSites(this);
 
-        firePropertyChangeEvent("dirty", oldValue, isDirty);
+        firePropertyChangeEvent(IS_DIRTY_PROP, oldValue, isDirty);
     }
 
     private URI getDocumentUri() {

@@ -1,5 +1,6 @@
 package com.apachetune.core.ui.editors.impl;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.editors.SaveFilesHelper;
 import com.apachetune.core.ui.editors.SaveFilesHelperCallBack;
 import com.apachetune.core.utils.StringValue;
@@ -8,6 +9,7 @@ import org.apache.commons.collections.Predicate;
 
 import javax.swing.*;
 import java.util.Collection;
+import java.util.ResourceBundle;
 
 import static javax.swing.JOptionPane.*;
 import static org.apache.commons.collections.CollectionUtils.exists;
@@ -26,15 +28,20 @@ public class SaveFilesSeparatelyHelperImpl implements SaveFilesHelper {
 
     private SaveFilesHelperCallBack helperCallBack;
 
+    private ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(SaveFilesSeparatelyHelperImpl.class);
+
     @Inject
     public SaveFilesSeparatelyHelperImpl(JFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
 
     public void initialize(Collection fileIds, SaveFilesHelperCallBack helperCallBack) {
-        notNull(fileIds, "Argument fileIds cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(fileIds, "Argument fileIds cannot be a null"); //NON-NLS
 
-        notNull(helperCallBack, "Argument helperCallBack cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(helperCallBack, "Argument helperCallBack cannot be a null"); //NON-NLS
 
         this.fileIds = fileIds;
         this.helperCallBack = helperCallBack;
@@ -64,9 +71,17 @@ public class SaveFilesSeparatelyHelperImpl implements SaveFilesHelper {
                 helperCallBack.prepareSaveFile(fileId, title, message);
 
                 if (needRequest) {
-                    // TODO Localize.
                     int result = showOptionDialog(mainFrame, message.value, title.value, DEFAULT_OPTION,
-                            QUESTION_MESSAGE, null, new String[] {"Save", "Save all", "Cancel", "Don't save"}, null);
+                            QUESTION_MESSAGE, null, new String[] {
+                                    resourceBundle.getString(
+                                            "saveFilesSeparatelyHelperImpl.execute.showOptionDialog.saveOption"),
+                                    resourceBundle.getString(
+                                            "saveFilesSeparatelyHelperImpl.execute.showOptionDialog.saveAllOption"),
+                                    resourceBundle.getString(
+                                            "saveFilesSeparatelyHelperImpl.execute.showOptionDialog.cancelOption"),
+                                    resourceBundle.getString(
+                                            "saveFilesSeparatelyHelperImpl.execute.showOptionDialog.dontSaveOption")
+                            }, null);
 
                     if ((result == CLOSED_OPTION) || (result == 2 /* Cancel */)) {
                         isCancelled = true;

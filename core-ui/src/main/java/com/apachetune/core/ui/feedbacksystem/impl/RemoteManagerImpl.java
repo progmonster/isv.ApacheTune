@@ -45,14 +45,15 @@ public class RemoteManagerImpl implements RemoteManager {
 
         method.getParams().setParameter(RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
-        method.setQueryString("action=send-user-feedback");
+        method.setQueryString("action=send-user-feedback"); //NON-NLS
 
-        method.setRequestHeader(new Header("Content-Type", "text/xml; charset=UTF-8"));
+        //noinspection DuplicateStringLiteralInspection
+        method.setRequestHeader(new Header("Content-Type", "text/xml; charset=UTF-8")); //NON-NLS
 
         String requestBody = prepareUserFeedbackRequestBody(userEMail, userMessage);
 
         try {
-            method.setRequestEntity(new ByteArrayRequestEntity(requestBody.getBytes("UTF-8"), "text/html"));
+            method.setRequestEntity(new ByteArrayRequestEntity(requestBody.getBytes("UTF-8"), "text/html")); //NON-NLS
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }
@@ -63,8 +64,9 @@ public class RemoteManagerImpl implements RemoteManager {
             resultCode = client.executeMethod(method);
 
             if (resultCode != SC_OK) {
+                //noinspection DuplicateStringLiteralInspection
                 throw new RemoteException(
-                        "Remote service returned non successful result [resultCode=" + resultCode + ']');
+                        "Remote service returned non successful result [resultCode=" + resultCode + ']'); //NON-NLS
             }
         } catch (IOException e) {
             throw new RemoteException(e);
@@ -76,12 +78,15 @@ public class RemoteManagerImpl implements RemoteManager {
     private String prepareUserFeedbackRequestBody(String userEMail, String userMessage) {
         VelocityContext ctx = new VelocityContext();
 
-        ctx.put("appFullName", appManager.getFullAppName());
-        ctx.put("appInstallationUid", appManager.getAppInstallationUid());
-        ctx.put("userEMail", userEMail);
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("appFullName", appManager.getFullAppName()); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("appInstallationUid", appManager.getAppInstallationUid()); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        ctx.put("userEMail", userEMail); //NON-NLS
 
         try {
-            ctx.put("base64EncodedUserMessage", encodeBase64String(userMessage.getBytes("UTF-8")).trim());
+            ctx.put("base64EncodedUserMessage", encodeBase64String(userMessage.getBytes("UTF-8")).trim()); //NON-NLS
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }
@@ -89,7 +94,8 @@ public class RemoteManagerImpl implements RemoteManager {
         Reader reader;
 
         try {
-            reader = new InputStreamReader(getClass().getResourceAsStream("user_feedback_request.xml.vm"), "UTF-8");
+            reader = new InputStreamReader(getClass().getResourceAsStream(
+                    "user_feedback_request.xml.vm"), "UTF-8"); //NON-NLS
         } catch (UnsupportedEncodingException e) {
             throw createRuntimeException(e);
         }

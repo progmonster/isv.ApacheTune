@@ -12,6 +12,8 @@ import java.awt.*;
  * @version 1.0
  */
 public interface EditorWorkItem extends UIWorkItem {
+    String IS_DIRTY_PROP = "dirty"; //NON-NLS
+
     void setEditorInput(EditorInput editorInput);
 
     boolean isDirty();

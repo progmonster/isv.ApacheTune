@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.apachetune.core.ui.Constants.*;
+import static com.apachetune.core.ui.editors.EditorWorkItem.IS_DIRTY_PROP;
 import static org.apache.commons.lang.Validate.notNull;
 
 /**
@@ -51,8 +52,9 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
     }
 
     public EditorWorkItem createEditorWorkItem(EditorInput editorInput) {
-        notNull(editorInput, "Argument editorInput cannot be a null");
-        
+        //noinspection DuplicateStringLiteralInspection
+        notNull(editorInput, "Argument editorInput cannot be a null"); //NON-NLS
+
         EditorWorkItem editorWorkItem = editorWorkItemProvider.get();
 
         editorWorkItem.setEditorInput(editorInput);
@@ -93,7 +95,7 @@ public class EditorManagerImpl implements EditorManager, WorkItemLifecycleListen
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if ((evt.getSource() instanceof EditorWorkItem) && evt.getPropertyName().equals("dirty")) {
+        if ((evt.getSource() instanceof EditorWorkItem) && evt.getPropertyName().equals(IS_DIRTY_PROP)) {
             if (evt.getNewValue() instanceof Boolean) {
                 Boolean newValue = (Boolean) evt.getNewValue();
 

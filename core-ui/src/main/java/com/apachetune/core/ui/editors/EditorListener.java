@@ -1,11 +1,10 @@
 package com.apachetune.core.ui.editors;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Aleksey
- * Date: 22.02.2010
- * Time: 1:14:56
- * To change this template use File | Settings | File Templates.
+ * FIXDOC
+ *
+ * @author <a href="mailto:progmonster@gmail.com">Aleksey V. Katorgin</a>
+ * @version 1.0
  */
 public interface EditorListener {
 }

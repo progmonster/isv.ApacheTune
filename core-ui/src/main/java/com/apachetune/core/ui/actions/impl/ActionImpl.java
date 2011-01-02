@@ -24,7 +24,7 @@ import static org.apache.commons.lang.Validate.notNull;
 public class ActionImpl extends AbstractAction implements Action {
     private static final long serialVersionUID = 7982518996363512528L;
 
-    private static final String ID_KEY = "ID";
+    private static final String ID_KEY = "ID"; //NON-NLS
 
     private Class<? extends ActionSite> actionSiteClass;
 
@@ -35,9 +35,11 @@ public class ActionImpl extends AbstractAction implements Action {
     private ActionGroup actionGroup;
 
     public ActionImpl(String id, Class<? extends ActionSite> actionSiteClass) {
-        notNull(id, "Argument id cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(id, "Argument id cannot be a null"); //NON-NLS
 
-        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null"); //NON-NLS
 
         setId(id);
 
@@ -70,9 +72,10 @@ public class ActionImpl extends AbstractAction implements Action {
         }                
 
         if (actionSite != null) {
+            //noinspection DuplicateStringLiteralInspection
             isTrue(actionSiteClass.isInstance(actionSite),
-                    "Action site should has an actionSiteClass type [actionSite = " + actionSite +
-                            "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+                    "Action site should has an actionSiteClass type [actionSite = " + actionSite + //NON-NLS
+                            "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
 
             validateActionSiteClass(actionSite.getClass());
 
@@ -86,7 +89,8 @@ public class ActionImpl extends AbstractAction implements Action {
 
         update();
 
-        firePropertyChange("actionSite", oldActionSite, actionSite);
+        //noinspection DuplicateStringLiteralInspection
+        firePropertyChange("actionSite", oldActionSite, actionSite); //NON-NLS
     }
 
     public void update() {
@@ -110,9 +114,11 @@ public class ActionImpl extends AbstractAction implements Action {
     }
 
     public void setName(String name) {
-        notNull(name, "Argument name cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(name, "Argument name cannot be a null"); //NON-NLS
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!name.isEmpty(), "Argument name cannot be empty"); //NON-NLS
 
         putValue(NAME, name);
     }
@@ -175,7 +181,8 @@ public class ActionImpl extends AbstractAction implements Action {
     }
 
     public void actionPerformed(ActionEvent e) {
-        isTrue(isEnabled(), "Cannot perform action while one is disabled [e = " + e + "; this = " + this + ']');
+        isTrue(isEnabled(), "Cannot perform action while one is disabled [e = " //NON-NLS
+                + e + "; this = " + this + ']'); //NON-NLS
 
         if (actionSite == null) {
             return;
@@ -221,7 +228,7 @@ public class ActionImpl extends AbstractAction implements Action {
 
     @Override
     public String toString() {
-        return "ActionImpl [id = " + getId() + ']';
+        return "ActionImpl [id = " + getId() + ']'; //NON-NLS
     }
 
     private void setId(String id) {
@@ -239,8 +246,9 @@ public class ActionImpl extends AbstractAction implements Action {
             ActionHandler actionHandlerAnnt = method.getAnnotation(ActionHandler.class);
 
             if ((actionHandlerAnnt != null) && actionHandlerAnnt.value().equals(getId())) {
-                isTrue(!isHandlerFound, "Action site class can contains only one handler per action [" +
-                            "actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+                //noinspection DuplicateStringLiteralInspection
+                isTrue(!isHandlerFound, "Action site class can contains only one handler per action [" + //NON-NLS
+                            "actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
 
                 isHandlerFound = true;
 
@@ -250,8 +258,9 @@ public class ActionImpl extends AbstractAction implements Action {
             ActionPermission actionPermissionAnnt = method.getAnnotation(ActionPermission.class);
 
             if ((actionPermissionAnnt != null) && actionPermissionAnnt.value().equals(getId())) {
-                isTrue(!isPermitMethodFound, "Action site class can contains only one permission method per action" +
-                            " [actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+                isTrue(!isPermitMethodFound,
+                        "Action site class can contains only one permission method per action" + //NON-NLS
+                            " [actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
 
                 isPermitMethodFound = true;
 
@@ -259,11 +268,13 @@ public class ActionImpl extends AbstractAction implements Action {
             }
         }
 
-        isTrue(isHandlerFound, "Action site class should contains a handler for the action [" +
-                    "actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(isHandlerFound, "Action site class should contains a handler for the action [" + //NON-NLS
+                    "actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
 
-        isTrue(isPermitMethodFound, "Action site class should contains a permission method for the action [" +
-                    "actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(isPermitMethodFound, "Action site class should contains a permission method for the action [" + //NON-NLS
+                    "actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
     }
 
     private void checkActionHandler(Class<? extends ActionSite> actionSiteClass, Method method) {
@@ -271,8 +282,9 @@ public class ActionImpl extends AbstractAction implements Action {
 
         boolean isValid = returnType.isAssignableFrom(void.class) && (method.getParameterTypes().length == 0);
 
-        isTrue(isValid, "Action site class contains invalid handler [method = " + method +
-                    "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(isValid, "Action site class contains invalid handler [method = " + method + //NON-NLS
+                    "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
     }
 
     private void checkPermissionMethod(Class<? extends ActionSite> actionSiteClass, Method method) {
@@ -281,8 +293,9 @@ public class ActionImpl extends AbstractAction implements Action {
         boolean isValid = (returnType.isAssignableFrom(Boolean.class) || returnType.isAssignableFrom(boolean.class))
                 && (method.getParameterTypes().length == 0);
 
-        isTrue(isValid,"Action site class contains invalid permission method [method = " + method +
-                    "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(isValid,"Action site class contains invalid permission method [method = " + method + //NON-NLS
+                    "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
     }
 
     private Method getDeclaredHandlerMethod() {
@@ -296,7 +309,7 @@ public class ActionImpl extends AbstractAction implements Action {
             }
         }
 
-        throw createRuntimeException("Action site object should contain an action handler.");
+        throw createRuntimeException("Action site object should contain an action handler."); //NON-NLS
     }
 
     private Method getDeclaredPermissionMethod() {
@@ -310,7 +323,7 @@ public class ActionImpl extends AbstractAction implements Action {
             }
         }
 
-        throw createRuntimeException("Action site object should contain an action permission method.");
+        throw createRuntimeException("Action site object should contain an action permission method."); //NON-NLS
     }
 
     private void validateHandlerImplementor(ActionSite actionSite) {
@@ -328,9 +341,10 @@ public class ActionImpl extends AbstractAction implements Action {
 
         ActionHandler actionHandlerAnnt = handlerMethodImplementor.getAnnotation(ActionHandler.class);
 
+        //noinspection DuplicateStringLiteralInspection
         isTrue((actionHandlerAnnt != null) && actionHandlerAnnt.value().equals(getId()),
-                "Action site should has an annotated handler implementor [actionSite = " + actionSite +
-                        "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+                "Action site should has an annotated handler implementor [actionSite = " + actionSite + //NON-NLS
+                        "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
     }
 
     private void validatePermissionMethodImplementor(ActionSite actionSite) {
@@ -348,8 +362,9 @@ public class ActionImpl extends AbstractAction implements Action {
 
         ActionPermission actionPermissionAnnt = permissionMethodImplementor.getAnnotation(ActionPermission.class);
 
+        //noinspection DuplicateStringLiteralInspection
         isTrue((actionPermissionAnnt != null) && actionPermissionAnnt.value().equals(getId()),
-                "Action site should has an annotated permission method implementor [actionSite = " + actionSite +
-                        "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']');
+                "Action site should has an annotated permission method implementor [actionSite = " //NON-NLS
+                        + actionSite + "; actionSiteClass = " + actionSiteClass + "; this = " + this + ']'); //NON-NLS
     }
 }

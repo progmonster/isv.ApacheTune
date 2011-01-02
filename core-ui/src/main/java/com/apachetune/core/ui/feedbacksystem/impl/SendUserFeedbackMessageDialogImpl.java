@@ -1,19 +1,23 @@
 package com.apachetune.core.ui.feedbacksystem.impl;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.feedbacksystem.SendUserFeedbackMessageDialog;
 import com.google.inject.Inject;
 
 import javax.swing.*;
+import java.util.ResourceBundle;
 
 import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.*;
-import static javax.swing.JOptionPane.OK_CANCEL_OPTION;
 
 /**
  * FIXDOC
  */
 public class SendUserFeedbackMessageDialogImpl implements SendUserFeedbackMessageDialog {
     private final JFrame mainFrame;
+
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(SendUserFeedbackMessageDialogImpl.class);
 
     @Inject
     public SendUserFeedbackMessageDialogImpl(JFrame mainFrame) {
@@ -22,14 +26,10 @@ public class SendUserFeedbackMessageDialogImpl implements SendUserFeedbackMessag
 
     @Override
     public final int showError(Throwable cause) {
-        return showConfirmDialog(mainFrame, format( // TODO localize
-                "Oops! An error occurred during sending the feedback.\n It''s may be temporary Internet connection" +
-                " error, but it may be also internal application error.\n\n" +
-                "Thanks for feedback and don''t worry: it was" +
-                " saved into the application log.\nPlease, press YES to send information about the error and the" +
-                " application log to our developer command.\n\n" + "Error details:\n[errorMsg={0}]\n",
-                cause != null ? "" + cause.getMessage() : ""),
-                "Error", // todo localize
+        return showConfirmDialog(mainFrame, format(resourceBundle.getString(
+                        "sendUserFeedbackMessageDialogImpl.showError.message"), cause != null ? ""
+                            + cause.getMessage() : ""),
+                resourceBundle.getString("sendUserFeedbackMessageDialogImpl.showError.title"),
                 ERROR_MESSAGE, OK_CANCEL_OPTION);
     }
 
@@ -37,8 +37,8 @@ public class SendUserFeedbackMessageDialogImpl implements SendUserFeedbackMessag
     public final void showSuccess() {
         showMessageDialog(
                 mainFrame,
-                "Thanks for sending your feedback!", // todo localize
-                "Success", // todo localize
+                resourceBundle.getString("sendUserFeedbackMessageDialogImpl.showSuccess.message"),
+                resourceBundle.getString("sendUserFeedbackMessageDialogImpl.showSuccess.title"),
                 INFORMATION_MESSAGE);
     }
 }

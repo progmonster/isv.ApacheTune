@@ -23,8 +23,9 @@ public class ActionGroupImpl implements ActionGroup {
     private final List<ActionGroupListener> actionGroupListeners = new ArrayList<ActionGroupListener>();
 
     public ActionGroupImpl(String id) {
-        notNull(id, "Argument id cannot be a null");
-
+        //noinspection DuplicateStringLiteralInspection
+        notNull(id, "Argument id cannot be a null"); //NON-NLS
+                                                                                                  
         this.id = id;
     }
 
@@ -33,10 +34,11 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void addAction(Action action) {
-        notNull(action, "Argument action cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(action, "Argument action cannot be a null"); //NON-NLS
 
-        isTrue(!actions.containsKey(action.getId()), "Action group already contains an action this same id [action = " +
-                    action + ";this = " + this + "]");
+        isTrue(!actions.containsKey(action.getId()), "Action group already contains an action this same id" + //NON-NLS
+                " [action = " + action + ";this = " + this + "]"); //NON-NLS
 
         setActionGroupForAction(action, this);
 
@@ -46,10 +48,11 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void removeAction(Action action) {
-        notNull(action, "Argument action cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(action, "Argument action cannot be a null"); //NON-NLS
 
-        isTrue(actions.containsKey(action.getId()), "Action not contains in this action group [action = " + action +
-                    ";this = " + this + "]");
+        isTrue(actions.containsKey(action.getId()), "Action not contains in this action group [action = " //NON-NLS
+                + action + ";this = " + this + "]"); //NON-NLS
 
         actions.remove(action.getId());
         setActionGroupForAction(action, null);
@@ -62,13 +65,15 @@ public class ActionGroupImpl implements ActionGroup {
     }
 
     public void addListener(ActionGroupListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         actionGroupListeners.add(listener);
     }
 
     public void removeListener(ActionGroupListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         actionGroupListeners.remove(listener);
     }
@@ -79,7 +84,7 @@ public class ActionGroupImpl implements ActionGroup {
 
     @Override
     public String toString() {
-        return "ActionGroupImpl [id = " + id + ']';
+        return "ActionGroupImpl [id = " + id + ']'; //NON-NLS
     }
 
     private void fireActionAdded(Action action) {
