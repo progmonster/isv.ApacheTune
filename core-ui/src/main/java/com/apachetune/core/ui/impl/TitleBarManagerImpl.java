@@ -32,8 +32,9 @@ public class TitleBarManagerImpl implements TitleBarManager {
     }
 
     public void setTitle(int level, String title) {
+        //noinspection DuplicateStringLiteralInspection
         isTrue(level >= LEVEL_1,
-                "Argument level cannot be less than LEVEL_1 [level = " + level + "; this = " + this + "]");
+                "Argument level cannot be less than LEVEL_1 [level = " + level + "; this = " + this + "]"); //NON-NLS
 
         if (defaultString(title).isEmpty()) {
             removeTitle(level);
@@ -44,8 +45,9 @@ public class TitleBarManagerImpl implements TitleBarManager {
     }
 
     public void removeTitle(int level) {
+        //noinspection DuplicateStringLiteralInspection
         isTrue(level >= LEVEL_1,
-                "Argument level cannot be less than LEVEL_1 [level = " + level + "; this = " + this + "]");
+                "Argument level cannot be less than LEVEL_1 [level = " + level + "; this = " + this + "]"); //NON-NLS
 
         titles.remove(level);
         updateTitles();

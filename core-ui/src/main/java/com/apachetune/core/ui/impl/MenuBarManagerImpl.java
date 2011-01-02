@@ -53,20 +53,21 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public void addMenuAfter(String menuId, JMenu menu, String afterMenuId) {
-        notNull(menuId, "Argument menuId cannot be a null");
+        notNull(menuId, "Argument menuId cannot be a null"); //NON-NLS
 
-        isTrue(!menuId.isEmpty(), "Argument menuId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!menuId.isEmpty(), "Argument menuId cannot be empty"); //NON-NLS
 
-        isTrue(!menus.containsKey(menuId), "Menu already has been added to the menu bar manager [menuId = " +
-                    menuId + "; this = " + this + "]");
+        isTrue(!menus.containsKey(menuId), "Menu already has been added to the menu bar manager [menuId = " + //NON-NLS
+                    menuId + "; this = " + this + "]"); //NON-NLS
 
-        notNull(menu, "Argument menu cannot be a null");
+        notNull(menu, "Argument menu cannot be a null"); //NON-NLS
 
-        isTrue((afterMenuId == null) || (afterMenuId.length() > 0), "Argument afterMenuId cannot be empty");
+        isTrue((afterMenuId == null) || (afterMenuId.length() > 0), "Argument afterMenuId cannot be empty"); //NON-NLS
 
         isTrue((afterMenuId == null) || menus.containsKey(afterMenuId),
-                "The menu not contains in the menu bar manager [afterMenuId = " + afterMenuId + "; this = " + this +
-                        "]");
+                "The menu not contains in the menu bar manager [afterMenuId = " + afterMenuId //NON-NLS
+                        + "; this = " + this + "]"); //NON-NLS
 
         menus.put(menuId, menu);
 
@@ -93,18 +94,20 @@ public class MenuBarManagerImpl implements MenuBarManager {
     }
 
     public JMenu getMenu(String menuId) {
-        notEmpty(menuId, "Argument menuId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        notEmpty(menuId, "Argument menuId cannot be empty"); //NON-NLS
 
-        isTrue(menus.containsKey(menuId), "The menu not contains in the menu bar manager [menuId = " +
-                    menuId + "; this = " + this + "]");
+        isTrue(menus.containsKey(menuId), "The menu not contains in the menu bar manager [menuId = " + //NON-NLS
+                    menuId + "; this = " + this + "]"); //NON-NLS
 
         return menus.get(menuId);
     }
 
     public void createAndBindContextMenu(Component component, ActionSite actionSite) {
-        notNull(component, "Argument component cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(component, "Argument component cannot be a null"); //NON-NLS
 
-        notNull(actionSite, "Argument actionSite cannot be a null");
+        notNull(actionSite, "Argument actionSite cannot be a null"); //NON-NLS
 
         final ContextMenu ctxMenu = createContextMenu(actionSite);
 
@@ -219,14 +222,15 @@ public class MenuBarManagerImpl implements MenuBarManager {
 
     private void ensureActionHasGroup(Action action) {
         notNull(action.getActionGroup(),
-                "Action does not contained inside a group [action = " + action + "; this = " + this + ']');
+                "Action does not contained inside a group [action = " + action + "; this = " + this + ']'); //NON-NLS
     }
 
     private class ContextMenu extends JPopupMenu {
         private final Set<Action> actions = new HashSet<Action>();
 
         public JMenuItem add(Action action) {
-            notNull(action, "Argument action cannot be a null");
+            //noinspection DuplicateStringLiteralInspection
+            notNull(action, "Argument action cannot be a null"); //NON-NLS
 
             actions.add(action);
 

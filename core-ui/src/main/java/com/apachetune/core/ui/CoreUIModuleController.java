@@ -38,7 +38,8 @@ public class CoreUIModuleController implements ModuleController {
     private PreferencesManager preferencesManager;
 
     public void initialize(RootWorkItem rootWorkItem) {
-        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null"); //NON-NLS
 
         rootWorkItem.addChildWorkItem(coreUIWorkItem);
 
@@ -58,7 +59,8 @@ public class CoreUIModuleController implements ModuleController {
                 try {
                     super.dispatchEvent(event);
                 } catch (Throwable cause) {
-                    logger.error("Error in app", cause);
+                    //noinspection DuplicateStringLiteralInspection
+                    logger.error("Error in app", cause); //NON-NLS
 
                     JFrame mainFrame = null;
 
@@ -66,7 +68,8 @@ public class CoreUIModuleController implements ModuleController {
                         mainFrame = ((CoreUIWorkItem) coreUIWorkItem).getMainFrame();
                     }
 
-                    showSendErrorReportDialog(mainFrame, "Application error", cause, appManager, preferencesManager,
+                    showSendErrorReportDialog(mainFrame, "Application error", cause, appManager, //NON-NLS
+                            preferencesManager,
                             true);
                 }
             }

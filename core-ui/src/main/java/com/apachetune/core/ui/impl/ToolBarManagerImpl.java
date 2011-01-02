@@ -47,32 +47,36 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addActionGroup(String groupId, com.apachetune.core.ui.actions.Action... actions) {
-        notEmpty(groupId, "Argument groupId cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        notEmpty(groupId, "Argument groupId cannot be empty"); //NON-NLS
 
         isTrue(!actionGroups.containsKey(groupId),
-                "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]");
+                "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]"); //NON-NLS
 
-        isTrue(actions.length != 0, "Argument actions must contains at least one action [actions = " +
-                    Arrays.toString(actions) + "; this = " + this + "]");
+        isTrue(actions.length != 0, "Argument actions must contains at least one action [actions = " + //NON-NLS
+                    Arrays.toString(actions) + "; this = " + this + "]"); //NON-NLS
 
         addActionGroupInternal(groupId, -1, actions);
     }
 
-    public void addActionGroupAfter(String groupId, String afterGroupId, com.apachetune.core.ui.actions.Action... actions) {
-        notEmpty(groupId, "Argument groupId cannot be empty");
+    public void addActionGroupAfter(String groupId, String afterGroupId,
+                                    com.apachetune.core.ui.actions.Action... actions) {
+        //noinspection DuplicateStringLiteralInspection
+        notEmpty(groupId, "Argument groupId cannot be empty"); //NON-NLS
 
         isTrue(!actionGroups.containsKey(groupId),
-                "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]");
+                "The group already added [groupId = \"" + groupId + "\"; this = " + this + "]"); //NON-NLS
 
-        isTrue(actions.length != 0, "Argument actions must contains at least one action");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(actions.length != 0, "Argument actions must contains at least one action"); //NON-NLS
 
-        notNull(afterGroupId, "Argument afterGroupId cannot be a null");
+        notNull(afterGroupId, "Argument afterGroupId cannot be a null"); //NON-NLS
 
-        isTrue(!afterGroupId.isEmpty(), "Argument afterGroupId cannot be empty");
+        isTrue(!afterGroupId.isEmpty(), "Argument afterGroupId cannot be empty"); //NON-NLS
 
         isTrue(actionGroups.containsKey(afterGroupId),
-                "The group after that it will be added not found [afterGroupId = " + afterGroupId + ";" + " this = " +
-                        this + "]");
+                "The group after that it will be added not found [afterGroupId = " + afterGroupId //NON-NLS
+                        + ";" + " this = " + this + "]"); //NON-NLS
 
         Component afterComponent = actionGroups.get(afterGroupId);
 
@@ -82,12 +86,13 @@ public class ToolBarManagerImpl implements ToolBarManager {
     }
 
     public void addToActionGroup(String actionGroupId, com.apachetune.core.ui.actions.Action... actions) {
-        notEmpty(actionGroupId, "Argument actionGroupId cannot be empty");
+        notEmpty(actionGroupId, "Argument actionGroupId cannot be empty"); //NON-NLS
 
         isTrue(actionGroups.containsKey(actionGroupId),
-                "The group not exists [actionGroupId = \"" + actionGroupId + "\"; this" + " = " + this + "]");
+                "The group not exists [actionGroupId = \"" + actionGroupId + "\"; this" + " = " + this + "]"); //NON-NLS
 
-        isTrue(actions.length != 0, "Argument actions must contains at least one action");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(actions.length != 0, "Argument actions must contains at least one action"); //NON-NLS
 
         Component lastComponentInGroup = actionGroups.get(actionGroupId);
 

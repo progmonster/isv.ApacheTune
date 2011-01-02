@@ -16,9 +16,11 @@ import static org.apache.commons.lang.Validate.notNull;
  */
 public abstract class GenericResourceLocator implements ResourceLocator {
     public final ImageIcon loadIcon(String name) throws IOException {
-        notNull(name, "Argument name cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(name, "Argument name cannot be a null"); //NON-NLS
 
-        isTrue(!name.isEmpty(), "Argument name cannot be empty");
+        //noinspection DuplicateStringLiteralInspection
+        isTrue(!name.isEmpty(), "Argument name cannot be empty"); //NON-NLS
 
         return new ImageIcon(IOUtils.toByteArray(getClass().getResourceAsStream(name)));
     }

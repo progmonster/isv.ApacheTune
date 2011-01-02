@@ -54,7 +54,7 @@ public class StatusBarViewImpl implements StatusBarView {
     }
 
     public void setMainMessage(String message) {
-        notNull(message, "Argument message cannot be a null");
+        notNull(message, "Argument message cannot be a null"); //NON-NLS
 
         mainMessageLabel.setText(message);
     }

@@ -13,7 +13,7 @@ import static com.apachetune.core.utils.Utils.createRuntimeException;
  * FIXDOC
  */
 public class Utils {
-    public static final String USER_FEEDBACK_SMART_PART_ID = "USER_FEEDBACK_SMART_PART";
+    public static final String USER_FEEDBACK_SMART_PART_ID = "USER_FEEDBACK_SMART_PART"; //NON-NLS
 
     public static void restoreDialogBounds(PreferencesManager preferencesManager, String dialogId,
                                               JDialog dialog, int initialWidth, int initialHeight) {
@@ -21,13 +21,17 @@ public class Utils {
 
         Preferences pref = preferencesManager.userNodeForPackage(Utils.class).node(dialogId);
 
-        int left = pref.getInt("left", Integer.MAX_VALUE);
+        //noinspection DuplicateStringLiteralInspection
+        int left = pref.getInt("left", Integer.MAX_VALUE); //NON-NLS
 
-        int top = pref.getInt("top", Integer.MAX_VALUE);
+        //noinspection DuplicateStringLiteralInspection
+        int top = pref.getInt("top", Integer.MAX_VALUE); //NON-NLS
 
-        int width = pref.getInt("width", initialWidth);
+        //noinspection DuplicateStringLiteralInspection
+        int width = pref.getInt("width", initialWidth); //NON-NLS
 
-        int height = pref.getInt("height", initialHeight);
+        //noinspection DuplicateStringLiteralInspection
+        int height = pref.getInt("height", initialHeight); //NON-NLS
 
         dialog.setSize(width, height);
 
@@ -41,10 +45,14 @@ public class Utils {
     public static void storeDialogBounds(PreferencesManager preferencesManager, String dialogId, JDialog dialog) {
         Preferences pref = preferencesManager.userNodeForPackage(Utils.class).node(dialogId);
 
-        pref.putInt("left", dialog.getLocation().x);
-        pref.putInt("top", dialog.getLocation().y);
-        pref.putInt("width", dialog.getSize().width);
-        pref.putInt("height", dialog.getSize().height);
+        //noinspection DuplicateStringLiteralInspection
+        pref.putInt("left", dialog.getLocation().x); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        pref.putInt("top", dialog.getLocation().y); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        pref.putInt("width", dialog.getSize().width); //NON-NLS
+        //noinspection DuplicateStringLiteralInspection
+        pref.putInt("height", dialog.getSize().height); //NON-NLS
 
         try {
             pref.flush();

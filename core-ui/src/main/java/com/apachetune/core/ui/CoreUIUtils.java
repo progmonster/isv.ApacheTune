@@ -5,7 +5,6 @@ import com.apachetune.core.ui.actions.ActionGroup;
 import com.apachetune.core.ui.actions.ActionManager;
 import com.apachetune.core.ui.actions.ActionSite;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
-import com.apachetune.core.utils.Utils;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.noos.xing.mydoggy.Content;
@@ -53,15 +52,18 @@ public class CoreUIUtils {
             ActionGroup actionGroup, ResourceLocator resourceLocator, String name, String shortDescription,
             String longDescription, String smallIconName, String largeIconName, char mnemonicKey,
             KeyStroke acceleratorKey, boolean showInCtxMenu) throws RuntimeException {
-        notNull(actionId, "Argument actionId cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(actionId, "Argument actionId cannot be a null"); //NON-NLS
 
-        isTrue(!actionId.isEmpty(), "Argument actionId cannot be empty");
+        isTrue(!actionId.isEmpty(), "Argument actionId cannot be empty"); //NON-NLS
 
-        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(actionSiteClass, "Argument actionSiteClass cannot be a null"); //NON-NLS
 
-        notNull(actionGroup, "Argument actionGroup cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(actionGroup, "Argument actionGroup cannot be a null"); //NON-NLS
 
-        notNull(resourceLocator, "Argument resourceLocator cannot be a null");
+        notNull(resourceLocator, "Argument resourceLocator cannot be a null"); //NON-NLS
 
         Action action = actionManager.createAction(actionId, actionSiteClass);
 
@@ -86,11 +88,13 @@ public class CoreUIUtils {
     }
 
     public void addUIActionHint(AbstractButton component) {
-        notNull(component, "Argument component cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(component, "Argument component cannot be a null"); //NON-NLS
 
         final Action action = (Action) component.getAction();
 
-        notNull(action, "The component should have an ui-action [component = " + component + "; this = " + this + "]");
+        notNull(action, "The component should have an ui-action [component = " + //NON-NLS
+                component + "; this = " + this + "]"); //NON-NLS
 
         component.addMouseListener(new MouseAdapter() {
             private boolean needReleaseStatus = false;
@@ -140,7 +144,7 @@ public class CoreUIUtils {
     }
 
     public void safeEDTCall(Runnable runnable) {
-        notNull(runnable, "Argument runnable cannot be a null");
+        notNull(runnable, "Argument runnable cannot be a null"); //NON-NLS
 
         if (isEventDispatchThread()) {
             runnable.run();
