@@ -82,12 +82,12 @@ public class UserFeedbackManagerImpl implements UserFeedbackManager {
 
             sendUserFeedbackMessageDialog.showSuccess();
         } catch (RemoteException e) {
-            logger.error("Error during sending user feedback [userEmail=" + userEmail + "; userMessage=" + userMessage +
-                    ']');
+            logger.error("Error during sending user feedback [userEmail=" + userEmail //NON-NLS
+                    + "; userMessage=" + userMessage + ']'); //NON-NLS
 
             if (sendUserFeedbackMessageDialog.showError(e) == OK_OPTION) {
                 workItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT,
-                        new SendErrorReportEvent(mainFrame, "User feedback sending error", e, false));
+                        new SendErrorReportEvent(mainFrame, "User feedback sending error", e, false)); //NON-NLS
             }
         }
     }

@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
+import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.Constants.*;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
@@ -188,12 +189,24 @@ public class ErrorReportManager {
 
         Preferences prefs = managers.getPreferencesManager().userNodeForPackage(ErrorReportManager.class);
 
-        prefs.put(REMOTE_SERVICE_USER_EMAIL_PROP_NAME, userEMail);
+        if ((userEMail != null) && !userEMail.isEmpty()) {
+            prefs.put(REMOTE_SERVICE_USER_EMAIL_PROP_NAME, userEMail);
+        } else {
+            prefs.remove(REMOTE_SERVICE_USER_EMAIL_PROP_NAME);
+        }
+
+        try {
+            prefs.flush();
+        } catch (BackingStoreException e) {
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("Internal error", e); //NON-NLS
+        }
     }
 
     private boolean showAskForReporterEmailDialog(Component parentComponent, MutableObject email) {
-        String result = showInputDialog(parentComponent, MessageFormat.format(
-                resourceBundle.getString("errorReportManager.showAskForReporterEmailDialog.text"), email.getValue()));
+        String result = showInputDialog(parentComponent,
+                resourceBundle.getString("errorReportManager.showAskForReporterEmailDialog.text"),
+                email.getValue());
 
         if (result == null) {
             return false;
