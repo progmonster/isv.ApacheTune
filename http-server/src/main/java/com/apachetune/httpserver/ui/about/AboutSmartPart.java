@@ -1,6 +1,7 @@
 package com.apachetune.httpserver.ui.about;
 
 import com.apachetune.core.AppVersion;
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.WorkItem;
 import com.apachetune.core.ui.SmartPart;
 import com.google.inject.Inject;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.ResourceBundle;
 
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static org.apache.commons.lang.Validate.notNull;
@@ -41,6 +43,9 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
     private String productName;
 
     private AppVersion productVersion;
+
+    @SuppressWarnings({"FieldCanBeLocal"})
+    private ResourceBundle resourceBundle = ResourceManager.getInstance().getResourceBundle(AboutSmartPart.class);
 
     @Inject
     public AboutSmartPart(JFrame mainFrame) {
@@ -150,10 +155,15 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
             }
         }
         );
+
+        buildDateTitleLabel.setText(resourceBundle.getString("aboutSmartPart.buildDateLabel"));
+        vendorTitleLabel.setText(resourceBundle.getString("aboutSmartPart.vendorLabel"));
+        ownerTitleLabel.setText(resourceBundle.getString("aboutSmartPart.ownerLabel"));
     }
 
     public void initialize(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
         setUndecorated(true);
 
@@ -190,7 +200,8 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
     }
 
     public void setProductBuildDate(Date buildDate) {
-        buildDateLabel.setText(new SimpleDateFormat("dd MMMM yyyy").format(buildDate));
+        //noinspection SimpleDateFormatWithoutLocale
+        buildDateLabel.setText(new SimpleDateFormat("dd MMMM yyyy").format(buildDate)); //NON-NLS
     }
 
     public void setProductVendor(String vendor) {
@@ -371,5 +382,13 @@ public class AboutSmartPart extends JDialog implements AboutDialog, SmartPart {
      */
     public JComponent $$$getRootComponent$$$() {
         return contentPane;
+    }
+
+    private void createUIComponents() {
+        buildDateTitleLabel = new JLabel();
+
+        ownerTitleLabel = new JLabel();
+
+        vendorTitleLabel = new JLabel();
     }
 }

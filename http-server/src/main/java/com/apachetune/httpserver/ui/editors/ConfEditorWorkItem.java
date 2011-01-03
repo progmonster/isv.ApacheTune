@@ -44,7 +44,8 @@ public class ConfEditorWorkItem extends GenericUIWorkItem {
     }
 
     public void setData(ServerObjectInfo serverObjectInfo) {
-        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null"); //NON-NLS
 
         this.serverObjectInfo = serverObjectInfo;
 
@@ -107,8 +108,8 @@ public class ConfEditorWorkItem extends GenericUIWorkItem {
             confFileLocation = removeStart(confFileLocation, serverLocation);
         }
 
-        titleBarManager.setTitle(LEVEL_3, '[' + Utils.abbreviateFilePath(confFileLocation,
-                TITLE_BAR_FILE_NAME_MAX_LENGTH) + ']');
+        titleBarManager.setTitle(LEVEL_3, '[' + Utils.abbreviateFilePath(confFileLocation, //NON-NLS
+                TITLE_BAR_FILE_NAME_MAX_LENGTH) + ']'); //NON-NLS
 
     }
 

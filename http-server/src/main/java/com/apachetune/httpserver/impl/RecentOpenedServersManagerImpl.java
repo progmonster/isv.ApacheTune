@@ -2,7 +2,6 @@ package com.apachetune.httpserver.impl;
 
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
-import com.apachetune.core.utils.Utils;
 import com.apachetune.httpserver.RecentOpenedServerListChangedListener;
 import com.apachetune.httpserver.RecentOpenedServersManager;
 import com.google.inject.Inject;
@@ -35,13 +34,13 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
         this.preferencesManager = preferencesManager;
 
         //noinspection ConstantConditions
-        isTrue(RECENT_LIST_SIZE >= 0, "RECENT_LIST_SIZE can not be less than zero.");
+        isTrue(RECENT_LIST_SIZE >= 0, "RECENT_LIST_SIZE can not be less than zero."); //NON-NLS
 
         truncateListToMaxSize();
     }
 
     public void storeServerUriToRecentList(URI serverUri) {
-        notNull(serverUri, "Argument serverUri cannot be a null");
+        notNull(serverUri, "Argument serverUri cannot be a null"); //NON-NLS
 
         List<URI> serverUriList = getServerUriList();
 
@@ -57,7 +56,7 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     public URI getLastOpenedServerUri() {
-        isTrue(hasLastOpenedServer(), "It should be at least one previously opened http-server.");
+        isTrue(hasLastOpenedServer(), "It should be at least one previously opened http-server."); //NON-NLS
 
         Preferences node = preferencesManager.userNodeForPackage(getClass());
 
@@ -107,14 +106,16 @@ public class RecentOpenedServersManagerImpl implements RecentOpenedServersManage
     }
 
     public void addServerListChangedListener(RecentOpenedServerListChangedListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "Argument listener cannot be a null"); //NON-NLS
 
         changeListener.add(listener);
     }
 
     @Override
     public void removeServerListChangedListener(RecentOpenedServerListChangedListener listener) {
-        notNull(listener, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener, "        Argument listener cannot be a null"); //NON-NLS
 
         changeListener.remove(listener);
     }

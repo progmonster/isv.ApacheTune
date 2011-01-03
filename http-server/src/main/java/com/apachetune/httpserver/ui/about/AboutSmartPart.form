@@ -26,7 +26,7 @@
           <verticalAlignment value="1"/>
         </properties>
       </component>
-      <component id="b0b0e" class="javax.swing.JLabel" binding="buildDateTitleLabel">
+      <component id="b0b0e" class="javax.swing.JLabel" binding="buildDateTitleLabel" custom-create="true">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="5" use-parent-layout="false"/>
         </constraints>
@@ -35,7 +35,7 @@
           <text value="Built on"/>
         </properties>
       </component>
-      <component id="375ed" class="javax.swing.JLabel" binding="ownerTitleLabel">
+      <component id="375ed" class="javax.swing.JLabel" binding="ownerTitleLabel" custom-create="true">
         <constraints>
           <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="5" use-parent-layout="false"/>
         </constraints>
@@ -66,7 +66,7 @@
           <text value="&lt;fullProductName&gt;"/>
         </properties>
       </component>
-      <component id="8d51c" class="javax.swing.JLabel" binding="vendorTitleLabel">
+      <component id="8d51c" class="javax.swing.JLabel" binding="vendorTitleLabel" custom-create="true">
         <constraints>
           <grid row="7" column="0" row-span="1" col-span="10" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="5" use-parent-layout="false"/>
         </constraints>

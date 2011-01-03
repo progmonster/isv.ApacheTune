@@ -27,13 +27,14 @@ public class ServerObjectInfo {
     private final String title;
 
     public ServerObjectInfo(HttpServer httpServer, File location, ServerObjectType serverObjectType, String title) {
-        notNull(httpServer, "Argument httpServer cannot be a null");
+        notNull(httpServer, "Argument httpServer cannot be a null"); //NON-NLS
 
-        notNull(location, "Argument location cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(location, "Argument location cannot be a null"); //NON-NLS
 
-        notNull(serverObjectType, "Argument serverObjectType cannot be a null");
+        notNull(serverObjectType, "Argument serverObjectType cannot be a null"); //NON-NLS
 
-        notNull(title, "Argument title cannot be a null");
+        notNull(title, "Argument title cannot be a null"); //NON-NLS
         
         this.httpServer = httpServer;
         this.location = location;
@@ -45,7 +46,7 @@ public class ServerObjectInfo {
         return httpServer;
     }
     
-    // TODO Make abiltity of remote access to file (via special layer over ssl or another protocols?)
+    // TODO Make ability of remote access to file (via special layer over ssl or another protocols?)
     public File getLocation() {
         return location;
     }

@@ -17,13 +17,13 @@ import static org.apache.commons.lang.Validate.notNull;
  */
 public class HttpServerManagerImpl implements HttpServerManager {
     // TODO Remove Windows-specific code.
-    private static final String SERVER_DEFAULT_INSTALL_PATH = "C:\\Program Files\\Apache Software Foundation" +
-            "\\Apache2.2";
+    private static final String SERVER_DEFAULT_INSTALL_PATH = "C:\\Program Files" + //NON-NLS
+            "\\Apache Software Foundation\\Apache2.2"; //NON-NLS
 
     public HttpServer getServer(URI httpServerUri) {
         // TODO Now this implementation returns a local windows server objects only.
 
-        notNull(httpServerUri, "Argument httpServerUri cannot be a null");
+        notNull(httpServerUri, "Argument httpServerUri cannot be a null"); //NON-NLS
 
         return new LocalWindowsHttpServer(new File(httpServerUri));
     }
@@ -31,10 +31,11 @@ public class HttpServerManagerImpl implements HttpServerManager {
     public boolean isHttpServerRootDirectory(File directory) {
         // TODO Now this implementation returns a local windows server objects only.
 
-        notNull(directory, "Argument directory cannot be a null");
+        notNull(directory, "Argument directory cannot be a null"); //NON-NLS
 
-        return new File(directory, "bin" + File.separatorChar + "httpd.exe").exists() && new File(directory, "conf" +
-                File.separatorChar + "httpd.conf").exists();
+        //noinspection DuplicateStringLiteralInspection
+        return new File(directory, "bin" + File.separatorChar + "httpd.exe").exists() //NON-NLS
+                && new File(directory, "conf" + File.separatorChar + "httpd.conf").exists(); //NON-NLS
     }
 
     public File getServerDefaultInstallDirectory() {

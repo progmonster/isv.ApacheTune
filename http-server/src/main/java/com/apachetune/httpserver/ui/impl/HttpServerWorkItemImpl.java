@@ -54,7 +54,6 @@ import java.util.prefs.BackingStoreException;
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_2;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
-import static com.apachetune.core.utils.Utils.openExternalWebPage;
 import static com.apachetune.httpserver.Constants.*;
 import static java.text.MessageFormat.format;
 
@@ -133,6 +132,9 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
     private final UpdateManager updateManager;
 
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(HttpServerWorkItemImpl.class);
+
     @Inject
     public HttpServerWorkItemImpl(
             Injector injector, JFrame mainFrame,
@@ -186,8 +188,9 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
     @Subscriber(eventId = EXIT_EVENT)
     @ActionHandler(EXIT_ACTION)
     public void onAppExit() {
-        if (askAndSaveConfFilesSeparately("Save files", "You are about to close the application.\n\nSave" +
-                " configuration file?\n{0}"
+        if (askAndSaveConfFilesSeparately(
+                resourceBundle.getString("httpServerWorkItemImpl.saveFilesBeforeExit.title"),
+                resourceBundle.getString("httpServerWorkItemImpl.saveFilesBeforeExit.message")
         )) {
             closeCurrentHttpServer();
             
@@ -256,8 +259,9 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
     @ActionHandler(SERVER_CLOSE_SERVER_ACTION)
     public void onServerClose() {
-        if (askAndSaveConfFilesSeparately("Save files", "You are about to close the server.\n\nSave configuration" +
-                " file?\n{0}"
+        if (askAndSaveConfFilesSeparately(
+                resourceBundle.getString("httpServerWorkItemImpl.saveFilesBeforeCloseServer.title"),
+                resourceBundle.getString("httpServerWorkItemImpl.saveFilesBeforeCloseServer.message")
         )) {
             setServerOpenedFlag(false);
 
@@ -436,76 +440,117 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_SELECT_HTTP_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator, "Select HTTP-server...",
-                                             "Select HTTP-server",
-                                             "Select HTTP-server to configure", "open_server_16.png", null, 'l', null,
-                                             false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverSelectHttpServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverSelectHttpServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverSelectHttpServer.longDescription"),
+                "open_server_16.png", null, //NON-NLS
+                resourceBundle.getString("coreUIWorkItem.action.serverSelectHttpServer.mnemonicKey").charAt(0),
+                null,
+                false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_SEARCH_FOR_HTTP_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator,
-                                             "Search for HTTP-server...", "Search for HTTP-server",
-                                             "Search for HTTP-server instance", "search_server_16.png", null, 'S', null,
-                                             false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverSearchForHttpServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverSearchForHttpServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverSearchForHttpServer.longDescription"),
+                "search_server_16.png", //NON-NLS
+                null,
+                resourceBundle.getString("coreUIWorkItem.action.serverSearchForHttpServer.mnemonicKey").charAt(0),
+                null,
+                false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_REOPEN_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator, "Reopen HTTP-server",
-                                             "Reopen an early" +
-                                                     " opened HTTP-server", "Reopen an early opened HTTP-server", null,
-                                             null, 'n', null, false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServer.longDescription"),
+                null,
+                null,
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServer.mnemonicKey").charAt(0),
+                null, false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_REOPEN_SERVER_CLEAR_LIST_ACTION, SelectServerWorkflowActionSite
-                .class, httpServerActionGroup, httpServerResourceLocator, "Clear list", "Clear recent opened" +
-                " HTTP-server list", "Clear recent opened HTTP-server list", null, null, 'C', null, false
+                .class, httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServerClearList.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServerClearList.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServerClearList.longDescription"),
+                null, null,
+                resourceBundle.getString("coreUIWorkItem.action.serverReopenServerClearList.mnemonicKey").charAt(0),
+                null, false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_CLOSE_SERVER_ACTION, SelectServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator, "Close HTTP-server",
-                                             "Close HTTP-server",
-                                             "Close current HTTP-server editors", null, null, 'o', null, false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverCloseServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverCloseServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverCloseServer.longDescription"),
+                null, null,
+                resourceBundle.getString("coreUIWorkItem.action.serverCloseServer.mnemonicKey").charAt(0),
+                null, false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_CHECK_CONFIG_SYNTAX_ACTION, CheckServerActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator,
-                                             "Check configuration's syntax",
-                                             "Check configuration's syntax", "Check configuration's syntax",
-                                             "check_configuration_16.png", null, 'C',
-                                             KeyStroke.getKeyStroke("F5"), false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverCheckConfigSyntax.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverCheckConfigSyntax.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverCheckConfigSyntax.longDescription"),
+                "check_configuration_16.png", //NON-NLS
+                null,
+                resourceBundle.getString("coreUIWorkItem.action.serverCheckConfigSyntax.mnemonicKey").charAt(0),
+                KeyStroke.getKeyStroke("F5"), false //NON-NLS
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_START_HTTP_SERVER_ACTION, RunServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator, "Start HTTP-server",
-                                             "Start HTTP-server",
-                                             "Start HTTP-server", "start_server_16.png", null, 'r', null, false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverStartHttpServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverStartHttpServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverStartHttpServer.longDescription"),
+                "start_server_16.png", null, //NON-NLS
+                resourceBundle.getString("coreUIWorkItem.action.serverStartHttpServer.mnemonicKey").charAt(0),
+                null, false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_RESTART_HTTP_SERVER_ACTION, RunServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator, "Restart HTTP-server",
-                                             "Restart HTTP-server",
-                                             "Restart HTTP-server", "restart_server_16.png", null, 'e', null, false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverRestartHttpServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverRestartHttpServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverRestartHttpServer.longDescription"),
+                "restart_server_16.png", null, //NON-NLS
+                resourceBundle.getString("coreUIWorkItem.action.serverRestartHttpServer.mnemonicKey").charAt(0),
+                null, false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(SERVER_STOP_HTTP_SERVER_ACTION, RunServerWorkflowActionSite.class,
-                                             httpServerActionGroup, httpServerResourceLocator, "Stop HTTP-server",
-                                             "Stop HTTP-server",
-                                             "Stop HTTP-server", "stop_server_16.png", null, 'p', null, false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.serverStopHttpServer.name"),
+                resourceBundle.getString("coreUIWorkItem.action.serverStopHttpServer.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.serverStopHttpServer.longDescription"),
+                "stop_server_16.png", null, //NON-NLS
+                resourceBundle.getString("coreUIWorkItem.action.serverStopHttpServer.mnemonicKey").charAt(0),
+                null, false
         );
 
         // TODO Localize.
         coreUIUtils.createAndConfigureAction(Constants.HELP_SHOW_NEWS_MESSAGES_ACTION, NewsMessagesActionSite.class,
-                                            httpServerActionGroup, httpServerResourceLocator, "Show news messages...",
-                                            "Show news messages dialog", "Show news messages dialog",
-                                            null, null, 'm', null, false
+                httpServerActionGroup, httpServerResourceLocator,
+                resourceBundle.getString("coreUIWorkItem.action.helpShowNewsMessages.name"),
+                resourceBundle.getString("coreUIWorkItem.action.helpShowNewsMessages.shortDescription"),
+                resourceBundle.getString("coreUIWorkItem.action.helpShowNewsMessages.longDescription"),
+                null, null,
+                resourceBundle.getString("coreUIWorkItem.action.helpShowNewsMessages.mnemonicKey").charAt(0),
+                null, false
         );
 
         actionManager.registerActionGroup(httpServerActionGroup);
@@ -533,9 +578,9 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
         coreUIUtils.addUIActionHint(
                 (JMenuItem) fileMenu.add(new JMenuItem(actionManager.getAction(SERVER_SELECT_HTTP_SERVER_ACTION)), 0));
 
-        JMenu serverMenu = new JMenu("Server"); // TODO Localize. Add accelerators.
+        JMenu serverMenu = new JMenu(resourceBundle.getString("coreUIWorkItem.menu.server.name"));
 
-        serverMenu.setMnemonic('S'); // TODO Localize.
+        serverMenu.setMnemonic(resourceBundle.getString("coreUIWorkItem.menu.server.mnemonicKey").charAt(0));
 
         coreUIUtils.addUIActionHint(serverMenu.add(actionManager.getAction(SERVER_CHECK_CONFIG_SYNTAX_ACTION)));
 
@@ -636,9 +681,10 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
                 return;
             }
 
-            if (!askAndSaveConfFilesSeparately("Save files", "Before you open server you need to close previous one" +
-                    "and save its configuration files.\n\nSave configuration file?\n{0}"
-            )) { // TODO Localize
+            if (askAndSaveConfFilesSeparately(
+                    resourceBundle.getString("httpServerWorkItemImpl.saveFilesBeforeOpenAnotherServer.title"),
+                    resourceBundle.getString("httpServerWorkItemImpl.saveFilesBeforeOpenAnotherServer.message")
+            )) {
                 return;
             }
         }
@@ -808,7 +854,7 @@ public class HttpServerWorkItemImpl extends GenericUIWorkItem
 
         AppVersion version = appManager.getVersion();
 
-        String formattedVersion = 'v' + version.format("{major}.{minor}");
+        String formattedVersion = 'v' + version.format("{major}.{minor}"); //NON-NLS
 
         g.setColor(Color.WHITE);
         g.setFont(new Font(Font.DIALOG, Font.BOLD | Font.ITALIC, 12));

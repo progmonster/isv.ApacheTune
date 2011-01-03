@@ -25,36 +25,38 @@ public class LocalMessageStoreImpl implements MessageStore {
     private static final Logger logger = LoggerFactory.getLogger(LocalMessageStoreImpl.class);
 
     private static final String NEWS_MESSAGE_TABLE_RECREATE_SQL =
-            "create table if not exists news_messages (tstmp bigint primary key, subject varchar, content nvarchar," +
-                    " unread boolean)";
+            "create table if not exists news_messages (tstmp bigint primary key," + //NON-NLS
+                    " subject varchar, content nvarchar," + //NON-NLS
+                    " unread boolean)"; //NON-NLS
 
     private static final String PROPS_TABLE_RECREATE_SQL =
-            "create table if not exists props (prop_name varchar primary key, prop_value varchar)";
+            "create table if not exists props (prop_name varchar primary key, prop_value varchar)"; //NON-NLS
 
     private static final String INSERT_NEWS_MESSAGE_SQL =
-            "insert into news_messages (tstmp, subject, content, unread) values (?, ?, ?, ?)";
+            "insert into news_messages (tstmp, subject, content, unread) values (?, ?, ?, ?)"; //NON-NLS
 
     private static final String UPDATE_NEWS_MESSAGE_SQL =
-            "update news_messages set tstmp = ?, subject = ?, content = ?, unread = ? where tstmp = ?";
+            "update news_messages set tstmp = ?, subject = ?, content = ?, unread = ? where tstmp = ?"; //NON-NLS
 
     private static final String SELECT_ALL_NEWS_MESSAGES_SQL =
-            "select tstmp, subject, content, unread from news_messages order by tstmp desc";
+            "select tstmp, subject, content, unread from news_messages order by tstmp desc"; //NON-NLS
 
     private static final String SELECT_UNREAD_NEWS_MESSAGES_SQL =
-            "select tstmp, subject, content, unread from news_messages where unread = TRUE order by tstmp desc";
+            "select tstmp, subject, content, unread from news_messages" + //NON-NLS
+                    " where unread = TRUE order by tstmp desc"; //NON-NLS
 
-    private static final String DELETE_ALL_NEWS_MESSAGES_SQL = "delete from news_messages";
+    private static final String DELETE_ALL_NEWS_MESSAGES_SQL = "delete from news_messages"; //NON-NLS
 
-    private static final String DELETE_NEWS_MESSAGE_SQL = "delete from news_messages where tstmp = ?";
+    private static final String DELETE_NEWS_MESSAGE_SQL = "delete from news_messages where tstmp = ?"; //NON-NLS
 
     private static final String GET_LAST_TIMESTAMP_FROM_PROPS_SQL =
-            "select prop_value from props where prop_name = 'last_stored_timestamp'";
+            "select prop_value from props where prop_name = 'last_stored_timestamp'"; //NON-NLS
 
     private static final String UPDATE_NEW_LAST_TIMESTAMP_IN_PROPS_SQL =
-            "update props set prop_value = ? where prop_name = 'last_stored_timestamp'";
+            "update props set prop_value = ? where prop_name = 'last_stored_timestamp'"; //NON-NLS
 
     private static final String STORE_NEW_LAST_TIMESTAMP_TO_PROPS_SQL =
-            "insert into props (prop_name, prop_value) values (?, ?)";
+            "insert into props (prop_name, prop_value) values (?, ?)"; //NON-NLS
 
     private final String dbUrl;
 
@@ -109,7 +111,7 @@ public class LocalMessageStoreImpl implements MessageStore {
                 return MessageTimestamp.createEmpty();
             }
         } catch (SQLException e) {
-            logger.error("Error during getting last stored timestamp of message.", e);
+            logger.error("Error during getting last stored timestamp of message.", e); //NON-NLS
 
             return MessageTimestamp.createEmpty();
         } finally {
@@ -135,7 +137,7 @@ public class LocalMessageStoreImpl implements MessageStore {
 
             return resultSetToMessageList(rs);
         } catch (SQLException e) {
-            logger.error("Error during loading stored messages.", e);
+            logger.error("Error during loading stored messages.", e); //NON-NLS
 
             return emptyList();
         } finally {
@@ -161,7 +163,7 @@ public class LocalMessageStoreImpl implements MessageStore {
 
             return resultSetToMessageList(rs);
         } catch (SQLException e) {
-            logger.error("Error during loading stored unread messages.", e);
+            logger.error("Error during loading stored unread messages.", e); //NON-NLS
 
             return emptyList();
         } finally {
@@ -170,6 +172,7 @@ public class LocalMessageStoreImpl implements MessageStore {
         }
     }
 
+    @SuppressWarnings({"DuplicateStringLiteralInspection"})
     @Override
     public final void storeMessages(Collection<NewsMessage> messages) {
         if (!checkInitialized()) {
@@ -193,7 +196,8 @@ public class LocalMessageStoreImpl implements MessageStore {
 
             connection.commit();
         } catch (SQLException e) {
-            logger.error("Error during storing news messages.", e);
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("Error during storing news messages.", e); //NON-NLS
         }
 
         if (newMaxTimestamp == -1) {
@@ -211,7 +215,7 @@ public class LocalMessageStoreImpl implements MessageStore {
                 connection.commit();
             }
         } catch (SQLException e) {
-            logger.error("Error during storing news messages.", e);
+            logger.error("Error during storing news messages.", e); //NON-NLS
         }
 
         notifyDataChanged();
@@ -234,7 +238,7 @@ public class LocalMessageStoreImpl implements MessageStore {
                 connection.commit();
             }
         } catch (SQLException e) {
-            logger.error("Error during deleting news messages from store.", e);
+            logger.error("Error during deleting news messages from store.", e); //NON-NLS
         }
 
         notifyDataChanged();
@@ -255,7 +259,7 @@ public class LocalMessageStoreImpl implements MessageStore {
 
             connection.commit();
         } catch (SQLException e) {
-            logger.error("Error during deleting all news messages from store.", e);
+            logger.error("Error during deleting all news messages from store.", e); //NON-NLS
         } finally {
             close(st);
         }
@@ -286,7 +290,7 @@ public class LocalMessageStoreImpl implements MessageStore {
         PreparedStatement ps = connection.prepareStatement(UPDATE_NEW_LAST_TIMESTAMP_IN_PROPS_SQL);
 
         try {
-            ps.setString(1, "" + newMaxTimestamp);
+            ps.setString(1, "" + newMaxTimestamp); //NON-NLS
 
             ps.execute();
         } finally {
@@ -298,8 +302,8 @@ public class LocalMessageStoreImpl implements MessageStore {
         PreparedStatement ps = connection.prepareStatement(STORE_NEW_LAST_TIMESTAMP_TO_PROPS_SQL);
 
         try {
-            ps.setString(1, "last_stored_timestamp");
-            ps.setString(2, "" + newMaxTimestamp);
+            ps.setString(1, "last_stored_timestamp"); //NON-NLS
+            ps.setString(2, "" + newMaxTimestamp); //NON-NLS
 
             ps.execute();
         } finally {
@@ -382,7 +386,7 @@ public class LocalMessageStoreImpl implements MessageStore {
 
     private boolean checkInitialized() {
         if (!isInitialized) {
-            logger.error("Local news message database was not initialized.");
+            logger.error("Local news message database was not initialized."); //NON-NLS
         }
 
         return isInitialized;

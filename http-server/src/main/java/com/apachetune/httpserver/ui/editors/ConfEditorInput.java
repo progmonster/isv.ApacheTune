@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.editors;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.editors.EditorInput;
 import com.apachetune.httpserver.entities.ServerObjectInfo;
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
@@ -13,11 +14,13 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.io.*;
 import java.net.URI;
+import java.util.ResourceBundle;
 
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.EDITOR_WORK_ITEM;
 import static com.apachetune.httpserver.Constants.TEXT_HTTPDCONF_CONTENT_TYPE;
 import static java.io.File.separatorChar;
+import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.ERROR_MESSAGE;
 import static javax.swing.JOptionPane.showMessageDialog;
 import static jsyntaxpane.DefaultSyntaxKit.getContentTypes;
@@ -40,6 +43,8 @@ public class ConfEditorInput implements EditorInput {
 
     private ServerObjectInfo serverObjectInfo;
 
+    private ResourceBundle resourceBundle = ResourceManager.getInstance().getResourceBundle(ConfEditorInput.class);
+
     @Inject
     public ConfEditorInput(HttpServerResourceLocator httpServerResourceLocator, JFrame mainFrame) {
         this.httpServerResourceLocator = httpServerResourceLocator;
@@ -47,7 +52,8 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public void setData(ServerObjectInfo serverObjectInfo) {
-        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(serverObjectInfo, "Argument serverObjectInfo cannot be a null"); //NON-NLS
 
         this.serverObjectInfo = serverObjectInfo;
     }
@@ -86,7 +92,7 @@ public class ConfEditorInput implements EditorInput {
     public String loadContent() {
         try {
             // TODO This file may be placed in another places. Make ability of searching this file inside a server root.
-            // TODO Check for file encoding (What kinds of encodings can be)
+            // TODO Check for file encoding (What kinds of encoding can be)
 
             if (getLocation().exists()) {
                 return IOUtils.toString(new BufferedInputStream(new FileInputStream(getLocation())));
@@ -94,10 +100,14 @@ public class ConfEditorInput implements EditorInput {
                 return "";
             }
         } catch (FileNotFoundException e) {
-            logger.error("File not found.", e);
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("File not found.", e); //NON-NLS
 
-            // todo localize
-            showMessageDialog(mainFrame, "Cannot load file " + getLocation().getAbsolutePath(), "Error", ERROR_MESSAGE);
+            showMessageDialog(mainFrame, format(
+                    resourceBundle.getString("confEditorInput.loadContent.error.message"),
+                    getLocation().getAbsolutePath()),
+                    resourceBundle.getString("confEditorInput.loadContent.error.title"),
+                    ERROR_MESSAGE);
 
             return "";
         } catch (IOException e) {
@@ -106,7 +116,7 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public void saveContent(String content) {
-        notNull(content, "Argument content cannot be a null");
+        notNull(content, "Argument content cannot be a null"); //NON-NLS
 
         try {
             // TODO Hardcoded block. Remove it.
@@ -118,14 +128,19 @@ public class ConfEditorInput implements EditorInput {
             OutputStream os = new BufferedOutputStream(new FileOutputStream(getLocation()));
 
             // TODO check about main conf file encoding.
-            IOUtils.write(content, os, "UTF-8");
+            IOUtils.write(content, os, "UTF-8"); //NON-NLS
 
             os.close();
         } catch (FileNotFoundException e) {
-            logger.error("File not found.", e);
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("File not found.", e); //NON-NLS
 
             // todo localize
-            showMessageDialog(mainFrame, "Cannot save file " + getLocation().getAbsolutePath(), "Error", ERROR_MESSAGE);
+            showMessageDialog(mainFrame, format(
+                    resourceBundle.getString("confEditorInput.saveContent.error.message"),
+                    getLocation().getAbsolutePath()),
+                    resourceBundle.getString("confEditorInput.saveContent.error.title"),
+                    ERROR_MESSAGE);
         } catch (IOException e) {
             throw createRuntimeException(e);
         }
@@ -133,7 +148,7 @@ public class ConfEditorInput implements EditorInput {
 
     public Icon getContentPaneIcon() {
         try {
-            return httpServerResourceLocator.loadIcon("config_file_icon.png");
+            return httpServerResourceLocator.loadIcon("config_file_icon.png"); //NON-NLS
         } catch (IOException e) {
             throw createRuntimeException(e);
         }

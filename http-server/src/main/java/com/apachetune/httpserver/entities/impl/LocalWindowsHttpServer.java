@@ -20,40 +20,42 @@ import static org.apache.commons.lang.Validate.notNull;
  * @version 1.0
  */
 public class LocalWindowsHttpServer implements HttpServer {
-    private static final String MAIN_CONF_NAME = "httpd.conf";
+    @SuppressWarnings({"DuplicateStringLiteralInspection"})
+    private static final String MAIN_CONF_NAME = "httpd.conf"; //NON-NLS
 
-    private static final String MAIN_CONF_PATH = "conf" + separatorChar + MAIN_CONF_NAME;
+    private static final String MAIN_CONF_PATH = "conf" + separatorChar + MAIN_CONF_NAME; //NON-NLS
 
-    private static final String EXTRA_CONF_PATH = "conf" + separatorChar + "extra";
+    private static final String EXTRA_CONF_PATH = "conf" + separatorChar + "extra"; //NON-NLS
 
-    private static final String AUTOINDEX_CONF_NAME = "httpd-autoindex.conf";
+    private static final String AUTOINDEX_CONF_NAME = "httpd-autoindex.conf"; //NON-NLS
 
-    private static final String DAV_CONF_NAME = "httpd-dav.conf";
+    private static final String DAV_CONF_NAME = "httpd-dav.conf"; //NON-NLS
 
-    private static final String DEFAULT_CONF_NAME = "httpd-default.conf";
+    private static final String DEFAULT_CONF_NAME = "httpd-default.conf"; //NON-NLS
 
-    private static final String INFO_CONF_NAME = "httpd-info.conf";
+    private static final String INFO_CONF_NAME = "httpd-info.conf"; //NON-NLS
 
-    private static final String LANGUAGES_CONF_NAME = "httpd-languages.conf";
+    private static final String LANGUAGES_CONF_NAME = "httpd-languages.conf"; //NON-NLS
 
-    private static final String MANUAL_CONF_NAME = "httpd-manual.conf";
+    private static final String MANUAL_CONF_NAME = "httpd-manual.conf"; //NON-NLS
 
-    private static final String MPM_CONF_NAME = "httpd-mpm.conf";
+    private static final String MPM_CONF_NAME = "httpd-mpm.conf"; //NON-NLS
 
-    private static final String MULTILANG_ERRORDOC_CONF_NAME = "httpd-multilang-errordoc.conf";
+    private static final String MULTILANG_ERRORDOC_CONF_NAME = "httpd-multilang-errordoc.conf"; //NON-NLS
 
-    private static final String SSL_CONF_NAME = "httpd-ssl.conf";
+    private static final String SSL_CONF_NAME = "httpd-ssl.conf"; //NON-NLS
 
-    private static final String USERDIR_CONF_NAME = "httpd-userdir.conf";
+    private static final String USERDIR_CONF_NAME = "httpd-userdir.conf"; //NON-NLS
 
-    private static final String VHOSTS_CONF_NAME = "httpd-vhosts.conf";
+    private static final String VHOSTS_CONF_NAME = "httpd-vhosts.conf"; //NON-NLS
 
-    private static final String SERVER_APP_PATH = "bin" + separatorChar + "httpd.exe";
+    @SuppressWarnings({"DuplicateStringLiteralInspection"})
+    private static final String SERVER_APP_PATH = "bin" + separatorChar + "httpd.exe"; //NON-NLS
 
     private File serverRoot;
 
     public LocalWindowsHttpServer(File serverRoot) {
-        notNull(serverRoot, "Argument serverRoot cannot be a null");
+        notNull(serverRoot, "Argument serverRoot cannot be a null"); //NON-NLS
 
         this.serverRoot = serverRoot;                        
     }
@@ -63,7 +65,7 @@ public class LocalWindowsHttpServer implements HttpServer {
     }
 
     public Process executeServerApp(String commandLineArguments) throws IOException {
-        notNull(commandLineArguments, "Argument commandLineArguments cannot be a null");
+        notNull(commandLineArguments, "Argument commandLineArguments cannot be a null"); //NON-NLS
 
         return Runtime.getRuntime().exec(serverRoot.getAbsolutePath() + separatorChar + SERVER_APP_PATH + ' ' +
                 commandLineArguments);
