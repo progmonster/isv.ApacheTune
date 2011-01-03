@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.selectserver;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.WorkItem;
 import com.apachetune.core.ui.SmartPart;
 import com.google.inject.Inject;
@@ -14,6 +15,7 @@ import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ResourceBundle;
 
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -24,25 +26,30 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     private JButton buttonOK;
     private JButton buttonCancel;
     private JDirectoryChooser directoryChooser;
+    private JLabel descriptionLabel;
+
+    @SuppressWarnings({"FieldCanBeLocal"})
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(SelectServerSmartPart.class);
 
     @Inject
     public SelectServerSmartPart(final SelectServerPresenter presenter, JFrame mainFrame) {
         super(mainFrame);
 
-        notNull(presenter, "Argument presenter cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(presenter, "Argument presenter cannot be a null"); //NON-NLS
 
         this.presenter = presenter;
 
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Select HTTP-server"); // TODO localize.
+        setTitle(resourceBundle.getString("selectServerSmartPart.title"));
         getRootPane().setDefaultButton(buttonOK);
 
         pack();
 
         setLocationRelativeTo(mainFrame);
 
-        buttonOK.setMnemonic('S'); // TODO Localize.
 
         buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -50,8 +57,6 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
             }
         }
         );
-
-        buttonCancel.setMnemonic('C'); // TODO Localize.
 
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -102,10 +107,15 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
         );
+
+        buttonOK.setText(resourceBundle.getString("selectServerSmartPart.buttonOK.title"));
+        buttonCancel.setText(resourceBundle.getString("selectServerSmartPart.buttonCancel.title"));
+        descriptionLabel.setText(resourceBundle.getString("selectServerSmartPart.descriptionLabel"));
     }
 
     public void initialize(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
         presenter.initialize(workItem, this);
     }
@@ -115,7 +125,7 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
     }
 
     public void setCurrentDir(String currentDir) {
-        notNull(currentDir, "Argument currentDir cannot be a null");
+        notNull(currentDir, "Argument currentDir cannot be a null"); //NON-NLS
 
         directoryChooser.setSelectedFile(new File(currentDir));
     }

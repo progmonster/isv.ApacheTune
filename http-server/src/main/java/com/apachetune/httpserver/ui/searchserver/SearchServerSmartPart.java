@@ -1,8 +1,7 @@
 package com.apachetune.httpserver.ui.searchserver;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.WorkItem;
-import com.apachetune.core.impl.RootWorkItemImpl;
-import com.apachetune.httpserver.impl.HttpServerManagerImpl;
 import com.google.inject.Inject;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
@@ -18,6 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.apachetune.core.utils.Utils.abbreviateFilePath;
 import static com.apachetune.httpserver.ui.searchserver.SourceTableModel.LOCATION_NAME_COLUMN_IDX;
@@ -38,6 +38,8 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     private JList resultList;
 
     private JLabel currentSearchLabel;
+    private JLabel searchSourcesLabel;
+    private JLabel searchResultLabel;
 
     private final JFrame mainFrame;
 
@@ -45,11 +47,16 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
 
     private final List<File> drivesAvailableToSearch = new ArrayList<File>();
 
+    @SuppressWarnings({"FieldCanBeLocal"})
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(SearchServerSmartPart.class);
+
     @Inject
     public SearchServerSmartPart(final SearchServerPresenter presenter, JFrame mainFrame) {
         super(mainFrame);
 
-        notNull(presenter, "Argument presenter cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(presenter, "Argument presenter cannot be a null"); //NON-NLS
 
         this.mainFrame = mainFrame;
         this.presenter = presenter;
@@ -57,7 +64,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
         $$$setupUI$$$();
         setContentPane(contentPane);
         setModal(true);
-        setTitle("Search for HTTP-server"); // TODO Localize.
+        setTitle(resourceBundle.getString("searchServerSmartPart.title"));
         getRootPane().setDefaultButton(buttonOK);
 
         sourceTable.setVisible(true);
@@ -65,7 +72,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
         sourceTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         sourceTable.getTableHeader().setReorderingAllowed(false);
 
-        searchProgressBar.setString("");
+        searchProgressBar.setString(""); //NON-NLS
 
         resultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         resultList.setVisibleRowCount(6);
@@ -118,10 +125,17 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
             }
         }
         );
+
+        searchSourcesLabel.setText(resourceBundle.getString("searchServerSmartPart.searchSourcesLabel"));
+        searchButton.setText(resourceBundle.getString("searchServerSmartPart.searchButton.title"));
+        stopSearchButton.setText(resourceBundle.getString("searchServerSmartPart.stopSearchButton.title"));
+        buttonOK.setText(resourceBundle.getString("searchServerSmartPart.buttonOk.title"));
+        buttonCancel.setText(resourceBundle.getString("searchServerSmartPart.buttonCancel.title"));
+        searchResultLabel.setText(resourceBundle.getString("searchServerSmartPart.searchResultLabel"));
     }
 
     public void setDrivesAvailableToSearch(Collection<File> drives) {
-        notNull(drives, "Argument drives cannot be a null");
+        notNull(drives, "Argument drives cannot be a null"); //NON-NLS
 
         drivesAvailableToSearch.clear();
 
@@ -164,7 +178,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setResultListModel(ResultListModel model) {
-        notNull(model, "Argument model cannot be a null");
+        notNull(model, "Argument model cannot be a null"); //NON-NLS
 
         resultList.setModel(model);
     }
@@ -180,7 +194,8 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void setCurrentSearchLocationText(String location) {
-        notNull(location, "Argument location cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(location, "Argument location cannot be a null"); //NON-NLS
 
         String abbreviatedLocation = abbreviateFilePath(location, MAX_LOCATION_TEXT_SIZE);
 
@@ -194,7 +209,8 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
     }
 
     public void initialize(WorkItem workItem) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
         presenter.initialize(workItem, this);
 
