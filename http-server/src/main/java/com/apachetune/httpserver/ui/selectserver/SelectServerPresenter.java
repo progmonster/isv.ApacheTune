@@ -34,9 +34,11 @@ public class SelectServerPresenter implements Presenter<SelectServerDialog> {
     }
 
     public void initialize(WorkItem workItem, SelectServerDialog view) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
-        notNull(view, "Argument view cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(view, "Argument view cannot be a null"); //NON-NLS
 
         this.workItem = workItem;
         this.view = view;
@@ -56,7 +58,7 @@ public class SelectServerPresenter implements Presenter<SelectServerDialog> {
     }
 
     public void onCurrentDirectoryChanged(File selectedDirectory) {
-        notNull(selectedDirectory, "Argument selectedDirectory cannot be a null");
+        notNull(selectedDirectory, "Argument selectedDirectory cannot be a null"); //NON-NLS
         
         view.setCurrentDirectorySelectable(httpServerManager.isHttpServerRootDirectory(selectedDirectory));
     }

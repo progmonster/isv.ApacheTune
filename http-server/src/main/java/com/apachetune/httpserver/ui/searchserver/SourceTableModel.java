@@ -1,9 +1,12 @@
 package com.apachetune.httpserver.ui.searchserver;
 
+import com.apachetune.core.ResourceManager;
+
 import javax.swing.table.AbstractTableModel;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static org.apache.commons.lang.Validate.notNull;
 
@@ -22,16 +25,22 @@ class SourceTableModel extends AbstractTableModel {
 
     public static final int SELECT_LOCATION_COLUMN_IDX = 0;
 
-    private final String[] columnNames = {"Is included", "Search location"}; // TODO Localize.
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(SourceTableModel.class);
+
+    private final String[] columnNames = {
+            resourceBundle.getString("sourceTableModel.searchSourceTable.isIncludedColumnName"),
+            resourceBundle.getString("sourceTableModel.searchSourceTable.searchLocationColumnName")
+    };
     
     @SuppressWarnings({"serial"})
     private final List<Object[]> data = new ArrayList<Object[]>() {{
-        add(new Object[] {true, "Default install path"}); // TODO Localize.
-        add(new Object[] {true, "Inside PATH system variable"}); // TODO Localize.
+        add(new Object[] {true, resourceBundle.getString("sourceTableModel.searchSource.defaultInstallPath")});
+        add(new Object[] {true, resourceBundle.getString("sourceTableModel.searchSource.insidePathSystemVariable")});
     }};
 
     public SourceTableModel(List<File> drivesAvailableToSearch) {
-        notNull(drivesAvailableToSearch, "Argument drivesAvailableToSearch cannot be a null");
+        notNull(drivesAvailableToSearch, "Argument drivesAvailableToSearch cannot be a null"); //NON-NLS
 
         for (File file : drivesAvailableToSearch) {
             data.add(new Object[] {true, file});

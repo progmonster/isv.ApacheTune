@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.messagesystem.impl;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.httpserver.ui.messagesystem.*;
 import com.google.inject.Inject;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.util.Arrays.asList;
@@ -17,12 +19,17 @@ import static java.util.Arrays.asList;
  * FIXDOC
  */
 public class MessageManagerImpl implements MessageManager, MessageStoreDataChangedListener {
+    @SuppressWarnings({"UnusedDeclaration"})
     private static final Logger logger = LoggerFactory.getLogger(MessageManagerImpl.class);
 
-    private static final String NO_UNREAD_MESSAGES_NOTIFICATION_TIP_MSG = "There are no unread messages.";
-            // todo localize
+    private static final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(MessageManagerImpl.class);
 
-    private static final String HAVE_UNREAD_MESSAGES_MSG_TMPL = "There are {0} unread messages";  // todo localize
+    private static final String NO_UNREAD_MESSAGES_NOTIFICATION_TIP_MSG =
+            resourceBundle.getString("messageManagerImpl.noUnreadMessagesNotificationTipMessageText");
+
+    private static final String HAVE_UNREAD_MESSAGES_MSG_TMPL =
+            resourceBundle.getString("messageManagerImpl.haveUnreadMessagesText");
 
     private final StatusBarManager statusBarManager;
 
@@ -88,7 +95,7 @@ public class MessageManagerImpl implements MessageManager, MessageStoreDataChang
                     messageStore.storeMessages(newsMessages);
 
                     updateNotificationArea();
-                    messageStatusBarSite.showBalloonTip("There are new messages"); // todo localize
+                    messageStatusBarSite.showBalloonTip(resourceBundle.getString("messageManagerImpl.haveNewsMessagesBalloonTipText"));
                 }
             }
         });

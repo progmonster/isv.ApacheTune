@@ -28,23 +28,25 @@ public class ScheduleLoadNewsMessagesStrategyImpl implements ScheduleLoadNewsMes
     public final void scheduleLoadNewsMessages(Runnable loadNewsMessagesTask) {
         JobDetail jobDetail = new JobDetail();
 
-        jobDetail.setName("loadNewsMessagesTask");
+        //noinspection DuplicateStringLiteralInspection
+        jobDetail.setName("loadNewsMessagesTask"); //NON-NLS
         jobDetail.setJobClass(LoadNewsMessagesJob.class);
 
         Map dataMap = jobDetail.getJobDataMap();
 
-        dataMap.put("loadNewsMessagesTask", loadNewsMessagesTask);
+        //noinspection DuplicateStringLiteralInspection,unchecked
+        dataMap.put("loadNewsMessagesTask", loadNewsMessagesTask); //NON-NLS
 
         SimpleTrigger trigger = new SimpleTrigger();
 
-        trigger.setName("loadNewsMessagesTrigger");
+        trigger.setName("loadNewsMessagesTrigger"); //NON-NLS
         trigger.setStartTime(new Date(System.currentTimeMillis() + LOAD_NEWS_MESSAGES_DELAY_AFTER_START_APP_IN_MSEC));
         trigger.setRepeatCount(0);
 
         try {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            logger.error("Cannot schedule load new messages task.", e);
+            logger.error("Cannot schedule load new messages task.", e); //NON-NLS
         }
     }
 
@@ -53,7 +55,8 @@ public class ScheduleLoadNewsMessagesStrategyImpl implements ScheduleLoadNewsMes
         public final void execute(JobExecutionContext ctx) throws JobExecutionException {
             Map dataMap = ctx.getJobDetail().getJobDataMap();
 
-            Runnable loadNewsMessagesTask = (Runnable) dataMap.get("loadNewsMessagesTask");
+            //noinspection DuplicateStringLiteralInspection
+            Runnable loadNewsMessagesTask = (Runnable) dataMap.get("loadNewsMessagesTask"); //NON-NLS
 
             loadNewsMessagesTask.run();
         }

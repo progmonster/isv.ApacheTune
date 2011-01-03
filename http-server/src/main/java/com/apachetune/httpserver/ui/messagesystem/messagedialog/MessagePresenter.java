@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.messagesystem.messagedialog;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.NPresenter;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
 import com.apachetune.httpserver.ui.messagesystem.MessageStore;
@@ -11,10 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 import static javax.swing.JOptionPane.*;
 
@@ -35,6 +34,9 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
     private NewsMessage msgToMarkAsRead;
 
     private final Object markAsReadMsgLocker = new Object();
+
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(MessagePresenter.class);
 
     @Inject
     public MessagePresenter(MessageStore messageStore, MessageManager messageManager, Scheduler scheduler) {
@@ -108,8 +110,8 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
         if (messages.size() >= 2) {
             if (showConfirmDialog(
                     (Component) getView(),
-                    "Do you want to delete selected messages?", // TODO localize
-                    "Messages deletion", // todo localize
+                    resourceBundle.getString("messagePresenter.onMessageDelete.message"),
+                    resourceBundle.getString("messagePresenter.onMessageDelete.title"),
                     YES_NO_OPTION, QUESTION_MESSAGE) == NO_OPTION) {
                 return;
             }
@@ -148,23 +150,25 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
 
             JobDetail jobDetail = new JobDetail();
 
-            jobDetail.setName("markMessageAsReadTask");
+            //noinspection DuplicateStringLiteralInspection
+            jobDetail.setName("markMessageAsReadTask"); //NON-NLS
             jobDetail.setJobClass(MarkMessageAsReadJob.class);
 
             Map dataMap = jobDetail.getJobDataMap();
 
-            dataMap.put("markMessageAsReadTask", task);
+            //noinspection unchecked,DuplicateStringLiteralInspection
+            dataMap.put("markMessageAsReadTask", task); //NON-NLS
 
             SimpleTrigger trigger = new SimpleTrigger();
 
-            trigger.setName("markMessageAsReadTrigger");
+            trigger.setName("markMessageAsReadTrigger"); //NON-NLS
             trigger.setStartTime(new Date(System.currentTimeMillis() + MARK_MESSAGE_AS_READ_DELAY_IN_MSEC));
             trigger.setRepeatCount(0);
 
             try {
                 scheduler.scheduleJob(jobDetail, trigger);
             } catch (SchedulerException e) {
-                logger.error("Cannot schedule mark message as read task.", e);
+                logger.error("Cannot schedule mark message as read task.", e); //NON-NLS
             }
 
             msgToMarkAsRead = msg;
@@ -176,9 +180,10 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
             msgToMarkAsRead = null;
 
             try {
-                scheduler.deleteJob("markMessageAsReadTask", "DEFAULT");
+                //noinspection DuplicateStringLiteralInspection
+                scheduler.deleteJob("markMessageAsReadTask", "DEFAULT"); //NON-NLS
             } catch (SchedulerException e) {
-                logger.error("Cannot unschedule mark message as read task.", e);
+                logger.error("Cannot unschedule mark message as read task.", e); //NON-NLS
             }
         }
     }
@@ -226,7 +231,8 @@ public class MessagePresenter extends NPresenter<MessageView> implements Message
         public final void execute(JobExecutionContext ctx) throws JobExecutionException {
             Map dataMap = ctx.getJobDetail().getJobDataMap();
 
-            MarkMessageAsReadTask task = (MarkMessageAsReadTask) dataMap.get("markMessageAsReadTask");
+            //noinspection DuplicateStringLiteralInspection
+            MarkMessageAsReadTask task = (MarkMessageAsReadTask) dataMap.get("markMessageAsReadTask"); //NON-NLS
 
             task.execute();
         }

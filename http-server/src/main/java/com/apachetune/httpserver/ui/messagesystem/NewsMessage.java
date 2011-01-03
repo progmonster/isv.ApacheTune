@@ -62,11 +62,12 @@ public class NewsMessage {
 
     @Override
     public final String toString() {
+        //noinspection DuplicateStringLiteralInspection
         return new ToStringBuilder(this).
-                append("timestamp", timestamp).
-                append("subject", subject).
-                append("content", content).
-                append("isUnread", isUnread).
+                append("timestamp", timestamp). //NON-NLS
+                append("subject", subject). //NON-NLS
+                append("content", content). //NON-NLS
+                append("isUnread", isUnread). //NON-NLS
                 toString();
     }
 

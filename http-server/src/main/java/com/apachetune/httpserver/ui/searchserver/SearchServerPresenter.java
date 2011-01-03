@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.searchserver;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.WorkItem;
 import com.apachetune.core.ui.Presenter;
 import com.apachetune.httpserver.HttpServerManager;
@@ -14,11 +15,15 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 
 import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static com.apachetune.httpserver.Constants.SERVER_PATH_SELECTED_EVENT;
 import static java.util.Arrays.asList;
+import static javax.swing.JOptionPane.INFORMATION_MESSAGE;
+import static javax.swing.JOptionPane.NO_OPTION;
+import static javax.swing.JOptionPane.YES_NO_OPTION;
 import static org.apache.commons.lang.StringUtils.defaultString;
 import static org.apache.commons.lang.Validate.isTrue;
 import static org.apache.commons.lang.Validate.notNull;
@@ -46,6 +51,9 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
 
     private boolean isSearchMode;
 
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(SearchServerPresenter.class);
+
     @Inject
     public SearchServerPresenter(JFrame mainFrame, HttpServerManager httpServerManager) {
         this.mainFrame = mainFrame;
@@ -53,9 +61,11 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
     }
 
     public void initialize(WorkItem workItem, SearchServerDialog view) {
-        notNull(workItem, "Argument workItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(workItem, "Argument workItem cannot be a null"); //NON-NLS
 
-        notNull(view, "Argument view cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(view, "Argument view cannot be a null"); //NON-NLS
 
         this.workItem = workItem;
         this.view = view;
@@ -100,9 +110,10 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
 
     public void onSelectServer() {
         if (isSearchMode) {
-            if (JOptionPane.showConfirmDialog(mainFrame, "Searching yet not completed. Do you want to use currently" +
-                    " selected server and close search dialog?", // TODO Localize.
-                    "Select and exit", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) { // TODO Localize.
+            if (JOptionPane.showConfirmDialog(mainFrame,
+                    resourceBundle.getString("searchServerPresenter.onSelectServer.confirmDialog.message"),
+                    resourceBundle.getString("searchServerPresenter.onSelectServer.confirmDialog.title"),
+                    YES_NO_OPTION) == NO_OPTION) {
                 return;                
             }
         }
@@ -117,8 +128,9 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
     public void onCancel() {
         if (isSearchMode) {
             if (JOptionPane.showConfirmDialog(mainFrame,
-                    "Do you want to stop searching and close search dialog?", // TODO Localize.
-                    "Cancel and exit", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) { // TODO Localize.
+                    resourceBundle.getString("searchServerPresenter.onCancel.confirmDialog.message"),
+                    resourceBundle.getString("searchServerPresenter.onCancel.confirmDialog.title"),
+                    YES_NO_OPTION) == NO_OPTION) { // TODO Localize.
                 return;
             }
         }
@@ -135,7 +147,7 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
         view.setSearchProgressBarRun(isSearchMode);
 
         if (!isSearchMode) {
-            view.setCurrentSearchLocationText("");
+            view.setCurrentSearchLocationText(""); //NON-NLS
         }
     }
 
@@ -203,7 +215,7 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
     private void searchInPathSystemVariable() {
         // TODO Remove Windows-specific code ("bin" directory).
 
-        List<String> paths = asList(defaultString(System.getenv("PATH")).split("" + File.pathSeparatorChar));
+        List<String> paths = asList(defaultString(System.getenv("PATH")).split("" + File.pathSeparatorChar)); //NON-NLS
 
         for (String path : paths) {
             path = StringUtils.removeEnd(path,  File.separatorChar + "bin");
@@ -230,9 +242,10 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
     }
 
     private void showServersNotFoundMessage() {
-        JOptionPane.showMessageDialog(mainFrame, "Apache HTTPD Servers not found.\n\nBe notified what this version of" +
-                " the application supports Apache Servers versions 2.2.x only.\nSupport for another versions of the" +
-                " server will be implemented later.", "Not found", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(mainFrame,
+                resourceBundle.getString("searchServerPresenter.showServersNotFoundMessage.message"),
+                resourceBundle.getString("searchServerPresenter.showServersNotFoundMessage.title"),
+                INFORMATION_MESSAGE);
     }
 
     // TODO Remove Windows specific.
@@ -260,9 +273,11 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
         }
 
         public boolean currentFile(File file) {
-            notNull(file, "Argument file cannot be a null");
+            //noinspection DuplicateStringLiteralInspection
+            notNull(file, "Argument file cannot be a null"); //NON-NLS
 
-            if (file.getName().equals("httpd.exe")) {
+            //noinspection DuplicateStringLiteralInspection
+            if (file.getName().equals("httpd.exe")) { //NON-NLS
                 final File serverRoot = getServerRootByHttpdFile(file);
 
                 if (serverRoot != null) {
@@ -287,7 +302,7 @@ public class SearchServerPresenter implements Presenter<SearchServerDialog> {
             }
 
             for (File drive : selectedDrivesToSearch) {
-                isCancelled = !new FileScanner(drive, this, new WildcardFileFilter("*.exe")).execute();
+                isCancelled = !new FileScanner(drive, this, new WildcardFileFilter("*.exe")).execute(); //NON-NLS
 
                 if (isCancelled) {
                     break;
@@ -340,9 +355,10 @@ class FileScanner {
     private final FileScannerListener listener;
 
     public FileScanner(File root, FileScannerListener listener, FileFilter fileFilter) {
-        notNull(root, "Argument root cannot be a null");
+        notNull(root, "Argument root cannot be a null"); //NON-NLS
 
-        isTrue(root.isDirectory(), "Argument root should be a directory [root = " + root + "; this = " + this + "]");
+        isTrue(root.isDirectory(),
+                "Argument root should be a directory [root = " + root + "; this = " + this + "]"); //NON-NLS
 
         this.root = root;
         this.fileFilter = fileFilter;
@@ -350,7 +366,8 @@ class FileScanner {
     }
 
     public boolean execute() {
-        notNull(listener == null, "Argument listener cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(listener == null, "Argument listener cannot be a null"); //NON-NLS
 
         return scanDirectory(root);
     }

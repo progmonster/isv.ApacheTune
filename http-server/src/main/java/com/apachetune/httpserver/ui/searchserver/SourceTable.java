@@ -51,11 +51,11 @@ class TextCellRenderer extends JLabel implements TableCellRenderer, UIResource {
      super();
      setOpaque(true);
          setBorder(getNoFocusBorder());
-         setName("Table.cellRenderer");
+         setName("Table.cellRenderer"); //NON-NLS
      }
 
     private Border getNoFocusBorder() {
-         Border border = DefaultLookup.getBorder(this, ui, "Table.cellNoFocusBorder");
+         Border border = DefaultLookup.getBorder(this, ui, "Table.cellNoFocusBorder"); //NON-NLS
          if (System.getSecurityManager() != null) {
              if (border != null) return border;
              return SAFE_NO_FOCUS_BORDER;
@@ -96,8 +96,8 @@ class TextCellRenderer extends JLabel implements TableCellRenderer, UIResource {
                  && dropLocation.getRow() == row
                  && dropLocation.getColumn() == column) {
 
-             fg = DefaultLookup.getColor(this, ui, "Table.dropCellForeground");
-             bg = DefaultLookup.getColor(this, ui, "Table.dropCellBackground");
+             fg = DefaultLookup.getColor(this, ui, "Table.dropCellForeground"); //NON-NLS
+             bg = DefaultLookup.getColor(this, ui, "Table.dropCellBackground"); //NON-NLS
 
              isSelected = true;
          }
@@ -112,7 +112,7 @@ class TextCellRenderer extends JLabel implements TableCellRenderer, UIResource {
                                      ? unselectedBackground
                                      : table.getBackground();
              if (background == null || background instanceof javax.swing.plaf.UIResource) {
-                 Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor");
+                 Color alternateColor = DefaultLookup.getColor(this, ui, "Table.alternateRowColor"); //NON-NLS
                  if (alternateColor != null && row % 2 == 0)
                      background = alternateColor;
              }
@@ -133,20 +133,21 @@ class TextCellRenderer extends JLabel implements TableCellRenderer, UIResource {
      if (hasFocus) {
              Border border = null;
              if (isSelected) {
-                 border = DefaultLookup.getBorder(this, ui, "Table.focusSelectedCellHighlightBorder");
+                 border = DefaultLookup.getBorder(this, ui, "Table.focusSelectedCellHighlightBorder"); //NON-NLS
              }
              if (border == null) {
-                 border = DefaultLookup.getBorder(this, ui, "Table.focusCellHighlightBorder");
+                 //noinspection DuplicateStringLiteralInspection
+                 border = DefaultLookup.getBorder(this, ui, "Table.focusCellHighlightBorder"); //NON-NLS
              }
              setBorder(border);
 
          if (!isSelected && table.isCellEditable(row, column)) {
                  Color col;
-                 col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground");
+                 col = DefaultLookup.getColor(this, ui, "Table.focusCellForeground"); //NON-NLS
                  if (col != null) {
                      super.setForeground(col);
                  }
-                 col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground");
+                 col = DefaultLookup.getColor(this, ui, "Table.focusCellBackground"); //NON-NLS
                  if (col != null) {
                      super.setBackground(col);
                  }
@@ -189,10 +190,10 @@ class TextCellRenderer extends JLabel implements TableCellRenderer, UIResource {
 
      protected void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
      // Strings get interned...
-     if (propertyName.equals("text")
-                 || propertyName.equals("labelFor")
-                 || propertyName.equals("displayedMnemonic")
-                 || ((propertyName.equals("font") || propertyName.equals("foreground"))
+     if (propertyName.equals("text") //NON-NLS
+                 || propertyName.equals("labelFor") //NON-NLS
+                 || propertyName.equals("displayedMnemonic") //NON-NLS
+                 || ((propertyName.equals("font") || propertyName.equals("foreground")) //NON-NLS
                      && oldValue != newValue
                      && getClientProperty(javax.swing.plaf.basic.BasicHTML.propertyKey) != null)) {
 
@@ -248,7 +249,8 @@ class DisabledBooleanCellRenderer extends JCheckBox implements TableCellRenderer
         setSelected((value != null) && (Boolean) value);
 
         if (hasFocus) {
-            setBorder(UIManager.getBorder("Table.focusCellHighlightBorder"));
+            //noinspection DuplicateStringLiteralInspection
+            setBorder(UIManager.getBorder("Table.focusCellHighlightBorder")); //NON-NLS
         } else {
             setBorder(noFocusBorder);
         }

@@ -63,7 +63,7 @@ public class RemoteManagerImpl implements RemoteManager {
 
         String strTimeStamp = !timestamp.isEmpty() ? "" + timestamp.getValue() : "";
 
-        method.setQueryString(format("action=get-news-messages&tstmp={0}&app-fullname={1}", strTimeStamp,
+        method.setQueryString(format("action=get-news-messages&tstmp={0}&app-fullname={1}", strTimeStamp, //NON-NLS
                 appManager.getFullAppName()));
 
         List<NewsMessage> resultList = emptyList();
@@ -74,14 +74,15 @@ public class RemoteManagerImpl implements RemoteManager {
             resultCode = client.executeMethod(method);
 
             if (resultCode == SC_OK) {
-                String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8");
+                String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8"); //NON-NLS
 
                 resultList = parseResponse(response);
             } else {
-                logger.error("Remote news message service returned error response code [code=" + resultCode + ']');
+                logger.error(
+                        "Remote news message service returned error response code [code=" + resultCode + ']'); //NON-NLS
             }
         } catch (IOException e) {
-            logger.error("Error getting news messages from remote", e);
+            logger.error("Error getting news messages from remote", e); //NON-NLS
         }
 
         method.releaseConnection();
@@ -103,7 +104,7 @@ public class RemoteManagerImpl implements RemoteManager {
 
             Element docElem = doc.getDocumentElement();
 
-            NodeList messageElems = docElem.getElementsByTagName("message");
+            NodeList messageElems = docElem.getElementsByTagName("message"); //NON-NLS
 
             for (int msgIdx = 0; msgIdx < messageElems.getLength(); msgIdx++) {
                 NewsMessage msg = parseMessage((Element) messageElems.item(msgIdx));
@@ -111,59 +112,61 @@ public class RemoteManagerImpl implements RemoteManager {
                 resultList.add(msg);
             }
         } catch (Throwable cause) {
-            logger.error("Error during parsing news messages from remote", cause);
+            logger.error("Error during parsing news messages from remote", cause); //NON-NLS
         }
 
         return resultList;
     }
 
     private NewsMessage parseMessage(Element msgElem) throws ApplicationException {
-        String dataEncoding = msgElem.getAttribute("dataEncoding");
+        String dataEncoding = msgElem.getAttribute("dataEncoding"); //NON-NLS
 
-        isTrue(dataEncoding.equals("Base64"),
-                "Message should be encoded in Base64 encoding [dataEncoding=" + dataEncoding + ']');
+        isTrue(dataEncoding.equals("Base64"), //NON-NLS
+                "Message should be encoded in Base64 encoding [dataEncoding=" + dataEncoding + ']'); //NON-NLS
 
-        String dataMimeType = msgElem.getAttribute("dataMimeType");
+        String dataMimeType = msgElem.getAttribute("dataMimeType"); //NON-NLS
 
-        isTrue(dataMimeType.equals("text/html"),
-                "Message mime/type should be text/html [dataMimeType=" + dataMimeType + ']');
+        isTrue(dataMimeType.equals("text/html"), //NON-NLS
+                "Message mime/type should be text/html [dataMimeType=" + dataMimeType + ']'); //NON-NLS
 
-        String strTimestamp = msgElem.getAttribute("tstmp");
+        String strTimestamp = msgElem.getAttribute("tstmp"); //NON-NLS
 
         long timestamp;
 
         try {
             timestamp = Long.parseLong(strTimestamp);
         } catch (NumberFormatException e) {
-            throw createRuntimeException("Message timestamp should be a number [tstmp=" + strTimestamp + ']', e);
+            throw createRuntimeException(
+                    "Message timestamp should be a number [tstmp=" + strTimestamp + ']', e); //NON-NLS
         }
 
-        isTrue(timestamp > 0, "Message timestamp should be a non null positive value [tstmp=" + timestamp + ']');
+        isTrue(timestamp > 0,
+                "Message timestamp should be a non null positive value [tstmp=" + timestamp + ']'); //NON-NLS
 
-        String base64Subject = getChildElementContent(msgElem, "subject");
+        @SuppressWarnings({"DuplicateStringLiteralInspection"})
+        String base64Subject = getChildElementContent(msgElem, "subject"); //NON-NLS
 
         String subject;
 
         try {
-            subject = new String(Base64.decodeBase64(base64Subject), "UTF-8");
+            subject = new String(Base64.decodeBase64(base64Subject), "UTF-8"); //NON-NLS
         } catch (Throwable cause) {
             throw createRuntimeException(
-                    "Error during parsing message subject [unparsed_subject=" + base64Subject + ']', cause);
+                    "Error during parsing message subject [unparsed_subject=" + base64Subject + ']', cause); //NON-NLS
         }
 
-        String base64Content = getChildElementContent(msgElem, "content");
+        @SuppressWarnings({"DuplicateStringLiteralInspection"})
+        String base64Content = getChildElementContent(msgElem, "content"); //NON-NLS
 
         String content;
 
         try {
-            content = new String(Base64.decodeBase64(base64Content), "UTF-8");
+            content = new String(Base64.decodeBase64(base64Content), "UTF-8"); //NON-NLS
         } catch (Throwable cause) {
             throw createRuntimeException(
-                    "Error during parsing message content [unparsed_content=" + base64Content + ']', cause);
+                    "Error during parsing message content [unparsed_content=" + base64Content + ']', cause); //NON-NLS
         }
 
-        NewsMessage msg = new NewsMessage(MessageTimestamp.create(timestamp), subject, content, true);
-
-        return msg;
+        return new NewsMessage(MessageTimestamp.create(timestamp), subject, content, true);
     }
 }

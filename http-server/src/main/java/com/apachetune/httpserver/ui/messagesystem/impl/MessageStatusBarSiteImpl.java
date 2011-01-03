@@ -50,9 +50,9 @@ public class MessageStatusBarSiteImpl implements MessageStatusBarSite {
     public final void initialize() {
         panel = new JPanel();
 
-        newMessagesIcon = new ImageIcon(getClass().getResource("new-messages.png"));
+        newMessagesIcon = new ImageIcon(getClass().getResource("new-messages.png")); //NON-NLS
 
-        noMessagesIcon = new ImageIcon(getClass().getResource("no-messages.png"));
+        noMessagesIcon = new ImageIcon(getClass().getResource("no-messages.png")); //NON-NLS
 
         msgIcon = new JLabel(noMessagesIcon);
         

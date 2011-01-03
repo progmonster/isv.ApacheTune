@@ -27,7 +27,8 @@ public class ResultListModel extends AbstractListModel {
     }
 
     public void add(File file) {
-        notNull(file, "Argument file cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(file, "Argument file cannot be a null"); //NON-NLS
 
         files.add(file);
 
@@ -49,7 +50,7 @@ public class ResultListModel extends AbstractListModel {
     }
 
     public boolean exists(File pathDir) {
-        notNull(pathDir, "Argument pathDir cannot be a null");
+        notNull(pathDir, "Argument pathDir cannot be a null"); //NON-NLS
 
         return files.contains(pathDir);
     }

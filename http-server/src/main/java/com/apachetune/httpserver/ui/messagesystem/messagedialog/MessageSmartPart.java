@@ -3,6 +3,7 @@ package com.apachetune.httpserver.ui.messagesystem.messagedialog;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.UIWorkItem;
 import com.apachetune.httpserver.ui.messagesystem.MessageManager;
@@ -24,10 +25,8 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 import static com.apachetune.core.ui.Constants.MESSAGE_SMART_PART_ID;
 import static com.apachetune.core.ui.Utils.restoreDialogBounds;
@@ -65,6 +64,9 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
     private NewsMessage currentShowedMsg;
 
     private boolean isDisposed;
+
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(MessageSmartPart.class);
 
     @Inject
     public MessageSmartPart(final MessagePresenter presenter, MessageManager messageManager,
@@ -120,6 +122,11 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
                 presenter.onMessagesDelete();
             }
         });
+
+        buttonOK.setText(resourceBundle.getString("messageSmartPart.buttonOkTitle"));
+        selectButton.setText(resourceBundle.getString("messageSmartPart.selectButtonTitle"));
+        markAsUnreadButton.setText(resourceBundle.getString("messageSmartPart.markAsUnreadButtonTitle"));
+        deleteButton.setText(resourceBundle.getString("messageSmartPart.deleteButtonTitle"));
     }
 
     private void onOK() {
@@ -134,11 +141,11 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
     @Override
     public final void initialize(UIWorkItem workItem) {
-        notNull(workItem, "[this=" + this + ']');
+        notNull(workItem, "[this=" + this + ']'); //NON-NLS
 
         presenter.initialize(workItem, this);
 
-        setTitle("News Messages"); // todo localize
+        setTitle(resourceBundle.getString("messageSmartPart.title"));
         setModalityType(APPLICATION_MODAL);
 
         restoreBounds();
@@ -155,13 +162,14 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
         TableColumn selectedItemColumn = messageTable.getColumnModel().getColumn(0);
 
-        selectedItemColumn.setHeaderValue("");
+        selectedItemColumn.setHeaderValue(""); //NON-NLS
         selectedItemColumn.setPreferredWidth(30);
         selectedItemColumn.setMaxWidth(30);
 
         TableColumn msgSubjectItemColumn = messageTable.getColumnModel().getColumn(1);
 
-        msgSubjectItemColumn.setHeaderValue("Message Subject");
+        msgSubjectItemColumn
+                .setHeaderValue(resourceBundle.getString("messageSmartPart.messageList.subjectColumnTitle"));
 
         MessageTableSubjectCellRenderer subjectCellRendered = new MessageTableSubjectCellRenderer();
 
@@ -169,9 +177,11 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
         messageTable.getSelectionModel().addListSelectionListener(this);
 
-        messageTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "space");
+        //noinspection DuplicateStringLiteralInspection
+        messageTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "space"); //NON-NLS
 
-        messageTable.getActionMap().put("space", new AbstractAction() {
+        //noinspection DuplicateStringLiteralInspection
+        messageTable.getActionMap().put("space", new AbstractAction() { //NON-NLS
             @Override
             public final void actionPerformed(ActionEvent e) {
                 int selRowIdx = messageTable.getSelectedRow();
@@ -194,9 +204,11 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
             }
         });
 
-        messageTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete");
+        //noinspection DuplicateStringLiteralInspection
+        messageTable.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "delete"); //NON-NLS
 
-        messageTable.getActionMap().put("delete", new AbstractAction() {
+        //noinspection DuplicateStringLiteralInspection
+        messageTable.getActionMap().put("delete", new AbstractAction() { //NON-NLS
             @Override
             public final void actionPerformed(ActionEvent e) {
                 int selRowIdx = messageTable.getSelectedRow();
@@ -214,13 +226,13 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
         webBrowser.addWebBrowserListener(new WebBrowserAdapter() {
             @Override
             public final void commandReceived(WebBrowserCommandEvent e) {
-                if (e.getCommand().equals("openWebPage")) {
+                if (e.getCommand().equals("openWebPage")) { //NON-NLS
                     try {
                         String url = (String) e.getParameters()[0];
 
                         Desktop.getDesktop().browse(new URI(url));
                     } catch (Throwable cause) {
-                        logger.error("Error during parsing openWebPageCommand.", cause);
+                        logger.error("Error during parsing openWebPageCommand.", cause); //NON-NLS
                     }
                 }
             }
@@ -255,7 +267,7 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
     @Override
     public final List<NewsMessage> getSelectedMessages() {
-        return new ArrayList(selectedMessages);
+        return new ArrayList<NewsMessage>(selectedMessages);
     }
 
     @Override
@@ -379,6 +391,14 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
         webBrowser.setLocationBarVisible(false);
         webBrowser.setJavascriptEnabled(true);
         webBrowser.setHTMLContent("");
+
+        deleteButton = new JButton();
+
+        markAsUnreadButton = new JButton();
+
+        selectButton = new JButton();
+
+        buttonOK = new JButton();
     }
 
     private void restoreBounds() {
