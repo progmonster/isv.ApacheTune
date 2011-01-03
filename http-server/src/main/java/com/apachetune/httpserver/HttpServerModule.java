@@ -54,17 +54,17 @@ public class HttpServerModule extends AbstractModule {
         bind(MessageStore.class).to(LocalMessageStoreImpl.class).in(SINGLETON);
 
         bind(String.class).annotatedWith(Names.named(MESSAGE_STORE_DB_URL_PROP))
-                .toInstance("jdbc:h2:message_db;FILE_LOCK=SERIALIZED");
+                .toInstance("jdbc:h2:message_db;FILE_LOCK=SERIALIZED"); //NON-NLS
 
         bind(MessageStatusBarSite.class).to(MessageStatusBarSiteImpl.class).in(SINGLETON);
 
         bind(String.class).annotatedWith(Names.named(REMOTE_MESSAGE_SERVICE_URL_PROP))
-                .toInstance(APPLICATION_WEB_PORTAL_HOME + "services/news");
+                .toInstance(APPLICATION_WEB_PORTAL_HOME + "services/news"); //NON-NLS
 
         bind(Long.class).annotatedWith(Names.named(CHECK_UPDATE_DELAY_IN_MSEC_PROP)).toInstance(120L * 1000);
 
         bind(String.class).annotatedWith(Names.named(REMOTE_UPDATE_SERVICE_URL_PROP))
-                .toInstance(APPLICATION_WEB_PORTAL_HOME + "services/updates");
+                .toInstance(APPLICATION_WEB_PORTAL_HOME + "services/updates"); //NON-NLS
 
         bind(UpdateManager.class).to(UpdateManagerImpl.class).in(SINGLETON);
 

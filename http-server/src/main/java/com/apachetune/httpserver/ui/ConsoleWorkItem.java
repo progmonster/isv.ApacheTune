@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.preferences.Preferences;
 import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.GenericUIWorkItem;
@@ -22,6 +23,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
@@ -51,6 +53,9 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
     private final PreferencesManager preferencesManager;
 
     private JTextPane stdoutPane;
+
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(ConsoleWorkItem.class);
 
     @Inject
     public ConsoleWorkItem(
@@ -135,9 +140,11 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
         try {
             ToolWindowAnchor anchor = getRestoredOutputWindowAnchor();
 
-            // TODO Localize
-            toolWindowManager.registerToolWindow(OUTPUT_TOOL_WINDOW, "Output view", httpServerResourceLocator
-                    .loadIcon("console_view_icon.png"), stdoutPane, anchor);
+            //noinspection DuplicateStringLiteralInspection
+            toolWindowManager.registerToolWindow(OUTPUT_TOOL_WINDOW,
+                    resourceBundle.getString("consoleWorkItem.outputToolWindow.title"),
+                    httpServerResourceLocator
+                    .loadIcon("console_view_icon.png"), stdoutPane, anchor); //NON-NLS
         } catch (IOException e) {
             throw createRuntimeException(e);
         }

@@ -9,7 +9,6 @@ import com.apachetune.core.ui.CoreUIWorkItem;
 import com.apachetune.core.ui.UIWorkItem;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
-import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.slf4j.Logger;
@@ -39,7 +38,7 @@ import static org.apache.commons.lang.Validate.notNull;
 public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeScreenView {
     private static final Logger logger = LoggerFactory.getLogger(WelcomeScreenSmartPart.class);
 
-    private static final String START_PAGE_RELATIVE_URL = "index.html.vm";
+    private static final String START_PAGE_RELATIVE_URL = "index.html.vm"; //NON-NLS
 
     private final WelcomeScreenPresenter presenter;
 
@@ -68,7 +67,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
         WebServer.getDefaultWebServer().addContentProvider(new WebServer.WebServerContentProvider() {
             @Override
             public WebServer.WebServerContent getWebServerContent(WebServer.HTTPRequest httpRequest) {
-                logger.debug("Local web-server requested [requestUrl=" + httpRequest.getURLPath() + ']');
+                logger.debug("Local web-server requested [requestUrl=" + httpRequest.getURLPath() + ']'); //NON-NLS
 
                 DefaultWebServerContent content;
 
@@ -76,7 +75,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
                     content = new DefaultWebServerContent(httpRequest, WelcomeScreenSmartPart.this);
                 }
 
-                logger.debug("Content handler created [requestUrl=" + httpRequest.getURLPath() + ']');
+                logger.debug("Content handler created [requestUrl=" + httpRequest.getURLPath() + ']'); //NON-NLS
 
                 return content;
             }
@@ -101,7 +100,7 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
 
     @Override
     public void initialize(final UIWorkItem workItem) {
-        notNull(workItem, "[this=" + this + ']');
+        notNull(workItem, "[this=" + this + ']'); //NON-NLS
 
         presenter.initialize(workItem, this);
 
@@ -115,18 +114,18 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
             public void commandReceived(final WebBrowserCommandEvent e) {
                 String cmd = e.getCommand();
 
-                if (cmd.equals("openServer")) {
+                if (cmd.equals("openServer")) { //NON-NLS
                     presenter.onShowOpenServerDialog();
-                } else if (cmd.equals("searchServer")) {
+                } else if (cmd.equals("searchServer")) { //NON-NLS
                     presenter.onShowSearchServerDialog();
-                } else if (cmd.equals("openProductWebPortal")) {
+                } else if (cmd.equals("openProductWebPortal")) { //NON-NLS
                     openExternalWebPage(mainFrame, appManager.getProductWebPortalUri());
-                } else if (cmd.equals("openProductWebPortal_DonatePage")) {
+                } else if (cmd.equals("openProductWebPortal_DonatePage")) { //NON-NLS
                     presenter.onOpenWebPortalDonatePage();
-                } else if (cmd.equals("sendFeedback")) {
+                } else if (cmd.equals("sendFeedback")) { //NON-NLS
                     coreUIWorkItem.raiseEvent(SEND_FEEDBACK_EVENT);
                 } else {
-                    throw createRuntimeException("Unknown command [cmd=" + cmd + ']');
+                    throw createRuntimeException("Unknown command [cmd=" + cmd + ']'); //NON-NLS
                 }
             }
         }
@@ -162,11 +161,11 @@ public class WelcomeScreenSmartPart implements VelocityContextProvider, WelcomeS
     }
 
     public void openStartPage() {
-        logger.debug("Open start page... [startPageUrl=" + getStartPageUrl() + ']');
+        logger.debug("Open start page... [startPageUrl=" + getStartPageUrl() + ']'); //NON-NLS
         
         browser.navigate(getStartPageUrl());
 
-        logger.debug("Start page has been opened [startPageUrl=" + getStartPageUrl() + ']');
+        logger.debug("Start page has been opened [startPageUrl=" + getStartPageUrl() + ']'); //NON-NLS
     }
 
     private String getStartPageUrl() {
@@ -209,8 +208,8 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
     public String getContentType() {
         String ext = getResourceExtension();
 
-        if (ext.equals("vm")) {
-            return "text/html";
+        if (ext.equals("vm")) { //NON-NLS
+            return "text/html"; //NON-NLS
         } else {
             return getDefaultMimeType(ext);
         }
@@ -222,10 +221,10 @@ class DefaultWebServerContent extends WebServer.WebServerContent {
             InputStream contentIS =
                     WelcomeScreenPresenter.class.getResourceAsStream(removeStart(request.getResourcePath(), "/"));
 
-            if (getResourceExtension().equals("vm")) {
-                Reader contentReader = new InputStreamReader(contentIS, "UTF-8");
+            if (getResourceExtension().equals("vm")) { //NON-NLS
+                Reader contentReader = new InputStreamReader(contentIS, "UTF-8"); //NON-NLS
 
-                return new ByteArrayInputStream(fillVelocityTemplate(contentReader).getBytes("UTF-8"));
+                return new ByteArrayInputStream(fillVelocityTemplate(contentReader).getBytes("UTF-8")); //NON-NLS
             } else {
                 return contentIS;
             }

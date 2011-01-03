@@ -66,7 +66,8 @@ public class UpdateManagerImpl implements UpdateManager {
             try {
                 doCheckForUpdate(false);
             } catch (UpdateException e) {
-                logger.error("Error during checking for update.", e);
+                //noinspection DuplicateStringLiteralInspection
+                logger.error("Error during checking for update.", e); //NON-NLS
             }
         } else {
             scheduleCheckForUpdate();
@@ -89,13 +90,14 @@ public class UpdateManagerImpl implements UpdateManager {
                 updateConfiguration.storeCheckUpdateFlag(userAction.isUserEnableCheckForUpdateOnStart());
             }
         } catch (UpdateException e) {
-            logger.error("Error during checking for update.", e);
+            //noinspection DuplicateStringLiteralInspection
+            logger.error("Error during checking for update.", e); //NON-NLS
             
             UpdateInfoDialog.UserActionOnUpdateError userAction = updateInfoDialog.showUpdateCheckingError(e);
 
             if (userAction.isUserAgreeSendErrorReport()) {
                 httpServerWorkItem.raiseEvent(ON_SEND_ERROR_REPORT_EVENT, new SendErrorReportEvent(mainFrame,
-                        "Check for update error", e, false));
+                        "Check for update error", e, false)); //NON-NLS
             }
         }
     }
@@ -129,23 +131,25 @@ public class UpdateManagerImpl implements UpdateManager {
 
         JobDetail jobDetail = new JobDetail();
 
-        jobDetail.setName("checkForUpdateTask");
+        //noinspection DuplicateStringLiteralInspection
+        jobDetail.setName("checkForUpdateTask"); //NON-NLS
         jobDetail.setJobClass(CheckForUpdateJob.class);
 
         Map dataMap = jobDetail.getJobDataMap();
 
-        dataMap.put("checkForUpdateTask", task);
+        //noinspection unchecked,DuplicateStringLiteralInspection
+        dataMap.put("checkForUpdateTask", task); //NON-NLS
 
         SimpleTrigger trigger = new SimpleTrigger();
 
-        trigger.setName("checkForUpdateTrigger");
+        trigger.setName("checkForUpdateTrigger"); //NON-NLS
         trigger.setStartTime(new Date(System.currentTimeMillis() + updateDelayInMSec));
         trigger.setRepeatCount(0);
 
         try {
             scheduler.scheduleJob(jobDetail, trigger);
         } catch (SchedulerException e) {
-            logger.error("Cannot schedule a check for update task.", e);
+            logger.error("Cannot schedule a check for update task.", e); //NON-NLS
         }
     }
 
@@ -154,7 +158,8 @@ public class UpdateManagerImpl implements UpdateManager {
             try {
                 doCheckForUpdate(false);
             } catch (UpdateException e) {
-                logger.error("Error during checking for update.", e);
+                //noinspection DuplicateStringLiteralInspection
+                logger.error("Error during checking for update.", e); //NON-NLS
             }
         }
     }
@@ -164,7 +169,8 @@ public class UpdateManagerImpl implements UpdateManager {
         public final void execute(JobExecutionContext ctx) throws JobExecutionException {
             Map dataMap = ctx.getJobDetail().getJobDataMap();
 
-            CheckForUpdateTask task = (CheckForUpdateTask) dataMap.get("checkForUpdateTask");
+            //noinspection DuplicateStringLiteralInspection
+            CheckForUpdateTask task = (CheckForUpdateTask) dataMap.get("checkForUpdateTask"); //NON-NLS
 
             task.execute();
         }

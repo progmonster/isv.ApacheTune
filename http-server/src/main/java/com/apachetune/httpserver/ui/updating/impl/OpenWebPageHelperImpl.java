@@ -22,7 +22,7 @@ public class OpenWebPageHelperImpl implements OpenWebPageHelper {
         try {
             Desktop.getDesktop().browse(location.toURI());
         } catch (IOException e) {
-            logger.error("Error during open a web page.", e);
+            logger.error("Error during open a web page.", e); //NON-NLS
         } catch (URISyntaxException e) {
             throw createRuntimeException(e);
         }

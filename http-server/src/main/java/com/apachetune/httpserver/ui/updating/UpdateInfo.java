@@ -71,10 +71,11 @@ public class UpdateInfo {
 
     @Override
     public final String toString() {
+        //noinspection DuplicateStringLiteralInspection
         return new ToStringBuilder(this).
-                append("hasUpdate", hasUpdate).
-                append("userFriendlyFullAppName", userFriendlyFullAppName).
-                append("userFriendlyUpdatePageUrl", userFriendlyUpdatePageUrl).
+                append("hasUpdate", hasUpdate). //NON-NLS
+                append("userFriendlyFullAppName", userFriendlyFullAppName). //NON-NLS
+                append("userFriendlyUpdatePageUrl", userFriendlyUpdatePageUrl). //NON-NLS
                 toString();
     }
 }

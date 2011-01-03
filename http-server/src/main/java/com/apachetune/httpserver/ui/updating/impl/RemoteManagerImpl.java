@@ -61,21 +61,22 @@ public class RemoteManagerImpl implements RemoteManager {
 
         method.getParams().setParameter(RETRY_HANDLER, new DefaultHttpMethodRetryHandler(0, false));
 
-        method.setQueryString(format("action=check-for-updates&app-fullname={0}", appManager.getFullAppName()));
+        method.setQueryString(format("action=check-for-updates&app-fullname={0}", //NON-NLS
+                appManager.getFullAppName()));
 
         try {
             int resultCode = client.executeMethod(method);
 
             if (resultCode == SC_OK) {
-                String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8");
+                String response = IOUtils.toString(method.getResponseBodyAsStream(), "UTF-8"); //NON-NLS
 
                 return parseResponse(response);
             } else {
                 throw new UpdateException(
-                        "Remote update service returned error response code [code=" + resultCode + ']');
+                        "Remote update service returned error response code [code=" + resultCode + ']'); //NON-NLS
             }
         } catch (IOException e) {
-            throw new UpdateException("Error getting update info from remote", e);
+            throw new UpdateException("Error getting update info from remote", e); //NON-NLS
         } finally {
             method.releaseConnection();
         }
@@ -91,7 +92,7 @@ public class RemoteManagerImpl implements RemoteManager {
         try {
             db = dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            logger.error("Internal error.", e);
+            logger.error("Internal error.", e); //NON-NLS
 
             return updateInfo;
         }
@@ -103,14 +104,16 @@ public class RemoteManagerImpl implements RemoteManager {
         try {
             doc = db.parse(is);
         } catch (SAXException e) {
-            throw new UpdateException("Error during parsing update info.", e);
+            //noinspection DuplicateStringLiteralInspection
+            throw new UpdateException("Error during parsing update info.", e); //NON-NLS
         } catch (IOException e) {
-            throw new UpdateException("Error during parsing update info.", e);
+            //noinspection DuplicateStringLiteralInspection
+            throw new UpdateException("Error during parsing update info.", e); //NON-NLS
         }
 
         Element docElem = doc.getDocumentElement();
 
-        NodeList updateElems = docElem.getElementsByTagName("update");
+        NodeList updateElems = docElem.getElementsByTagName("update"); //NON-NLS
 
         Element updateElem;
 
@@ -125,20 +128,25 @@ public class RemoteManagerImpl implements RemoteManager {
 
     private UpdateInfo parseUpdateInfoItem(Element updateElem) throws UpdateException {
         try {
-            String userFriendlyFullAppName = getChildElementContent(updateElem, "userFriendlyFullAppName").trim();
+            @SuppressWarnings({"DuplicateStringLiteralInspection"}) String userFriendlyFullAppName =
+                    getChildElementContent(updateElem, "userFriendlyFullAppName").trim(); //NON-NLS
 
             String userFriendlyUpdateWebPageEncodedUrl =
-                    getChildElementContent(updateElem, "userFriendlyUpdateWebPageEncodedUrl").trim();
+                    getChildElementContent(updateElem, "userFriendlyUpdateWebPageEncodedUrl").trim(); //NON-NLS
 
-            String userFriendlyUpdateWebPageUrl = URLDecoder.decode(userFriendlyUpdateWebPageEncodedUrl, "UTF-8");
+            String userFriendlyUpdateWebPageUrl = URLDecoder.decode(userFriendlyUpdateWebPageEncodedUrl,
+                    "UTF-8"); //NON-NLS
 
             return UpdateInfo.create(userFriendlyFullAppName, new URL(userFriendlyUpdateWebPageUrl));
         } catch (ApplicationException e) {
-            throw new UpdateException("Error during parsing update info.", e);
+            //noinspection DuplicateStringLiteralInspection
+            throw new UpdateException("Error during parsing update info.", e); //NON-NLS
         } catch (UnsupportedEncodingException e) {
-            throw new UpdateException("Error during parsing update info.", e);
+            //noinspection DuplicateStringLiteralInspection
+            throw new UpdateException("Error during parsing update info.", e); //NON-NLS
         } catch (MalformedURLException e) {
-            throw new UpdateException("Error during parsing update info.", e);
+            //noinspection DuplicateStringLiteralInspection
+            throw new UpdateException("Error during parsing update info.", e); //NON-NLS
         }
     }
 }

@@ -298,10 +298,12 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null,
                         0, false));
-        final JLabel label1 = new JLabel();
-        label1.setText("Search results:");
-        panel3.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchResultLabel = new JLabel();
+        searchResultLabel.setText("Search results:");
+        panel3.add(searchResultLabel,
+                new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+                        false));
         stopSearchButton = new JButton();
         stopSearchButton.setText("Stop");
         stopSearchButton.setMnemonic('T');
@@ -334,10 +336,12 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
                 new GridConstraints(1, 0, 1, 5, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
                         GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 20),
                         null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("Where to search:");
-        contentPane.add(label2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        searchSourcesLabel = new JLabel();
+        searchSourcesLabel.setText("Where to search:");
+        contentPane.add(searchSourcesLabel,
+                new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+                        false));
         sourceTableScrollPane = new JScrollPane();
         contentPane.add(sourceTableScrollPane,
                 new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,

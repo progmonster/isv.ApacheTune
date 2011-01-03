@@ -182,6 +182,7 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
         //noinspection DuplicateStringLiteralInspection
         messageTable.getActionMap().put("space", new AbstractAction() { //NON-NLS
+
             @Override
             public final void actionPerformed(ActionEvent e) {
                 int selRowIdx = messageTable.getSelectedRow();
@@ -209,6 +210,7 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
 
         //noinspection DuplicateStringLiteralInspection
         messageTable.getActionMap().put("delete", new AbstractAction() { //NON-NLS
+
             @Override
             public final void actionPerformed(ActionEvent e) {
                 int selRowIdx = messageTable.getSelectedRow();
@@ -436,7 +438,6 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
                 false));
-        buttonOK = new JButton();
         buttonOK.setText("OK");
         panel2.add(buttonOK,
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
@@ -454,7 +455,6 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
         panel3.add(panel4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, 1, null, null, null, 0,
                 false));
-        deleteButton = new JButton();
         deleteButton.setText("Delete");
         deleteButton.setMnemonic('D');
         deleteButton.setDisplayedMnemonicIndex(0);
@@ -468,7 +468,6 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
                 false));
-        selectButton = new JButton();
         selectButton.setText("Select/unselect all");
         selectButton.setMnemonic('S');
         selectButton.setDisplayedMnemonicIndex(0);
@@ -482,7 +481,6 @@ public class MessageSmartPart extends JDialog implements MessageView, ListSelect
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                 GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
                 false));
-        markAsUnreadButton = new JButton();
         markAsUnreadButton.setText("Mark as unread");
         markAsUnreadButton.setMnemonic('U');
         markAsUnreadButton.setDisplayedMnemonicIndex(8);

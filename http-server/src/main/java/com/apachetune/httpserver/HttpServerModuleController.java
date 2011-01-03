@@ -32,7 +32,8 @@ public class HttpServerModuleController implements ModuleController {
     }
 
     public void initialize(RootWorkItem rootWorkItem) {
-        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null");
+        //noinspection DuplicateStringLiteralInspection
+        notNull(rootWorkItem, "Argument rootWorkItem cannot be a null"); //NON-NLS
 
         coreUIWorkItem.addChildWorkItem(httpServerWorkItem);
     }

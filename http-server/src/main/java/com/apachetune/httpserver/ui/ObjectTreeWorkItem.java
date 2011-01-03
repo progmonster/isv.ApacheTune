@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.GenericUIWorkItem;
 import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.google.inject.Inject;
@@ -11,6 +12,7 @@ import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import static com.apachetune.core.ui.Constants.OBJECT_TREE_TOOL_WINDOW;
 import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
@@ -29,7 +31,10 @@ public class ObjectTreeWorkItem extends GenericUIWorkItem implements FocusListen
 
     private final HttpServerResourceLocator httpServerResourceLocator;
 
-    @SuppressWarnings({"FieldCanBeLocal"}) // TODO remove
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(ObjectTreeWorkItem.class);
+
+    @SuppressWarnings({"FieldCanBeLocal"})
     private JTree objectTree;
 
     @Inject
@@ -45,9 +50,11 @@ public class ObjectTreeWorkItem extends GenericUIWorkItem implements FocusListen
         objectTree = new JTree();
 
         try {
-            // TODO Localize
-            toolWindowManager.registerToolWindow(OBJECT_TREE_TOOL_WINDOW, "Object tree", httpServerResourceLocator
-                    .loadIcon("console_view_icon.png"), objectTree, LEFT);
+            //noinspection DuplicateStringLiteralInspection
+            toolWindowManager.registerToolWindow(OBJECT_TREE_TOOL_WINDOW,
+                    resourceBundle.getString("objectTreeWorkItem.objectTreeToolWindow"),
+                    httpServerResourceLocator
+                    .loadIcon("console_view_icon.png"), objectTree, LEFT); //NON-NLS
         } catch (IOException e) {
             throw createRuntimeException(e);
         }

@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui.updating.impl;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.httpserver.ui.updating.UpdateConfiguration;
 import com.apachetune.httpserver.ui.updating.UpdateException;
 import com.apachetune.httpserver.ui.updating.UpdateInfo;
@@ -10,6 +11,7 @@ import org.apache.commons.lang.mutable.MutableBoolean;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 import static java.text.MessageFormat.format;
 import static javax.swing.JOptionPane.*;
@@ -22,24 +24,29 @@ public class UpdateInfoDialogImpl implements UpdateInfoDialog {
 
     private final JCheckBox checkForUpdateEnabledChk = new JCheckBox();
 
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(UpdateInfoDialogImpl.class);
+
     @Inject
     public UpdateInfoDialogImpl(JFrame mainFrame, UpdateConfiguration updateConfiguration) {
         this.mainFrame = mainFrame;
 
         checkForUpdateEnabledChk.setSelected(updateConfiguration.getCheckUpdateFlag());
-        checkForUpdateEnabledChk.setText("check for updates on application start"); // todo localize
+        checkForUpdateEnabledChk.setText(resourceBundle.getString("updateInfoDialogImpl.checkForUpdateOnStartTitle"));
     }
 
     @Override
     public final UserActionOnUpdate showHasUpdate(UpdateInfo updateInfo) {
         final Object[] inputs = new Object[] {
-                format("There is update for this application - {0}.\nDo you want to update it?",  // todo localize
+                format(resourceBundle.getString("updateInfoDialogImpl.hasUpdateDialog.message"),
                         updateInfo.getUserFriendlyFullAppName()),
                 checkForUpdateEnabledChk
         };
 
-        boolean isUserAgreeUpdate = (showConfirmDialog(mainFrame, inputs, "Update application", YES_NO_OPTION) ==
-                YES_OPTION);  // todo localize
+        boolean isUserAgreeUpdate = (showConfirmDialog(mainFrame, inputs,
+                resourceBundle.getString("updateInfoDialogImpl.hasUpdateDialog.title"),
+                YES_NO_OPTION) ==
+                YES_OPTION);
 
         return new UserActionOnUpdate(isUserAgreeUpdate, checkForUpdateEnabledChk.isSelected());
     }
@@ -47,11 +54,13 @@ public class UpdateInfoDialogImpl implements UpdateInfoDialog {
     @Override
     public final UserActionOnNoUpdate showHasNoUpdate() {
         final Object[] inputs = new Object[] {
-                "There is no update for this application.",  // todo localize
+                resourceBundle.getString("updateInfoDialogImpl.hasNoUpdateDialog.message"),
                 checkForUpdateEnabledChk
         };
 
-        showMessageDialog(mainFrame, inputs, "Update application", INFORMATION_MESSAGE);  // todo localize
+        showMessageDialog(mainFrame, inputs,
+                resourceBundle.getString("updateInfoDialogImpl.hasNoUpdateDialog.title"),
+                INFORMATION_MESSAGE);
 
         return new UserActionOnNoUpdate(checkForUpdateEnabledChk.isSelected());
     }
@@ -59,20 +68,25 @@ public class UpdateInfoDialogImpl implements UpdateInfoDialog {
     @Override
     public final UserActionOnUpdateError showUpdateCheckingError(UpdateException e) {
         JOptionPane optionPane = new JOptionPane(
-                format("An error occurred during checking application update [{0}].\n\n" + // todo localize
-                    "It may be temporary internet connection problem, but if this error repeats,\n" +
-                    "please, send error report to application developers.", e.getMessage()),
+                format(resourceBundle.getString("updateInfoDialogImpl.errorUpdateCheckingDialog.message"),
+                       e.getMessage()),
                 ERROR_MESSAGE);
 
         final MutableBoolean isUserAgreeSendErrorReport = new MutableBoolean();
 
-        JButton sendReportBtn = new JButton("Send error report");
+        JButton sendReportBtn = new JButton(
+                resourceBundle.getString("updateInfoDialogImpl.errorUpdateCheckingDialog.sendErrorReportButton.title")
+        );
 
-        JButton cancelBtn = new JButton("Cancel");
+        JButton cancelBtn = new JButton(
+                resourceBundle.getString("updateInfoDialogImpl.errorUpdateCheckingDialog.cancelButton.title")
+        );
 
         optionPane.setOptions(new Object[] {sendReportBtn, cancelBtn});
 
-        final JDialog dialog = optionPane.createDialog(mainFrame, "Update application");
+        final JDialog dialog = optionPane.createDialog(mainFrame,
+                resourceBundle.getString("updateInfoDialogImpl.errorUpdateCheckingDialog.title")
+        );
 
         sendReportBtn.addActionListener(new ActionListener() {
             @Override

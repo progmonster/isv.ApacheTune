@@ -1,5 +1,6 @@
 package com.apachetune.httpserver.ui;
 
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.CoreUIUtils;
 import com.apachetune.core.ui.GenericUIWorkItem;
 import com.apachetune.core.ui.OutputPaneDocument;
@@ -21,6 +22,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
@@ -58,6 +60,9 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
 
     private boolean isRelatedActionsDisabled;
 
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(RunServerWorkflowWorkItem.class);
+
     @Inject
     public RunServerWorkflowWorkItem(ActionManager actionManager, OutputPaneDocument outputPaneDocument,
             @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager, StatusBarManager statusBarManager,
@@ -78,8 +83,11 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
 
     @ActionHandler(SERVER_START_HTTP_SERVER_ACTION)
     public void onServerStart() {
-        if (getParentWorkItem().askAndSaveAllConfFiles("Save files", "It should to save all changed configuration" +
-                    " files before the starting server. \n\nSave this files?")) { // TODO Localize
+        if (getParentWorkItem().askAndSaveAllConfFiles(
+                resourceBundle.getString(
+                        "runServerWorkflowWorkItem.onServerStart.askAndSaveAllConfFilesDialog.title"),
+                resourceBundle.getString(
+                        "runServerWorkflowWorkItem.onServerStart.askAndSaveAllConfFilesDialog.message"))) {
             executeTasks(createStartServerTask());
         }
     }
@@ -101,8 +109,11 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
 
     @ActionHandler(SERVER_RESTART_HTTP_SERVER_ACTION)
     public void onServerRestart() {
-        if (getParentWorkItem().askAndSaveAllConfFiles("Save files", "It should to save all changed configuration" +
-                    " files before the restarting server. \n\nSave this files?")) { // TODO Localize
+        if (getParentWorkItem().askAndSaveAllConfFiles(
+                resourceBundle.getString(
+                        "runServerWorkflowWorkItem.onServerRestart.askAndSaveAllConfFilesDialog.title"),
+                resourceBundle.getString(
+                        "runServerWorkflowWorkItem.onServerRestart.askAndSaveAllConfFilesDialog.message"))) {
             executeTasks(createStopServerTask(), createStartServerTask());
         }
     }
@@ -113,7 +124,9 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
     }
 
     protected void doUIInitialize() {
-        isTrue(hasState(CURRENT_HTTP_SERVER_STATE), "An http-server must be opened before create RunServerWorkflowWorkItem [" +                    "this = " + this + ']');
+        isTrue(hasState(CURRENT_HTTP_SERVER_STATE),
+                "An http-server must be opened before create RunServerWorkflowWorkItem [this = " //NON-NLS
+                        + this + ']'); //NON-NLS
 
         httpServer = (HttpServer) getState(CURRENT_HTTP_SERVER_STATE);
 
@@ -127,11 +140,13 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
     }
 
     private ExecutionTask createStopServerTask() {
-        return new ExecutionTask("-k stop", SERVER_STOPPING_STATUS, "Server stopping..."); // TODO Localize.
+        return new ExecutionTask("-k stop", SERVER_STOPPING_STATUS, //NON-NLS
+                resourceBundle.getString("runServerWorkflowWorkItem.statusBarManager.stoppingServerStatus"));
     }
 
     private ExecutionTask createStartServerTask() {
-        return new ExecutionTask("-k start", SERVER_STARTING_STATUS, "Server starting..."); // TODO Localize.
+        return new ExecutionTask("-k start", SERVER_STARTING_STATUS, //NON-NLS
+                resourceBundle.getString("runServerWorkflowWorkItem.statusBarManager.startingServerStatus"));
     }
 
     private void executeTasks(ExecutionTask... tasks) {
@@ -162,7 +177,7 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
         private final List<Callable<Boolean>> tasks;
 
         public TaskRunner(List<ExecutionTask> tasks) {
-            notNull(tasks, "Argument tasks cannot be a null");
+            notNull(tasks, "Argument tasks cannot be a null"); //NON-NLS
 
             this.tasks = new ArrayList<Callable<Boolean>>(tasks);
         }
@@ -268,7 +283,7 @@ public class RunServerWorkflowWorkItem extends GenericUIWorkItem implements RunS
             hasError |= (result != 0);
 
             if (message.isEmpty() && !hasError) {
-                messageValue.value = "OK"; // TODO Localize.
+                messageValue.value = resourceBundle.getString("runServerWorkflowWorkItem.successfulOutputMessage");
             } else {
                 messageValue.value = message;
             }

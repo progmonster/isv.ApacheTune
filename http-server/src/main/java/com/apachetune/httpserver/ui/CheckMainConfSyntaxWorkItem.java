@@ -1,6 +1,7 @@
 package com.apachetune.httpserver.ui;
 
 import com.apachetune.core.GenericWorkItem;
+import com.apachetune.core.ResourceManager;
 import com.apachetune.core.Subscriber;
 import com.apachetune.core.ui.OutputPaneDocument;
 import com.apachetune.core.ui.actions.ActionHandler;
@@ -20,6 +21,7 @@ import org.noos.xing.mydoggy.ToolWindowManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,7 +41,7 @@ import static org.apache.commons.lang.Validate.isTrue;
  * @version 1.0
  */
 public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements CheckServerActionSite {
-    private static final String ERROR_PATTERN = ".*Syntax error on line (.*) of (.*):\\s.*";
+    private static final String ERROR_PATTERN = ".*Syntax error on line (.*) of (.*):\\s.*"; //NON-NLS
 
     private final OutputPaneDocument outputPaneDocument;
 
@@ -48,6 +50,9 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
     private final ActionManager actionManager;
     
     private HttpServer httpServer;
+
+    private final ResourceBundle resourceBundle =
+            ResourceManager.getInstance().getResourceBundle(CheckMainConfSyntaxWorkItem.class);
 
     @Inject
     public CheckMainConfSyntaxWorkItem(OutputPaneDocument outputPaneDocument,
@@ -61,9 +66,12 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
 
     @ActionHandler(SERVER_CHECK_CONFIG_SYNTAX_ACTION)
     public void onServerCheck() {
-        // TODO May be uses temporary conf files instead of saving current ones for checking?
-        if (getParentWorkItem().askAndSaveAllConfFiles("Save files", "It should to save all changed configuration" +
-                " files before the syntax checking. \n\nSave this files?")) { // TODO Localize
+        // TODO May be use temporary conf files instead of saving current ones for checking?
+        if (getParentWorkItem().askAndSaveAllConfFiles(
+                resourceBundle.getString(
+                        "checkMainConfSyntaxWorkItem.onServerCheck.askAndSaveAllConfFilesDialog.title"),
+                resourceBundle.getString(
+                        "checkMainConfSyntaxWorkItem.onServerCheck.askAndSaveAllConfFilesDialog.message"))) {
             outputPaneDocument.clear();
 
             checkSyntax();
@@ -76,8 +84,10 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
     }
 
     protected void doInitialize() {
+        //noinspection DuplicateStringLiteralInspection
         isTrue(hasState(CURRENT_HTTP_SERVER_STATE),
-                "An http-server must be opened before create RunServerWorkflowWorkItem [" + "this = " + this + ']');
+                "An http-server must be opened before create RunServerWorkflowWorkItem [" //NON-NLS
+                        + "this = " + this + ']'); //NON-NLS
 
         httpServer = (HttpServer) getState(CURRENT_HTTP_SERVER_STATE);
 
@@ -94,7 +104,7 @@ public class CheckMainConfSyntaxWorkItem extends GenericWorkItem implements Chec
         try {
             outputPaneDocument.setText("");
 
-            Process checkProcess = httpServer.executeServerApp("-t");
+            Process checkProcess = httpServer.executeServerApp("-t"); //NON-NLS
 
             int result = checkProcess.waitFor();
 
