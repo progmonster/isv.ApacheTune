@@ -5,11 +5,13 @@ import com.apachetune.core.ApplicationException;
 import com.apachetune.core.ResourceManager;
 import com.apachetune.core.errorreportsystem.ErrorReportManager;
 import com.apachetune.core.preferences.PreferencesManager;
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -201,5 +203,17 @@ public final class Utils {
         notEmpty(argumentName);
 
         return format("Argument {0} cannot be a null", argumentName); //NON-NLS
+    }
+
+    public static ImageIcon loadIcon(Class clazz, String iconName) {
+        try {
+            notNull(clazz);
+            notEmpty(iconName);
+
+            return new ImageIcon(IOUtils.toByteArray(clazz.getResourceAsStream(iconName)));
+        } catch (IOException e) {
+            throw createRuntimeException(format("Error during loading icon [class={0}; iconName={1}]", //NON-NLS
+                    clazz, iconName));
+        }
     }
 }

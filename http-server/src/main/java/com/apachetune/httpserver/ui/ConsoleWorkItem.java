@@ -10,7 +10,6 @@ import com.apachetune.core.ui.actions.ActionHandler;
 import com.apachetune.core.ui.actions.ActionPermission;
 import com.apachetune.core.ui.editors.EditorActionSite;
 import com.apachetune.httpserver.entities.HttpServer;
-import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import org.noos.xing.mydoggy.DockedTypeDescriptor;
@@ -21,13 +20,13 @@ import org.noos.xing.mydoggy.plaf.MyDoggyToolWindow;
 import javax.swing.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ResourceBundle;
 import java.util.prefs.BackingStoreException;
 
 import static com.apachetune.core.ui.Constants.*;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.loadIcon;
 import static com.apachetune.httpserver.Constants.*;
 import static org.noos.xing.mydoggy.ToolWindowAnchor.BOTTOM;
 import static org.noos.xing.mydoggy.ToolWindowType.DOCKED;
@@ -46,8 +45,6 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
 
     private final OutputPaneDocument outputPaneDocument;
 
-    private final HttpServerResourceLocator httpServerResourceLocator;
-
     private final MenuBarManager menuBarManager;
     
     private final PreferencesManager preferencesManager;
@@ -61,14 +58,12 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
     public ConsoleWorkItem(
             OutputPaneDocument outputPaneDocument,
             @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
-            HttpServerResourceLocator httpServerResourceLocator,
             MenuBarManager menuBarManager,
             PreferencesManager preferencesManager) {
         super(CONSOLE_WORK_ITEM);
 
         this.outputPaneDocument = outputPaneDocument;
         this.toolWindowManager = toolWindowManager;
-        this.httpServerResourceLocator = httpServerResourceLocator;
         this.menuBarManager = menuBarManager;
         this.preferencesManager = preferencesManager;
     }
@@ -137,17 +132,13 @@ public class ConsoleWorkItem extends GenericUIWorkItem implements EditorActionSi
         stdoutPane.setDocument(outputPaneDocument);
         stdoutPane.setText("");
 
-        try {
-            ToolWindowAnchor anchor = getRestoredOutputWindowAnchor();
+        ToolWindowAnchor anchor = getRestoredOutputWindowAnchor();
 
-            //noinspection DuplicateStringLiteralInspection
-            toolWindowManager.registerToolWindow(OUTPUT_TOOL_WINDOW,
-                    resourceBundle.getString("consoleWorkItem.outputToolWindow.title"),
-                    httpServerResourceLocator
-                    .loadIcon("console_view_icon.png"), stdoutPane, anchor); //NON-NLS
-        } catch (IOException e) {
-            throw createRuntimeException(e);
-        }
+        //noinspection DuplicateStringLiteralInspection
+        toolWindowManager.registerToolWindow(
+                OUTPUT_TOOL_WINDOW,
+                resourceBundle.getString("consoleWorkItem.outputToolWindow.title"),
+                loadIcon(ConsoleWorkItem.class, "console_view_icon.png"), stdoutPane, anchor); //NON-NLS
 
         getOutputWindowDocketDescriptor().setMinimumDockLength(MINIMAL_OUTPUT_WINDOW_DOCK_LENGTH);
         getOutputWindowDocketDescriptor().setDockLength(getRestoredOutputWindowDockLength());

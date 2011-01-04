@@ -14,7 +14,6 @@ import com.apachetune.core.ui.feedbacksystem.impl.RemoteManagerImpl;
 import com.apachetune.core.ui.feedbacksystem.impl.SendUserFeedbackMessageDialogImpl;
 import com.apachetune.core.ui.feedbacksystem.impl.UserFeedbackManagerImpl;
 import com.apachetune.core.ui.impl.*;
-import com.apachetune.core.ui.resources.CoreUIResourceLocator;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.apachetune.core.ui.statusbar.StatusBarView;
 import com.google.inject.AbstractModule;
@@ -49,8 +48,6 @@ public class CoreUIModule extends AbstractModule {
         bind(StatusBarManager.class).to(StatusBarManagerImpl.class).in(SINGLETON);
 
         bind(ActionManager.class).to(ActionManagerImpl.class).in(SINGLETON);
-
-        bind(CoreUIResourceLocator.class).in(SINGLETON);
 
         bind(CoreUIUtils.class).in(SINGLETON);
 

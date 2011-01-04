@@ -3,7 +3,6 @@ package com.apachetune.httpserver.ui.editors;
 import com.apachetune.core.ResourceManager;
 import com.apachetune.core.ui.editors.EditorInput;
 import com.apachetune.httpserver.entities.ServerObjectInfo;
-import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.google.inject.Inject;
 import jsyntaxpane.jsyntaxkits.HttpdConfSyntaxKit;
 import org.apache.commons.io.IOUtils;
@@ -17,6 +16,7 @@ import java.net.URI;
 import java.util.ResourceBundle;
 
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.loadIcon;
 import static com.apachetune.httpserver.Constants.EDITOR_WORK_ITEM;
 import static com.apachetune.httpserver.Constants.TEXT_HTTPDCONF_CONTENT_TYPE;
 import static java.io.File.separatorChar;
@@ -37,8 +37,6 @@ import static org.apache.commons.lang.Validate.notNull;
 public class ConfEditorInput implements EditorInput {
     Logger logger = LoggerFactory.getLogger(ConfEditorInput.class);    
 
-    private final HttpServerResourceLocator httpServerResourceLocator;
-
     private final JFrame mainFrame;
 
     private ServerObjectInfo serverObjectInfo;
@@ -46,8 +44,7 @@ public class ConfEditorInput implements EditorInput {
     private ResourceBundle resourceBundle = ResourceManager.getInstance().getResourceBundle(ConfEditorInput.class);
 
     @Inject
-    public ConfEditorInput(HttpServerResourceLocator httpServerResourceLocator, JFrame mainFrame) {
-        this.httpServerResourceLocator = httpServerResourceLocator;
+    public ConfEditorInput(JFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
 
@@ -147,11 +144,7 @@ public class ConfEditorInput implements EditorInput {
     }
 
     public Icon getContentPaneIcon() {
-        try {
-            return httpServerResourceLocator.loadIcon("config_file_icon.png"); //NON-NLS
-        } catch (IOException e) {
-            throw createRuntimeException(e);
-        }
+        return loadIcon(ConfEditorInput.class, "config_file_icon.png"); //NON-NLS
     }
 
     private void registerMainConfContentType() {

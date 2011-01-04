@@ -15,11 +15,9 @@ import org.noos.xing.mydoggy.ToolWindowManager;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 import java.util.List;
 
 import static com.apachetune.core.ui.Constants.TOOL_WINDOW_MANAGER;
-import static com.apachetune.core.utils.Utils.createRuntimeException;
 import static java.util.Arrays.asList;
 import static javax.swing.SwingUtilities.invokeLater;
 import static javax.swing.SwingUtilities.isEventDispatchThread;
@@ -49,8 +47,8 @@ public class CoreUIUtils {
     }
 
     public Action createAndConfigureAction(String actionId, Class<? extends ActionSite> actionSiteClass,
-            ActionGroup actionGroup, ResourceLocator resourceLocator, String name, String shortDescription,
-            String longDescription, String smallIconName, String largeIconName, char mnemonicKey,
+            ActionGroup actionGroup, String name, String shortDescription,
+            String longDescription, ImageIcon smallIcon, ImageIcon largeIcon, char mnemonicKey,
             KeyStroke acceleratorKey, boolean showInCtxMenu) throws RuntimeException {
         //noinspection DuplicateStringLiteralInspection
         notNull(actionId, "Argument actionId cannot be a null"); //NON-NLS
@@ -63,20 +61,14 @@ public class CoreUIUtils {
         //noinspection DuplicateStringLiteralInspection
         notNull(actionGroup, "Argument actionGroup cannot be a null"); //NON-NLS
 
-        notNull(resourceLocator, "Argument resourceLocator cannot be a null"); //NON-NLS
-
         Action action = actionManager.createAction(actionId, actionSiteClass);
 
         action.setName(name);
         action.setShortDescription(shortDescription);
         action.setLongDescription(longDescription);
 
-        try {
-            action.setSmallIcon(smallIconName != null ? resourceLocator.loadIcon(smallIconName) : null);
-            action.setLargeIcon(largeIconName != null ? resourceLocator.loadIcon(largeIconName) : null);
-        } catch (IOException e) {
-            throw createRuntimeException(e);
-        }
+        action.setSmallIcon(smallIcon);
+        action.setLargeIcon(largeIcon);
 
         action.setMnemonicKey(mnemonicKey);
         action.setAcceleratorKey(acceleratorKey);

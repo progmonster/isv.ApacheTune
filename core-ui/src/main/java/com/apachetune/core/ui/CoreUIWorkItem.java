@@ -7,7 +7,6 @@ import com.apachetune.core.preferences.PreferencesManager;
 import com.apachetune.core.ui.actions.*;
 import com.apachetune.core.ui.editors.EditorActionSite;
 import com.apachetune.core.ui.feedbacksystem.UserFeedbackManager;
-import com.apachetune.core.ui.resources.CoreUIResourceLocator;
 import com.apachetune.core.ui.statusbar.StatusBarManager;
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
@@ -32,6 +31,7 @@ import static com.apachetune.core.ui.Constants.DONATE_ACTION_GROUP;
 import static com.apachetune.core.ui.Constants.HELP_DONATE_ACTION;
 import static com.apachetune.core.ui.TitleBarManager.LEVEL_1;
 import static com.apachetune.core.utils.Utils.createRuntimeException;
+import static com.apachetune.core.utils.Utils.loadIcon;
 import static com.apachetune.core.utils.Utils.openExternalWebPage;
 import static java.awt.Frame.NORMAL;
 import static java.awt.event.InputEvent.CTRL_MASK;
@@ -67,8 +67,6 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
 
     private final CoreUIUtils coreUIUtils;
 
-    private final CoreUIResourceLocator coreUIResourceLocator;
-
     private final Rectangle normalFrameBounds = new Rectangle();
 
     private final StatusBarManager statusBarManager;
@@ -87,7 +85,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
     public CoreUIWorkItem(
             JFrame mainFrame, @Named(TOOL_WINDOW_MANAGER) ToolWindowManager toolWindowManager,
             MenuBarManager menuBarManager, ActionManager actionManager, CoreUIUtils coreUIUtils,
-            CoreUIResourceLocator coreUIResourceLocator, StatusBarManager statusBarManager,
+            StatusBarManager statusBarManager,
             ToolBarManager toolBarManager,
             AppManager appManager,
             TitleBarManager titleBarManager,
@@ -99,7 +97,6 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         this.menuBarManager = menuBarManager;
         this.actionManager = actionManager;
         this.coreUIUtils = coreUIUtils;
-        this.coreUIResourceLocator = coreUIResourceLocator;
         this.toolBarManager = toolBarManager;
         this.statusBarManager = statusBarManager;
         this.appManager = appManager;
@@ -376,37 +373,33 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         ActionGroup coreUIActionGroup = actionManager.createActionGroup(CORE_UI_ACTION_GROUP);
 
         coreUIUtils.createAndConfigureAction(FILE_SAVE_ACTION, SaveFileActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.fileSave.name"),
                 resourceBundle.getString("coreUIWorkItem.action.fileSave.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.fileSave.longDescription"),
-                "save_document_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "save_document_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.fileSave.mnemonicKey").charAt(0),
                 getKeyStroke(VK_S, CTRL_MASK), false);
 
         coreUIUtils.createAndConfigureAction(FILE_SAVE_ALL_ACTION, SaveAllFilesActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.fileSaveAll.name"),
                 resourceBundle.getString("coreUIWorkItem.action.fileSaveAll.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.fileSaveAll.longDescription"),
-                "save_all_documents_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "save_all_documents_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.fileSaveAll.mnemonicKey").charAt(0),
                 getKeyStroke(VK_S, CTRL_MASK | SHIFT_MASK), false);
 
         coreUIUtils.createAndConfigureAction(FILE_PRINT_ACTION, PrintDocumentActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.filePrint.name"),
                 resourceBundle.getString("coreUIWorkItem.action.filePrint.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.filePrint.longDescription"),
-                "print_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "print_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.filePrint.mnemonicKey").charAt(0),
                 null, false);
 
         coreUIUtils.createAndConfigureAction(EXIT_ACTION, AppExitActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.exit.name"),
                 resourceBundle.getString("coreUIWorkItem.action.exit.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.exit.longDescription"),
@@ -415,57 +408,52 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 null, false);
 
         coreUIUtils.createAndConfigureAction(EDIT_UNDO_ACTION, UndoWorkflowActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.editUndo.name"),
                 resourceBundle.getString("coreUIWorkItem.action.editUndo.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.editUndo.longDescription"),
-                "undo_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "undo_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.editUndo.mnemonicKey").charAt(0),
                 getKeyStroke(VK_Z, CTRL_MASK), false);
 
         coreUIUtils.createAndConfigureAction(EDIT_REDO_ACTION, UndoWorkflowActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.editRedo.name"),
                 resourceBundle.getString("coreUIWorkItem.action.editRedo.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.editRedo.longDescription"),
-                "redo_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "redo_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.editRedo.mnemonicKey").charAt(0),
                 getKeyStroke(VK_Z, CTRL_MASK | SHIFT_MASK), false);
 
         coreUIUtils.createAndConfigureAction(HELP_ABOUT_ACTION, AboutActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.helpAbout.name"),
                 resourceBundle.getString("coreUIWorkItem.action.helpAbout.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.helpAbout.longDescription"),
-                "about_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "about_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.helpAbout.mnemonicKey").charAt(0),
                 null, false);
 
         coreUIUtils.createAndConfigureAction(HELP_HELP_TOPICS_ACTION, HelpActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.helpHelpTopics.name"),
                 resourceBundle.getString("coreUIWorkItem.action.helpHelpTopics.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.helpHelpTopics.longDescription"),
-                "help_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "help_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.helpHelpTopics.mnemonicKey").charAt(0),
                 getKeyStroke(VK_F1, 0), false);
 
         coreUIUtils.createAndConfigureAction(HELP_SUBMIT_FEEDBACK_ACTION, FeedbackActionSite.class,
-                coreUIActionGroup, coreUIResourceLocator,
+                coreUIActionGroup,
                 resourceBundle.getString("coreUIWorkItem.action.helpSubmitFeedback.name"),
                 resourceBundle.getString("coreUIWorkItem.action.helpSubmitFeedback.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.helpSubmitFeedback.longDescription"),
-                "send_feedback_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "send_feedback_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.helpSubmitFeedback.mnemonicKey").charAt(0),
                 null, false);
 
         coreUIUtils.createAndConfigureAction(HELP_REGISTER_ACTION, RegisterActionSite.class, coreUIActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.helpRegister.name"),
                 resourceBundle.getString("coreUIWorkItem.action.helpRegister.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.helpRegister.longDescription"),
@@ -474,7 +462,7 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 null, false);
 
         coreUIUtils.createAndConfigureAction(HELP_CHECK_FOR_UPDATE_ACTION, UpdateActionSite.class,
-                coreUIActionGroup, coreUIResourceLocator,
+                coreUIActionGroup,
                 resourceBundle.getString("coreUIWorkItem.action.helpCheckForUpdate.name"),
                 resourceBundle.getString("coreUIWorkItem.action.helpCheckForUpdate.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.helpCheckForUpdate.longDescription"),
@@ -483,11 +471,11 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
                 null, false);
 
         coreUIUtils.createAndConfigureAction(HELP_DONATE_ACTION, DonateActionSite.class,
-                coreUIActionGroup, coreUIResourceLocator,
+                coreUIActionGroup,
                 resourceBundle.getString("coreUIWorkItem.action.helpDonate.name"),
                 resourceBundle.getString("coreUIWorkItem.action.helpDonate.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.helpDonate.longDescription"),
-                "donate_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "donate_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.helpDonate.mnemonicKey").charAt(0),
                 null, false);
@@ -497,31 +485,28 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         ActionGroup clipboardActionGroup = actionManager.createActionGroup(CLIPBOARD_ACTION_GROUP);
 
         coreUIUtils.createAndConfigureAction(EDIT_CUT_ACTION, EditorActionSite.class, clipboardActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.editCut.name"),
                 resourceBundle.getString("coreUIWorkItem.action.editCut.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.editCut.longDescription"),
-                "cut_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "cut_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.editCut.mnemonicKey").charAt(0),
                 getKeyStroke(VK_X, CTRL_MASK), true);
 
         coreUIUtils.createAndConfigureAction(EDIT_COPY_ACTION, EditorActionSite.class, clipboardActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.editCopy.name"),
                 resourceBundle.getString("coreUIWorkItem.action.editCopy.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.editCopy.longDescription"),
-                "copy_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "copy_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.editCopy.mnemonicKey").charAt(0),
                 getKeyStroke(VK_C, CTRL_MASK), true);
 
         coreUIUtils.createAndConfigureAction(EDIT_PASTE_ACTION, EditorActionSite.class, clipboardActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.editPaste.name"),
                 resourceBundle.getString("coreUIWorkItem.action.editPaste.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.editPaste.longDescription"),
-                "paste_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "paste_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.editPaste.mnemonicKey").charAt(0),
                 getKeyStroke(VK_V, CTRL_MASK), true);
@@ -531,7 +516,6 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         ActionGroup selectAllActionGroup = actionManager.createActionGroup(SELECT_ALL_ACTION_GROUP);
 
         coreUIUtils.createAndConfigureAction(EDIT_SELECT_ALL_ACTION, EditorActionSite.class, selectAllActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.editSelectAll.name"),
                 resourceBundle.getString("coreUIWorkItem.action.editSelectAll.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.editSelectAll.longDescription"),
@@ -544,21 +528,20 @@ public class CoreUIWorkItem extends GenericUIWorkItem implements ActivationListe
         ActionGroup windowActionGroup = actionManager.createActionGroup(WINDOW_ACTION_GROUP);
 
         coreUIUtils.createAndConfigureAction(WINDOW_SELECT_NEXT_TAB_ACTION, WindowActionSite.class, windowActionGroup,
-                coreUIResourceLocator,
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectNextTab.name"),
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectNextTab.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectNextTab.longDescription"),
-                "next_window_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "next_window_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectNextTab.mnemonicKey").charAt(0),
                 getKeyStroke(VK_RIGHT, ALT_MASK), true);
 
         coreUIUtils.createAndConfigureAction(WINDOW_SELECT_PREVIOUS_TAB_ACTION, WindowActionSite.class,
-                windowActionGroup, coreUIResourceLocator,
+                windowActionGroup,
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectPreviousTab.name"),
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectPreviousTab.shortDescription"),
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectPreviousTab.longDescription"),
-                "previous_window_16.png", //NON-NLS
+                loadIcon(CoreUIWorkItem.class, "previous_window_16.png"), //NON-NLS
                 null,
                 resourceBundle.getString("coreUIWorkItem.action.windowSelectPreviousTab.mnemonicKey").charAt(0),
                 getKeyStroke(VK_LEFT, ALT_MASK), true);

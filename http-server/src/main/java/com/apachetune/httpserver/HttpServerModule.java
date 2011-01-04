@@ -12,7 +12,6 @@ import com.apachetune.httpserver.ui.messagesystem.impl.LocalMessageStoreImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.MessageManagerImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.MessageStatusBarSiteImpl;
 import com.apachetune.httpserver.ui.messagesystem.impl.ScheduleLoadNewsMessagesStrategyImpl;
-import com.apachetune.httpserver.ui.resources.HttpServerResourceLocator;
 import com.apachetune.httpserver.ui.updating.UpdateInfoDialog;
 import com.apachetune.httpserver.ui.updating.OpenWebPageHelper;
 import com.apachetune.httpserver.ui.updating.UpdateConfiguration;
@@ -37,8 +36,6 @@ import static com.google.inject.Scopes.SINGLETON;
 public class HttpServerModule extends AbstractModule {
     protected void configure() {
         bind(HttpServerWorkItem.class).to(HttpServerWorkItemImpl.class).in(SINGLETON);
-
-        bind(HttpServerResourceLocator.class).in(SINGLETON);
 
         bind(HttpServerManager.class).to(HttpServerManagerImpl.class).in(SINGLETON);
 
