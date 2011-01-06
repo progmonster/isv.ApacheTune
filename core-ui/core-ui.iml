@@ -52,7 +52,7 @@
     <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-res:1.4.2" level="project" />
     <orderEntry type="library" name="Maven: jsyntaxpane:jsyntaxpane:0.9.4" level="project" />
     <orderEntry type="library" name="Maven: djproject.sourceforge.net:DJNativeSwing-SWT:0-9-9-20100914" level="project" />
-    <orderEntry type="library" name="Maven: swt:swt-win32:3.6" level="project" />
+    <orderEntry type="library" name="Maven: swt:swt-linux:3.6.1" level="project" />
     <orderEntry type="library" name="Maven: com.intellij:forms_rt:7.0.3" level="project" />
     <orderEntry type="library" name="Maven: asm:asm-commons:3.0" level="project" />
     <orderEntry type="library" name="Maven: asm:asm-tree:3.0" level="project" />

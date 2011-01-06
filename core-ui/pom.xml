@@ -128,8 +128,8 @@
         </dependency>
 
         <dependency>
-            <groupId>swt</groupId>
-            <artifactId>swt-win32</artifactId>
+            <groupId>${swtImpl.groupId}</groupId>
+            <artifactId>${swtImpl.artifactId}</artifactId>
         </dependency>
 
         <dependency>

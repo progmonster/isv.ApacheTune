@@ -1,4 +1,5 @@
 call mvn install:install-file -Dfile=swt-3.6-win32-win32-x86.jar -DgroupId=swt -DartifactId=swt-win32 -Dversion=3.6 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=swt-3.6.1-gtk-linux-x86.jar -DgroupId=swt -DartifactId=swt-linux -Dversion=3.6.1 -Dpackaging=jar -DgeneratePom=true
 
 call mvn install:install-file -Dfile=mydoggy-res-1.4.2.jar -DgroupId=net.sourceforge.mydoggy -DartifactId=mydoggy-res -Dversion=1.4.2 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=l2fprod-common-all-7.3-20070317.jar -DgroupId=com.l2fprod -DartifactId=common -Dversion=7.3 -Dpackaging=jar -DgeneratePom=true
@@ -12,6 +13,7 @@ call mvn install:install-file -Dfile=DJNativeSwing-0-9-9-20100914.src.zip -Dgrou
 
 call mvn install:install-file -Dfile=balloontip-1.1.jar -DgroupId=net.java.balloontip -DartifactId=balloontip -Dversion=1.1 -Dpackaging=jar -DgeneratePom=true
 call mvn install:install-file -Dfile=balloontip-1.1.src.zip -DgroupId=net.java.balloontip -DartifactId=balloontip -Dversion=1.1 -Dpackaging=jar -Dclassifier=sources
+
 
 
 

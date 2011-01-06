@@ -19,6 +19,28 @@
         </developer>
     </developers>
 
+    <profiles>
+        <profile>
+            <id>windows</id>
+
+            <properties>
+                <swtImpl.groupId>swt</swtImpl.groupId>
+                <swtImpl.artifactId>swt-win32</swtImpl.artifactId>
+                <swtImpl.version>3.6</swtImpl.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>linux</id>
+
+            <properties>
+                <swtImpl.groupId>swt</swtImpl.groupId>
+                <swtImpl.artifactId>swt-linux</swtImpl.artifactId>
+                <swtImpl.version>3.6.1</swtImpl.version>
+            </properties>
+        </profile>
+    </profiles>
+
     <!-- TODO Add a license tag. -->
 
     <!-- TODO Tests not run during packaging phase. -->
@@ -67,6 +89,7 @@
                 <groupId>junit</groupId>
                 <artifactId>junit</artifactId>
                 <version>4.8.1</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
@@ -87,7 +110,7 @@
                 <groupId>org.simpleframework</groupId>
                 <artifactId>simple</artifactId>
                 <version>4.1.20</version>
-                <!--            <scope>test</scope> todo uncomment--> 
+                <scope>test</scope> 
             </dependency>
 
             <dependency>
@@ -212,9 +235,9 @@
             </dependency>
 
             <dependency>
-                <groupId>swt</groupId>
-                <artifactId>swt-win32</artifactId>
-                <version>3.6</version>
+                <groupId>${swtImpl.groupId}</groupId>
+                <artifactId>${swtImpl.artifactId}</artifactId>
+                <version>${swtImpl.version}</version>
             </dependency>
 
             <dependency>
