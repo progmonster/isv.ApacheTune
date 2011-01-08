@@ -136,6 +136,11 @@
             <groupId>com.intellij</groupId>
             <artifactId>forms_rt</artifactId>
         </dependency>        
+
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

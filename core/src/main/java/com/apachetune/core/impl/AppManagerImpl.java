@@ -69,7 +69,7 @@ public class AppManagerImpl implements AppManager {
     }
 
     public UUID getAppInstallationUid() {
-        Preferences prefs = preferencesManager.systemNodeForPackage(AppManagerImpl.class);
+        Preferences prefs = preferencesManager.userNodeForPackage(AppManagerImpl.class);
 
         String strUid = prefs.get(APP_INSTALLATION_UID_PROP, null);
 
