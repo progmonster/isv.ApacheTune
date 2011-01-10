@@ -139,6 +139,11 @@
             <groupId>opensymphony</groupId>
             <artifactId>quartz</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>jsyntaxpane</groupId>
+            <artifactId>jsyntaxpane</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

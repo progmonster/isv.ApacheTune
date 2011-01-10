@@ -11,6 +11,8 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target/classes" />
       <excludeFolder url="file://$MODULE_DIR$/target/maven-archiver" />
+      <excludeFolder url="file://$MODULE_DIR$/target/surefire-reports" />
+      <excludeFolder url="file://$MODULE_DIR$/target/test-classes" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -32,6 +34,22 @@
     <orderEntry type="library" name="Maven: com.jhlabs:filters:2.0.235" level="project" />
     <orderEntry type="library" name="Maven: org.swinglabs:swing-worker:1.1" level="project" />
     <orderEntry type="module" module-name="core-ui" />
+    <orderEntry type="library" name="Maven: com.google.collections:google-collections:1.0" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-api:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-plaf:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: tablelayout:TableLayout:20050920" level="project" />
+    <orderEntry type="library" name="Maven: org.noos.xing:mydoggy-res:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.mydoggy:mydoggy-res:1.4.2" level="project" />
+    <orderEntry type="library" name="Maven: jsyntaxpane:jsyntaxpane:0.9.4" level="project" />
+    <orderEntry type="library" name="Maven: djproject.sourceforge.net:DJNativeSwing-SWT:0-9-9-20100914" level="project" />
+    <orderEntry type="library" name="Maven: swt:swt-win32:3.6" level="project" />
+    <orderEntry type="library" name="Maven: com.intellij:forms_rt:7.0.3" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-commons:3.0" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm-tree:3.0" level="project" />
+    <orderEntry type="library" name="Maven: asm:asm:3.0" level="project" />
+    <orderEntry type="library" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
+    <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" name="Maven: net.java.dev.jna:jna:3.2.7" level="project" />
     <orderEntry type="module" module-name="core" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.simpleframework:simple:4.1.20" level="project" />
@@ -43,13 +61,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-library:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit-dep:4.4" level="project" />
     <orderEntry type="library" name="Maven: djproject.sourceforge.net:DJNativeSwing:0-9-9-20100914" level="project" />
-    <orderEntry type="library" name="Maven: djproject.sourceforge.net:DJNativeSwing-SWT:0-9-9-20100914" level="project" />
-    <orderEntry type="library" name="Maven: com.intellij:forms_rt:7.0.3" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm-commons:3.0" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm-tree:3.0" level="project" />
-    <orderEntry type="library" name="Maven: asm:asm:3.0" level="project" />
-    <orderEntry type="library" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
-    <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.l2fprod:common:7.3" level="project" />
     <orderEntry type="library" name="Maven: net.java.balloontip:balloontip:1.1" level="project" />
     <orderEntry type="library" name="Maven: com.h2database:h2:1.2.142" level="project" />
