@@ -16,6 +16,6 @@ if %errorlevel% NEQ 0 goto :end
 call launch4jc distr\temp\installer.win\installer_launch4j.xml
 if %errorlevel% NEQ 0 goto :end
 
-rem call _make_distr.clean.cmd
+call _make_distr.clean.cmd
 
 :end
