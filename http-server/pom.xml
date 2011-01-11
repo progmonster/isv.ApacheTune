@@ -17,19 +17,19 @@
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
-            <version>${parent.version}</version>
+            <version>1.0-lite-alpha-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core-ui</artifactId>
-            <version>${parent.version}</version>
+            <version>1.0-lite-alpha-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
-            <version>${parent.version}</version>
+            <version>1.0-lite-alpha-SNAPSHOT</version>
 
             <type>test-jar</type>
             <scope>test</scope>
