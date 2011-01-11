@@ -2,7 +2,7 @@
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
   <jar></jar>
-  <outfile>..\..\distr.unpacked\uninstaller.exe</outfile>
+  <outfile>..\..\..\distr.unpacked\uninstaller.exe</outfile>
   <errTitle></errTitle>
   <cmdLine>&quot;javaw -jar Uninstaller/Uninstaller.jar&quot;</cmdLine>
   <chdir></chdir>

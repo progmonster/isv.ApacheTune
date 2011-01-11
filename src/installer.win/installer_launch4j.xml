@@ -1,8 +1,8 @@
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>..\..\distr\temp\apachetune_installer.jar</jar>
-  <outfile>..\..\distr\apachetune-1.0-lite.exe</outfile>
+  <jar>..\..\..\distr\temp\apachetune_installer.jar</jar>
+  <outfile>..\..\..\distr\apachetune-${project.version}.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>

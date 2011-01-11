@@ -36,10 +36,58 @@
             <source>src/distr_files/LICENSE.txt</source>
             <outputDirectory>/</outputDirectory>
         </file>
-        
-        <file>
-            <source>src/launcher.win/apachetune_launch4j.xml</source>
-            <outputDirectory>../../distr.</outputDirectory>
-        </file>
     </files>
+
+    <fileSets>
+        <fileSet>
+            <directory>src/launcher.win</directory>
+            <outputDirectory>../../distr/temp/launcher.win</outputDirectory>
+
+            <excludes>
+                <exclude>*.xml</exclude>
+            </excludes>
+
+            <filtered>false</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/launcher.win</directory>
+            <outputDirectory>../../distr/temp/launcher.win</outputDirectory>
+
+            <includes>
+                <include>*.xml</include>
+            </includes>
+
+            <filtered>true</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/launcher.linux</directory>
+            <outputDirectory>../../distr/temp/launcher.linux</outputDirectory>
+
+            <filtered>true</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/installer.win</directory>
+            <outputDirectory>../../distr/temp/installer.win</outputDirectory>
+
+            <excludes>
+                <exclude>*.xml</exclude>
+            </excludes>
+
+            <filtered>false</filtered>
+        </fileSet>
+
+        <fileSet>
+            <directory>src/installer.win</directory>
+            <outputDirectory>../../distr/temp/installer.win</outputDirectory>
+
+            <includes>
+                <include>*.xml</include>
+            </includes>
+
+            <filtered>true</filtered>
+        </fileSet>
+    </fileSets>
 </assembly>

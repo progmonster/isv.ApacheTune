@@ -1,0 +1,1 @@
+call make_distr_win.cmd skip_tests
