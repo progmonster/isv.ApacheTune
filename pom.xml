@@ -27,6 +27,7 @@
                 <swtImpl.groupId>swt</swtImpl.groupId>
                 <swtImpl.artifactId>swt-win32</swtImpl.artifactId>
                 <swtImpl.version>3.6</swtImpl.version>
+                <targetPlatform>win</targetPlatform>
             </properties>
         </profile>
 
@@ -37,6 +38,7 @@
                 <swtImpl.groupId>swt</swtImpl.groupId>
                 <swtImpl.artifactId>swt-linux</swtImpl.artifactId>
                 <swtImpl.version>3.6.1</swtImpl.version>
+                <targetPlatform>linux</targetPlatform>
             </properties>
         </profile>
     </profiles>
@@ -403,6 +405,6 @@
         <app.website>http://apachetune.com/</app.website>
         <app.developmentStartDate>18-07-2009</app.developmentStartDate>
         <app.name>ApacheTune</app.name>
-        <app.version>${project.version}</app.version>
+        <app.version>${project.version}-${targetPlatform}</app.version>
     </properties>
 </project>

@@ -2,7 +2,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>..\..\..\distr\temp\apachetune_installer.jar</jar>
-  <outfile>..\..\..\distr\apachetune-${project.version}.exe</outfile>
+  <outfile>..\..\..\distr\apachetune-${project.version}-${targetPlatform}.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>
   <chdir></chdir>

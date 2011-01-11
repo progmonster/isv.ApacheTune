@@ -2,7 +2,7 @@
 <installation version="1.0">
     <info>
         <appname>ApacheTune</appname>
-        <appversion>${project.version}</appversion>
+        <appversion>${project.version}-${targetPlatform}</appversion>
         <authors>
             <author email="progmonster@gmail.com" name="Aleksey V. Katorgin"/>
         </authors>
