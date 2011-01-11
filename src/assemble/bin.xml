@@ -2,6 +2,7 @@
 
 <assembly>
     <id>bin</id>
+
     <formats>
         <format>dir</format>
     </formats>
@@ -34,6 +35,11 @@
         <file>
             <source>src/distr_files/LICENSE.txt</source>
             <outputDirectory>/</outputDirectory>
+        </file>
+        
+        <file>
+            <source>src/launcher.win/apachetune_launch4j.xml</source>
+            <outputDirectory>../../distr.</outputDirectory>
         </file>
     </files>
 </assembly>

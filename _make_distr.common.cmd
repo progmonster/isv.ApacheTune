@@ -1,13 +1,12 @@
 if (%1) equ (windows) set mavenProfile=windows
 if (%1) equ (linux) set mavenProfile=linux
 
-call mvn clean package assembly:assembly -P %mavenProfile%
+if (%2) equ (skip_tests) set mvn_skip_tests=-Dmaven.test.skip=true
+
+call mvn clean package %mvn_skip_tests% assembly:assembly -P %mavenProfile%
 if %errorlevel% NEQ 0 goto :setError
 
-copy /Y target\apache-tune-1.0-lite-alpha-SNAPSHOT-bin.dir\lib distr.unpacked\lib
-if %errorlevel% NEQ 0 goto :setError
-
-copy /Y src\distr_files\*.* distr.unpacked
+xcopy /Y /E /H target\assembly-bin.dir distr.unpacked
 if %errorlevel% NEQ 0 goto :setError
 
 exit /B 0

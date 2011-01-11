@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.apachetune</groupId>
     <artifactId>core</artifactId>
-    <version>1.0-lite-alpha-SNAPSHOT</version>
+    <version>${parent.version}</version>
 	<packaging>jar</packaging>
     <name>ApacheTune Core</name>
 
@@ -101,7 +101,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version> 2.3.1</version>
+                <version>2.3.1</version>
 
                 <executions>
                     <execution>

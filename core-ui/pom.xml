@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.apachetune</groupId>
     <artifactId>core-ui</artifactId>
-    <version>1.0-lite-alpha-SNAPSHOT</version>
+    <version>${parent.version}</version>
 	<packaging>jar</packaging>
     <name>ApacheTune Core-UI</name>
 	
@@ -17,17 +17,13 @@
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
-
-            <!-- TODO version is actual? -->
-            <version>1.0-lite-alpha-SNAPSHOT</version>
+            <version>${parent.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
-
-            <!-- TODO version is actual? -->
-            <version>1.0-lite-alpha-SNAPSHOT</version>
+            <version>${parent.version}</version>
             
             <type>test-jar</type>
             <scope>test</scope>
