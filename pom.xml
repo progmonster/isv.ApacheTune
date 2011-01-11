@@ -47,7 +47,9 @@
     <!-- TODO Tests not run during packaging phase. -->
 
     <scm>
-        <developerConnection>scm:git:git@git.assembla.com:apachetune.git</developerConnection>
+        <connection>scm:git:ssh://git@progmonster.repositoryhosting.com/progmonster/apachetune.git</connection>
+        <developerConnection>scm:git:ssh://git@progmonster.repositoryhosting.com/progmonster/apachetune.git</developerConnection>
+        <url>https://progmonster.repositoryhosting.com/trac/progmonster_apachetune</url>
     </scm>
 
     <modules>
