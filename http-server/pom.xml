@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.apachetune</groupId>
     <artifactId>http-server</artifactId>
-    <version>${parent.version}</version>
+    <version>1.0-lite-alpha-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>ApacheTune Apache HTTP-Server configurer</name>
 
