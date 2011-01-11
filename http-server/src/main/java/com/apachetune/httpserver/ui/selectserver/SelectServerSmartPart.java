@@ -109,6 +109,8 @@ public class SelectServerSmartPart extends JDialog implements SmartPart, SelectS
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT
         );
 
+        httpServerVersionWarningLabel
+                .setText(resourceBundle.getString("selectServerSmartPart.httpServerVersionWarningLabel"));
         buttonOK.setText(resourceBundle.getString("selectServerSmartPart.buttonOK.title"));
         buttonCancel.setText(resourceBundle.getString("selectServerSmartPart.buttonCancel.title"));
         descriptionLabel.setText(resourceBundle.getString("selectServerSmartPart.descriptionLabel"));
