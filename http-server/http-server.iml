@@ -48,6 +48,7 @@
     <orderEntry type="library" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
     <orderEntry type="library" name="Maven: jdom:jdom:1.0" level="project" />
     <orderEntry type="library" name="Maven: net.java.dev.jna:jna:3.2.7" level="project" />
+    <orderEntry type="module" module-name="core" scope="TEST" />
     <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.8.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.simpleframework:simple:4.1.20" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.easytesting:fest-assert:1.2" level="project" />

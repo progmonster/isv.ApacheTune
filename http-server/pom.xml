@@ -26,15 +26,13 @@
             <version>1.2-lite-SNAPSHOT</version>
         </dependency>
 
-<!--
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
             <version>1.2-lite-SNAPSHOT</version>
-            <type>test-jar</type>
+            <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
--->
 
         <dependency>
             <groupId>junit</groupId>
