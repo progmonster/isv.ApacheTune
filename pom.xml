@@ -370,7 +370,9 @@
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <releaseProfiles>release</releaseProfiles>
+<!--
                     <goals>clean package assembly:assembly</goals>
+-->
                 </configuration>
             </plugin>
 

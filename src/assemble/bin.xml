@@ -11,7 +11,6 @@
         <moduleSet>
             <includes>
                 <include>com.apachetune:core</include>
-                <include>com.apachetune:core</include>
                 <include>com.apachetune:core-ui</include>
                 <include>com.apachetune:http-server</include>
             </includes>
