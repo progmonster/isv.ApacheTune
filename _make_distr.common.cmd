@@ -1,7 +1,9 @@
+set mavenProfile=
 if (%1) equ (windows) set mavenProfile=windows
 if (%1) equ (linux) set mavenProfile=linux
 
-if (%2) equ (skip_tests) set mvn_skip_tests=-Dmaven.test.skip=true
+set mvn_skip_tests=
+if (%2) equ (skip_tests) set mvn_skip_tests=-Dmaven.test.skip.exec=true
 
 call mvn clean package %mvn_skip_tests% assembly:assembly -P %mavenProfile%
 if %errorlevel% NEQ 0 goto :setError
