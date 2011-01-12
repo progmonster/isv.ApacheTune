@@ -10,7 +10,6 @@
         <uninstaller name="Uninstaller.jar" write="yes"/>
         <requiresjdk>no</requiresjdk>
         <writeinstallationinformation>no</writeinstallationinformation>
-        <pack200/>
         <run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
     </info>
     <guiprefs height="480" resizable="no" width="640">

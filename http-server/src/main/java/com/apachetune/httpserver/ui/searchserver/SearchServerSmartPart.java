@@ -351,6 +351,7 @@ public class SearchServerSmartPart extends JDialog implements SearchServerDialog
                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null,
                         0, false));
         httpServerVersionWarningLabel = new JTextPane();
+        httpServerVersionWarningLabel.setEditable(false);
         httpServerVersionWarningLabel.setOpaque(false);
         httpServerVersionWarningLabel.setText(
                 "Warning! This application was tested on Apache HTTP Server version 2.2. only.\nUsing with another version is on your own risk.");

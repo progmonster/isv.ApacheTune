@@ -115,6 +115,7 @@
           <component id="e2acb" class="javax.swing.JTextPane" binding="httpServerVersionWarningLabel">
             <constraints border-constraint="Center"/>
             <properties>
+              <editable value="false"/>
               <opaque value="false"/>
               <text value="Warning! This application was tested on Apache HTTP Server version 2.2. only.&#10;Using with another version is on your own risk." noi18n="true"/>
             </properties>

@@ -21,15 +21,6 @@
         </dependency>
 
         <dependency>
-            <groupId>com.apachetune</groupId>
-            <artifactId>core</artifactId>
-            <version>1.1-lite-SNAPSHOT</version>
-            
-            <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -124,8 +115,8 @@
         </dependency>
 
         <dependency>
-            <groupId>${swtImpl.groupId}</groupId>
-            <artifactId>${swtImpl.artifactId}</artifactId>
+            <groupId>swt</groupId>
+            <artifactId>swt-win32</artifactId>
         </dependency>
 
         <dependency>
