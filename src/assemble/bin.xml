@@ -10,10 +10,10 @@
     <moduleSets>
         <moduleSet>
             <includes>
-                <include>com.apachetune:core:${project.version}:jar</include>
-                <include>com.apachetune:core:${project.version}:tests:jar</include>
-                <include>com.apachetune:core-ui:${project.version}:jar</include>
-                <include>com.apachetune:http-server:${project.version}:jar</include>
+                <include>com.apachetune:core</include>
+                <include>com.apachetune:core</include>
+                <include>com.apachetune:core-ui</include>
+                <include>com.apachetune:http-server</include>
             </includes>
             <binaries>
                 <outputDirectory>lib</outputDirectory>
