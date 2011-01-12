@@ -3,33 +3,33 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.apachetune</groupId>
     <artifactId>http-server</artifactId>
-    <version>1.1-lite-SNAPSHOT</version>
+    <version>1.2-lite-SNAPSHOT</version>
 	<packaging>jar</packaging>
     <name>ApacheTune Apache HTTP-Server configurer</name>
 
 	<parent>
 		<groupId>com.apachetune</groupId>
 		<artifactId>apache-tune</artifactId>
-        <version>1.1-lite-SNAPSHOT</version>
+        <version>1.2-lite-SNAPSHOT</version>
 	</parent>
 
     <dependencies>
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
-            <version>1.1-lite-SNAPSHOT</version>
+            <version>1.2-lite-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core-ui</artifactId>
-            <version>1.1-lite-SNAPSHOT</version>
+            <version>1.2-lite-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.apachetune</groupId>
             <artifactId>core</artifactId>
-            <version>1.1-lite-SNAPSHOT</version>
+            <version>1.2-lite-SNAPSHOT</version>
             <classifier>tests</classifier>
             <scope>test</scope>
         </dependency>
